@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // Kirim gambar dalam format modern (AVIF/WebP) ke browser yang mendukung,
+    // untuk ukuran transfer sekecil mungkin.
+    formats: ["image/avif", "image/webp"],
+  },
 };
 
 export default nextConfig;
