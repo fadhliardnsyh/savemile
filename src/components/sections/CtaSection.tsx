@@ -18,7 +18,7 @@ type CtaAction = {
  */
 export function CtaSection({
   content,
-  showPhone = true,
+  showPhone = false,
   action,
 }: {
   content: CtaContent;
@@ -26,26 +26,16 @@ export function CtaSection({
   action?: CtaAction;
 }) {
   return (
-    <section className="relative z-10 overflow-hidden bg-dark py-20 text-paper sm:py-24">
-      <div
-        aria-hidden
-        className="absolute left-1/2 top-0 h-96 w-[42rem] -translate-x-1/2 rounded-full bg-orange/15 blur-3xl"
-      />
+    <section className="relative z-10 py-20 text-ink sm:py-24">
       <Container className="relative text-center">
-        <Reveal className="flex justify-center">
-          <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-orange">
-            <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-            {content.eyebrow}
-          </span>
-        </Reveal>
         <Reveal delay={60}>
-          <h2 className="mx-auto mt-4 max-w-2xl font-display text-3xl font-extrabold tracking-tight text-white text-balance sm:text-4xl">
+          <h2 className="mx-auto max-w-2xl font-display text-4xl font-extrabold tracking-tight text-ink text-balance sm:text-5xl">
             {content.titleLead}
             <span className="text-orange">{content.titleAccent}</span>
           </h2>
         </Reveal>
         <Reveal delay={120}>
-          <p className="mx-auto mt-4 max-w-md text-paper/60 text-pretty">
+          <p className="mx-auto mt-4 max-w-md text-muted text-pretty">
             {content.description}
           </p>
         </Reveal>
@@ -63,7 +53,7 @@ export function CtaSection({
               </Button>
             )}
             {showPhone && (
-              <Button href={`tel:${site.phone}`} variant="glass" size="lg">
+              <Button href={`tel:${site.phone}`} variant="outline" size="lg">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-4 w-4"

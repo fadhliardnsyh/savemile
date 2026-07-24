@@ -6,21 +6,7 @@ import { stats } from "@/lib/content";
 
 export function Stats() {
   return (
-    <section className="relative z-10 overflow-hidden bg-dark py-20 text-paper sm:py-24">
-      {/* texture + glow */}
-      <div
-        aria-hidden
-        className="dotgrid absolute inset-0 text-white/5 [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,black,transparent)]"
-      />
-      <div
-        aria-hidden
-        className="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-orange/15 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="absolute -left-24 bottom-0 h-64 w-64 rounded-full bg-orange/10 blur-3xl"
-      />
-
+    <section className="relative z-10 pt-4 pb-20 text-ink sm:pt-6 sm:pb-24">
       <Container className="relative">
         <div className="grid grid-cols-2 gap-y-12 lg:grid-cols-4">
           {stats.map((stat, i) => (
@@ -34,7 +20,7 @@ export function Stats() {
                 className="block font-display text-4xl font-extrabold tracking-tight text-orange tabular-nums sm:text-[3.25rem]"
               />
 
-              <div className="mx-auto mt-2.5 max-w-[190px] text-sm leading-snug text-paper/60 text-pretty">
+              <div className="mx-auto mt-2.5 max-w-[190px] text-sm leading-snug text-muted text-pretty">
                 {stat.label}
               </div>
             </Reveal>

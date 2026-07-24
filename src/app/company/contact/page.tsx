@@ -30,14 +30,8 @@ export default function ContactPage() {
         <section className="py-20 sm:py-28">
           <Container>
             <div className="mx-auto max-w-2xl text-center">
-              <Reveal className="flex justify-center">
-                <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-orange">
-                  <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-                  {contact.help.eyebrow}
-                </span>
-              </Reveal>
               <Reveal delay={60}>
-                <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
+                <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
                   {contact.help.title}
                 </h2>
               </Reveal>

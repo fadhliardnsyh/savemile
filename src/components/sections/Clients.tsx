@@ -5,11 +5,13 @@ import { clients } from "@/lib/content";
 export function Clients() {
   const logos = [...clients.logos, ...clients.logos];
   return (
-    <section className="py-16 sm:py-20">
+    <section className="relative z-10 pt-16 pb-10 sm:pt-20 sm:pb-12">
       <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-2xl font-bold tracking-tight text-ink text-balance sm:text-3xl">
-            {clients.title}
+          <h2 className="font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
+            {clients.titleLead}
+            <span className="text-orange">{clients.titleAccent}</span>
+            {clients.titleTail}
           </h2>
           <p className="mt-3 text-muted text-pretty">{clients.body}</p>
         </Reveal>

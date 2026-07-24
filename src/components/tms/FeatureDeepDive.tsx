@@ -7,17 +7,11 @@ import { cn } from "@/lib/cn";
 export function FeatureDeepDive() {
   const f = tms.features;
   return (
-    <section id="fitur" className="scroll-mt-20 border-y border-line bg-paper-2/40 py-20 sm:py-28">
+    <section id="fitur" className="scroll-mt-20 py-20 sm:py-28">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
-          <Reveal className="flex justify-center">
-            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-orange">
-              <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-              {f.eyebrow}
-            </span>
-          </Reveal>
           <Reveal delay={60}>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
+            <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
               {f.titleLead}
               <span className="text-orange">{f.titleAccent}</span>
             </h2>

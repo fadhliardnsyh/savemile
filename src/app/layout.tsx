@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://savemile.vercel.app"),
   title: {
-    default: "SaveMile — Pilih ban yang tepat, kelola lebih cerdas",
+    default: "SaveMile · Pilih ban yang tepat, kelola lebih cerdas",
     template: "%s · SaveMile",
   },
   description:
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     "SaveMile",
   ],
   openGraph: {
-    title: "SaveMile — Pilih ban yang tepat, kelola lebih cerdas",
+    title: "SaveMile · Pilih ban yang tepat, kelola lebih cerdas",
     description:
       "Solusi ban berkualitas + teknologi pengelolaan ban berbasis data dalam satu platform.",
     type: "website",
@@ -53,6 +54,7 @@ export default function RootLayout({
       <body className="relative min-h-full flex flex-col overflow-x-hidden">
         <SmoothScroll />
         {children}
+        <FloatingWhatsApp />
       </body>
     </html>
   );

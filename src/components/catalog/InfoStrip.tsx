@@ -5,14 +5,10 @@ import { infoStrip } from "@/lib/catalog";
 
 export function InfoStrip() {
   return (
-    <section className="border-t border-line bg-paper-2/40 py-14 sm:py-16">
+    <section className="py-14 sm:py-16">
       <Container>
         <Reveal className="mx-auto mb-10 max-w-xl text-center">
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-orange">
-            <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-            Jaminan &amp; Layanan
-          </span>
-          <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             Belanja ban dengan tenang
           </h2>
         </Reveal>

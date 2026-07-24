@@ -11,7 +11,7 @@ import { tmsCta } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Tire Monitoring System",
   description:
-    "Kelola ban armada berbasis data — laser marking, kilometer tracking, notifikasi otomatis, dan dashboard analytics dalam satu sistem SaveMile.",
+    "Kelola ban armada berbasis data: laser marking, kilometer tracking, notifikasi otomatis, dan dashboard analytics dalam satu sistem SaveMile.",
 };
 
 export default function TmsPage() {

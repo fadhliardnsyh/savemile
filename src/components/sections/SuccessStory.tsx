@@ -14,14 +14,8 @@ export function SuccessStory() {
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <Reveal>
-              <span className="inline-flex items-center gap-3 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-orange">
-                <span className="h-px w-6 bg-orange" />
-                {successStory.eyebrow}
-              </span>
-            </Reveal>
             <Reveal delay={60}>
-              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
+              <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
                 Terbukti di <span className="text-orange">{successStory.accent}</span>
               </h2>
             </Reveal>

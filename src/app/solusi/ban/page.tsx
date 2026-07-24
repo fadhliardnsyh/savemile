@@ -10,7 +10,7 @@ import { consultCta } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Ban Truk & Kendaraan Niaga",
   description:
-    "Katalog ban truk & kendaraan niaga dari Tiron & Doublestar — steer, drive, trailer, off-road, hingga forklift. Distributor resmi SaveMile.",
+    "Katalog ban truk & kendaraan niaga dari Tiron & Doublestar: steer, drive, trailer, off-road, hingga forklift. Distributor resmi SaveMile.",
 };
 
 export default function SolusiBanPage() {

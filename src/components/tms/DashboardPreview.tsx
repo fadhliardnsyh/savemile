@@ -19,10 +19,10 @@ const tires = [
 ];
 
 const alerts = [
-  { color: "#ef4444", text: "Ganti segera — Ban DSR688 di B 1234 ABC capai 94% umur. Estimasi ganti 3 hari.", time: "2 jam lalu" },
-  { color: "#f59e0b", text: "Peringatan — 3 ban di armada Surabaya–Malang mendekati 85% umur.", time: "5 jam lalu" },
-  { color: "#22c55e", text: "Berhasil dipasang — 8 ban baru Tiron HS500 telah di-marking & terdaftar.", time: "Kemarin, 14:32" },
-  { color: "#f59e0b", text: "Anomali — Ban B 5678 DEF menempuh 240 km di luar rute normal.", time: "Kemarin, 09:15" },
+  { color: "#ef4444", text: "Ganti segera: Ban DSR688 di B 1234 ABC capai 94% umur. Estimasi ganti 3 hari.", time: "2 jam lalu" },
+  { color: "#f59e0b", text: "Peringatan: 3 ban di armada Surabaya–Malang mendekati 85% umur.", time: "5 jam lalu" },
+  { color: "#22c55e", text: "Berhasil dipasang: 8 ban baru Tiron HS500 telah di-marking & terdaftar.", time: "Kemarin, 14:32" },
+  { color: "#f59e0b", text: "Anomali: Ban B 5678 DEF menempuh 240 km di luar rute normal.", time: "Kemarin, 09:15" },
 ];
 
 const levelColor: Record<string, string> = {
@@ -36,7 +36,7 @@ export function DashboardPreview() {
   return (
     <section
       id="dashboard"
-      className="relative z-10 scroll-mt-20 overflow-hidden bg-dark py-20 text-paper sm:py-28"
+      className="relative z-10 scroll-mt-20 overflow-hidden py-20 text-ink sm:py-28"
     >
       <div
         aria-hidden
@@ -44,26 +44,20 @@ export function DashboardPreview() {
       />
       <Container className="relative">
         <div className="max-w-2xl">
-          <Reveal>
-            <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-orange">
-              <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-              {d.eyebrow}
-            </span>
-          </Reveal>
           <Reveal delay={60}>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-white text-balance sm:text-4xl">
+            <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
               {d.titleLead}
               <span className="text-orange">{d.titleAccent}</span>
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-4 text-paper/60 text-pretty">{d.description}</p>
+            <p className="mt-4 text-muted text-pretty">{d.description}</p>
           </Reveal>
         </div>
 
         {/* Mock dashboard */}
         <Reveal delay={120} className="mt-12">
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] shadow-[var(--shadow-lift)]">
+          <div className="overflow-hidden rounded-2xl border border-dark-line bg-dark shadow-[var(--shadow-lift)]">
             {/* Topbar */}
             <div className="flex items-center justify-between border-b border-white/8 bg-white/[0.03] px-5 py-3.5">
               <div className="flex items-center gap-2.5">

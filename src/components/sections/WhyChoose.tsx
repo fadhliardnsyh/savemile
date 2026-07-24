@@ -1,6 +1,5 @@
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 import { MediaFrame } from "@/components/ui/MediaFrame";
 import { Icon } from "@/components/ui/Icon";
 import { whyChoose } from "@/lib/content";
@@ -11,12 +10,11 @@ export function WhyChoose() {
     <section id="kenapa-savemile" className="scroll-mt-24 py-20 sm:py-28">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
-          <Reveal className="flex justify-center">
-            <SectionLabel>Kenapa SaveMile</SectionLabel>
-          </Reveal>
           <Reveal delay={60}>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
-              {whyChoose.title}
+            <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
+              {whyChoose.titleLead}
+              <span className="text-orange">{whyChoose.titleAccent}</span>
+              {whyChoose.titleTail}
             </h2>
           </Reveal>
           <Reveal delay={120}>

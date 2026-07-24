@@ -28,17 +28,9 @@ export function Hero() {
 
       <Container className="relative z-10">
         <div className="mx-auto max-w-3xl text-center">
-          <span
-            className="fade-up inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.16em] text-white backdrop-blur-md"
-            style={{ ["--d" as string]: "0ms" }}
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-            {hero.eyebrow}
-          </span>
-
           <h1
-            className="fade-up mt-6 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white text-balance sm:text-6xl"
-            style={{ ["--d" as string]: "90ms" }}
+            className="fade-up font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white text-balance sm:text-6xl"
+            style={{ ["--d" as string]: "0ms" }}
           >
             Pilih ban yang{" "}
             <span className="whitespace-nowrap">
@@ -78,22 +70,24 @@ export function Hero() {
             className="fade-up mx-auto mt-11 max-w-2xl"
             style={{ ["--d" as string]: "270ms" }}
           >
-            <p className="mb-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
-              {hero.finder.label}
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FinderCard
-                href={hero.finder.byVehicle.href}
-                icon="truck"
-                label={hero.finder.byVehicle.label}
-                sub={hero.finder.byVehicle.sub}
-              />
-              <FinderCard
-                href={hero.finder.bySize.href}
-                icon="ruler"
-                label={hero.finder.bySize.label}
-                sub={hero.finder.bySize.sub}
-              />
+            <div className="flex flex-col gap-px overflow-hidden rounded-[20px] bg-white/5 backdrop-blur-md">
+              <p className="bg-dark/40 px-5 py-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+                {hero.finder.label}
+              </p>
+              <div className="grid gap-px bg-white/5 sm:grid-cols-2">
+                <FinderCard
+                  href={hero.finder.byVehicle.href}
+                  icon="truck"
+                  label={hero.finder.byVehicle.label}
+                  sub={hero.finder.byVehicle.sub}
+                />
+                <FinderCard
+                  href={hero.finder.bySize.href}
+                  icon="ruler"
+                  label={hero.finder.bySize.label}
+                  sub={hero.finder.bySize.sub}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -146,7 +140,7 @@ function FinderCard({
   return (
     <Link
       href={href}
-      className="beam group flex items-center gap-4 rounded-[20px] bg-white/10 p-4 backdrop-blur-md transition-colors duration-200 hover:bg-white/[0.16] sm:p-5"
+      className="beam group flex items-center gap-4 bg-dark/40 p-4 transition-colors duration-200 hover:bg-white/8 sm:p-5"
     >
       <span className="beam-line" aria-hidden />
       <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange text-white shadow-[0_10px_22px_-6px_rgba(241,90,36,0.85)]">

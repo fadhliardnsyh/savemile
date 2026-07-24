@@ -31,14 +31,8 @@ export default function AboutPage() {
         <section className="py-20 sm:py-28">
           <Container className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
-              <Reveal>
-                <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-orange">
-                  <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-                  {about.story.eyebrow}
-                </span>
-              </Reveal>
               <Reveal delay={60}>
-                <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
+                <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
                   {about.story.title}
                 </h2>
               </Reveal>

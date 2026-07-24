@@ -33,7 +33,7 @@ export async function generateMetadata({
   const p = getProduct(id);
   if (!p) return { title: "Produk tidak ditemukan" };
   return {
-    title: `${p.name} — Ban ${p.brandChip}`,
+    title: `${p.name} · Ban ${p.brandChip}`,
     description: p.description,
   };
 }
@@ -186,7 +186,7 @@ export default async function ProductDetailPage({
           {related.length > 0 && (
             <div className="mt-20 border-t border-line pt-14">
               <div className="mb-8 flex items-end justify-between gap-4">
-                <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+                <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
                   Produk terkait
                 </h2>
                 <Link
