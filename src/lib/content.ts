@@ -71,7 +71,7 @@ export const hero = {
   // public/assets/images/hero.jpg lalu isi path di bawah. Biarkan kosong ("")
   // untuk menampilkan fallback gelap bertekstur.
   // Sumber saat ini: Unsplash (foto truk di jalan, di-crop ke bagian roda), lisensi gratis, komersial, tanpa atribusi.
-  image: "/assets/images/hero-savemile.webp",
+  image: "/assets/images/hero-home.webp",
   description:
     "Solusi ban berkualitas untuk kendaraan Anda, dilengkapi teknologi pengelolaan ban berbasis data dalam satu platform.",
   finder: {
