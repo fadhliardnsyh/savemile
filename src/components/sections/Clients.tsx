@@ -2,18 +2,22 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { clients } from "@/lib/content";
 
-export function Clients() {
+export function Clients({ title, body }: { title?: string; body?: string } = {}) {
   const logos = [...clients.logos, ...clients.logos];
   return (
     <section className="relative z-10 pt-16 pb-10 sm:pt-20 sm:pb-12">
       <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
-            {clients.titleLead}
-            <span className="text-orange">{clients.titleAccent}</span>
-            {clients.titleTail}
+            {title ?? (
+              <>
+                {clients.titleLead}
+                <span className="text-orange">{clients.titleAccent}</span>
+                {clients.titleTail}
+              </>
+            )}
           </h2>
-          <p className="mt-3 text-muted text-pretty">{clients.body}</p>
+          <p className="mt-3 text-muted text-pretty">{body ?? clients.body}</p>
         </Reveal>
       </Container>
 

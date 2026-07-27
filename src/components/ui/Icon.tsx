@@ -18,7 +18,9 @@ export type IconName =
   | "target"
   | "badge"
   | "mail"
-  | "phone";
+  | "phone"
+  | "wrench"
+  | "leaf";
 
 const paths: Record<IconName, React.ReactNode> = {
   consult: (
@@ -127,6 +129,15 @@ const paths: Record<IconName, React.ReactNode> = {
   ),
   phone: (
     <path d="M4 5c0 8 7 15 15 15l2.5-3.5-4-2-2 2c-3-1.5-5.5-4-7-7l2-2-2-4z" strokeLinejoin="round" />
+  ),
+  wrench: (
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z" />
+  ),
+  leaf: (
+    <>
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+      <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+    </>
   ),
   whatsapp: (
     <path

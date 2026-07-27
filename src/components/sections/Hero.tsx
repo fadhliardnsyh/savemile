@@ -21,9 +21,9 @@ export function Hero() {
         ) : (
           <HeroFallback />
         )}
-        {/* Overlay untuk keterbacaan teks */}
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/75 to-dark/65" />
-        <div className="absolute inset-0 bg-dark/35" />
+        {/* Overlay untuk keterbacaan teks (dilembutkan agar warna truk tetap muncul) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/45" />
+        <div className="absolute inset-0 bg-dark/20" />
       </div>
 
       <Container className="relative z-10">
@@ -143,7 +143,7 @@ function FinderCard({
       className="beam group flex items-center gap-4 bg-dark/40 p-4 transition-colors duration-200 hover:bg-white/8 sm:p-5"
     >
       <span className="beam-line" aria-hidden />
-      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange text-white shadow-[0_10px_22px_-6px_rgba(241,90,36,0.85)]">
+      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange text-white shadow-[0_10px_22px_-6px_rgba(252,61,4,0.85)]">
         <Icon name={icon} className="h-6 w-6" />
       </span>
       <span className="min-w-0 flex-1 text-left">

@@ -36,15 +36,16 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
         />
         <Container className="relative flex h-16 items-center justify-between">
           <Link href="/" aria-label="SaveMile beranda">
-            <Logo tone={light ? "dark" : "light"} className="h-12" />
+            <Logo className="h-5" />
           </Link>
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex">
-            {nav.map((group) => (
+            {nav.map((group, i) => (
               <div key={group.label} className="group relative">
                 <button
                   type="button"
+                  aria-haspopup="menu"
                   className={cn(
                     "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-colors duration-200 ease-out",
                     light
@@ -55,7 +56,7 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                   {group.label}
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180"
+                    className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2}
@@ -65,8 +66,13 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                   </svg>
                 </button>
 
-                {/* Dropdown */}
-                <div className="invisible absolute left-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                {/* Dropdown — tampil saat hover atau fokus (keyboard/touch) */}
+                <div
+                  className={cn(
+                    "invisible absolute top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100",
+                    i === nav.length - 1 ? "right-0" : "left-0"
+                  )}
+                >
                   <div className="w-72 rounded-2xl border border-line bg-card p-2 shadow-[var(--shadow-lift)]">
                     {group.children.map((child) => (
                       <Link
@@ -106,7 +112,10 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
           {/* Mobile toggle */}
           <button
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              setOpen((v) => !v);
+              setOpenGroup(null);
+            }}
             aria-label="Buka menu"
             aria-expanded={open}
             className={cn(
@@ -158,7 +167,10 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                       <Link
                         key={child.href}
                         href={child.href}
-                        onClick={() => setOpen(false)}
+                        onClick={() => {
+                          setOpen(false);
+                          setOpenGroup(null);
+                        }}
                         className="block rounded-lg px-3 py-2 text-sm text-ink-soft hover:bg-ink/[0.04]"
                       >
                         {child.label}

@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { TmsHero } from "@/components/tms/TmsHero";
+import { PageHero } from "@/components/layout/PageHero";
 import { HowItWorks } from "@/components/tms/HowItWorks";
 import { FeatureDeepDive } from "@/components/tms/FeatureDeepDive";
-import { DashboardPreview } from "@/components/tms/DashboardPreview";
+import { Consultation } from "@/components/tms/Consultation";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { tmsCta } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Tire Monitoring System",
+  title: "Tire Management Solution",
   description:
-    "Kelola ban armada berbasis data: laser marking, kilometer tracking, notifikasi otomatis, dan dashboard analytics dalam satu sistem SaveMile.",
+    "Solusi pengelolaan ban armada menyeluruh: laser marking, bongkar pasang, inspeksi umur ban, notifikasi penggantian, manajemen ban bekas, dan konsultasi CPK berbasis data.",
 };
 
 export default function TmsPage() {
@@ -19,10 +19,14 @@ export default function TmsPage() {
     <>
       <Navbar overHero />
       <main className="relative z-10 flex-1">
-        <TmsHero />
+        <PageHero
+          titleLead="Tire Management "
+          titleAccent="Solution"
+          image="/assets/images/tms-banner.webp"
+        />
         <HowItWorks />
         <FeatureDeepDive />
-        <DashboardPreview />
+        <Consultation />
         <CtaSection content={tmsCta} />
       </main>
       <Footer />

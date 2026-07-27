@@ -12,9 +12,9 @@
   --color-muted: #697080;
   --color-line: #e4e7ec;
 
-  --color-orange: #f15a24;
-  --color-orange-deep: #d8430f;
-  --color-orange-soft: #ffe8dc;
+  --color-orange: #fc3d04;
+  --color-orange-deep: #d93503;
+  --color-orange-soft: #ffe5dd;
 
   --color-dark: #12141a;
   --color-dark-2: #1c1f27;
@@ -32,7 +32,7 @@
     0 8px 24px -12px rgba(22, 19, 14, 0.18);
   --shadow-lift: 0 2px 4px rgba(22, 19, 14, 0.05),
     0 30px 60px -24px rgba(22, 19, 14, 0.3);
-  --shadow-orange: 0 12px 30px -12px rgba(241, 90, 36, 0.5);
+  --shadow-orange: 0 12px 30px -12px rgba(252, 61, 4, 0.5);
 }
 
 /* ============================================================
@@ -279,12 +279,12 @@ body::before {
 @keyframes glow-breathe {
   0%,
   100% {
-    filter: drop-shadow(0 0 6px rgba(241, 90, 36, 0.35))
-      drop-shadow(0 0 16px rgba(241, 90, 36, 0.18));
+    filter: drop-shadow(0 0 6px rgba(252, 61, 4, 0.35))
+      drop-shadow(0 0 16px rgba(252, 61, 4, 0.18));
   }
   50% {
-    filter: drop-shadow(0 0 11px rgba(241, 90, 36, 0.65))
-      drop-shadow(0 0 30px rgba(241, 90, 36, 0.42));
+    filter: drop-shadow(0 0 11px rgba(252, 61, 4, 0.65))
+      drop-shadow(0 0 30px rgba(252, 61, 4, 0.42));
   }
 }
 

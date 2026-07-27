@@ -4,14 +4,11 @@ import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { Icon, type IconName } from "@/components/ui/Icon";
 import { Clients } from "@/components/sections/Clients";
-import { Stats } from "@/components/sections/Stats";
-import { CtaSection } from "@/components/sections/CtaSection";
-import { about, consultCta } from "@/lib/content";
+import { about } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Tentang SaveMile",
+  title: "Tentang Kami",
   description: about.hero.description,
 };
 
@@ -25,12 +22,13 @@ export default function AboutPage() {
           titleLead={about.hero.titleLead}
           titleAccent={about.hero.titleAccent}
           description={about.hero.description}
+          image="/assets/images/about-banner.webp"
         />
 
-        {/* Misi */}
+        {/* Section 1: Misi */}
         <section className="py-20 sm:py-28">
-          <Container className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
+          <Container>
+            <div className="mx-auto max-w-3xl">
               <Reveal delay={60}>
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
                   {about.story.title}
@@ -44,33 +42,11 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
-
-            <div className="flex flex-col gap-4 lg:pt-10">
-              {about.story.points.map((pt, i) => (
-                <Reveal key={pt.title} delay={i * 90}>
-                  <div className="beam group relative flex items-start gap-4 rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
-                    <span className="beam-line" aria-hidden />
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-orange to-orange-deep text-white shadow-[var(--shadow-orange)]">
-                      <Icon name={pt.icon as IconName} className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <h3 className="font-display text-base font-bold text-ink">{pt.title}</h3>
-                      <p className="mt-1 text-sm text-muted text-pretty">{pt.desc}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
           </Container>
         </section>
 
-        {/* Angka (reuse) */}
-        <Stats />
-
-        {/* Trust / klien */}
-        <Clients />
-
-        <CtaSection content={consultCta} />
+        {/* Section 2: Trust / logo klien */}
+        <Clients title={about.trust.title} body={about.trust.body} />
       </main>
       <Footer />
     </>

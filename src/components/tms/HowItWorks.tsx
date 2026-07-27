@@ -20,43 +20,31 @@ export function HowItWorks() {
           </Reveal>
         </div>
 
-        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {h.steps.map((step, i) => (
-            <Reveal key={step.title} delay={i * 90} className="relative h-full">
-              {/* Konektor flow (desktop) */}
-              {i < h.steps.length - 1 && (
-                <span
-                  aria-hidden
-                  className="absolute right-0 top-[3.1rem] z-10 hidden -translate-y-1/2 translate-x-1/2 lg:block"
-                >
-                  <span className="grid h-7 w-7 place-items-center rounded-full border border-line bg-paper text-orange shadow-[var(--shadow-soft)]">
-                    <Icon name="arrow" className="h-3.5 w-3.5" />
+        {/* Workflow: node bernomor terhubung garis alur */}
+        <div className="relative mt-16">
+          {/* garis alur horizontal (desktop) */}
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-8 hidden lg:block">
+            <div className="mx-[8.33%] border-t-2 border-dashed border-line" />
+          </div>
+
+          <div className="grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-6">
+            {h.steps.map((step, i) => (
+              <Reveal key={step.title} delay={i * 80} className="relative flex flex-col items-center text-center">
+                <span className="relative z-10 grid h-16 w-16 place-items-center rounded-full bg-card text-orange ring-2 ring-orange/30 shadow-[var(--shadow-soft)]">
+                  <Icon name={step.icon} className="h-7 w-7" />
+                  <span className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-orange text-[11px] font-bold text-white ring-2 ring-paper">
+                    {i + 1}
                   </span>
                 </span>
-              )}
-              <div className="beam group relative flex h-full flex-col overflow-hidden rounded-2xl bg-card p-6 shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
-                <span className="beam-line" aria-hidden />
-                {/* Nomor watermark */}
-                <span className="pointer-events-none absolute -right-1 -top-3 select-none font-display text-7xl font-extrabold leading-none text-orange/10">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="relative">
-                  <div className="grid h-13 w-13 place-items-center rounded-2xl bg-gradient-to-br from-orange to-orange-deep text-white shadow-[var(--shadow-orange)] transition-transform duration-300 group-hover:scale-105">
-                    <Icon name={step.icon} className="h-6 w-6" />
-                  </div>
-                  <div className="mt-5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-orange">
-                    {step.tag}
-                  </div>
-                  <h3 className="mt-2 font-display text-lg font-bold text-ink">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted text-pretty">
-                    {step.desc}
-                  </p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+                <h3 className="mt-4 font-display text-base font-bold text-ink text-balance">
+                  {step.title}
+                </h3>
+                <p className="mt-1.5 text-sm leading-snug text-muted text-pretty">
+                  {step.desc}
+                </p>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </Container>
     </section>

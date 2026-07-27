@@ -2,41 +2,30 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProductCard } from "@/components/catalog/ProductCard";
-import { CharIcon } from "@/components/catalog/CatalogIcons";
 import { Icon } from "@/components/ui/Icon";
 import { Select } from "@/components/ui/Select";
 import { lenisRef } from "@/lib/lenisRef";
 import {
-  charLabels,
-  filterTabs,
+  brandOptions,
+  tipeOptions,
+  compatibleOptions,
+  medanOptions,
+  fiturOptions,
   products,
-  vehicleLabels,
   type Brand,
-  type CharKey,
+  type Tipe,
+  type Compatible,
+  type Medan,
+  type Fitur,
   type Product,
-  type TireCategory,
 } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
 
 type Sort = "unggulan" | "az" | "za";
 
-const posOptions = filterTabs.filter((t) => t.key !== "semua") as {
-  key: TireCategory;
-  label: string;
-}[];
-const fiturOptions = (Object.keys(charLabels) as CharKey[]).map((k) => ({
-  key: k,
-  label: charLabels[k],
-}));
-const brandOptions: { key: Brand; label: string }[] = [
-  { key: "tiron", label: "Tiron" },
-  { key: "doublestar", label: "Doublestar" },
-];
 const sizeOptions = Array.from(new Set(products.flatMap((p) => p.sizes))).sort(
   (a, b) => a.localeCompare(b, undefined, { numeric: true })
 );
-const vehOptions = vehicleLabels.map((label, i) => ({ i, label }));
-const vehCount = (i: number) => products.filter((p) => p.fit[i]).length;
 
 function count<T>(pick: (p: Product) => T[] | T, val: T) {
   return products.filter((p) => {
@@ -47,9 +36,10 @@ function count<T>(pick: (p: Product) => T[] | T, val: T) {
 
 export function CatalogBrowser() {
   const [brand, setBrand] = useState<Brand[]>([]);
-  const [veh, setVeh] = useState<number[]>([]);
-  const [pos, setPos] = useState<TireCategory[]>([]);
-  const [fitur, setFitur] = useState<CharKey[]>([]);
+  const [tipe, setTipe] = useState<Tipe[]>([]);
+  const [compatible, setCompatible] = useState<Compatible[]>([]);
+  const [medan, setMedan] = useState<Medan[]>([]);
+  const [fitur, setFitur] = useState<Fitur[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("unggulan");
@@ -57,15 +47,17 @@ export function CatalogBrowser() {
   const [highlight, setHighlight] = useState<"kendaraan" | "ukuran" | null>(null);
 
   const activeCount =
-    brand.length + veh.length + pos.length + fitur.length + sizes.length + (query ? 1 : 0);
+    brand.length + tipe.length + compatible.length + medan.length +
+    fitur.length + sizes.length + (query ? 1 : 0);
 
   const toggle = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, val: T) =>
     setter((prev) => (prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val]));
 
   const reset = () => {
     setBrand([]);
-    setVeh([]);
-    setPos([]);
+    setTipe([]);
+    setCompatible([]);
+    setMedan([]);
     setFitur([]);
     setSizes([]);
     setQuery("");
@@ -75,10 +67,10 @@ export function CatalogBrowser() {
   useEffect(() => {
     const f = new URLSearchParams(window.location.search).get("f");
     if (f !== "kendaraan" && f !== "ukuran") return;
-    setHighlight(f);
-    if (window.matchMedia("(max-width: 1023px)").matches) setMobileOpen(true);
-    // Scroll grup yang di-highlight ke dalam view (instance yang terlihat saja)
+    // set state di dalam callback async agar tidak memicu cascading render sinkron
     const raf = requestAnimationFrame(() => {
+      setHighlight(f);
+      if (window.matchMedia("(max-width: 1023px)").matches) setMobileOpen(true);
       document.querySelectorAll(`[data-group="${f}"]`).forEach((el) => {
         if ((el as HTMLElement).offsetParent !== null)
           el.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -95,9 +87,10 @@ export function CatalogBrowser() {
     const q = query.trim().toLowerCase();
     const list = products.filter((p) => {
       if (brand.length && !brand.includes(p.brand)) return false;
-      if (veh.length && !veh.some((i) => p.fit[i])) return false;
-      if (pos.length && !p.categories.some((c) => pos.includes(c))) return false;
-      if (fitur.length && !p.characteristics.some((c) => fitur.includes(c))) return false;
+      if (tipe.length && !tipe.includes(p.tipe)) return false;
+      if (compatible.length && !p.compatible.some((c) => compatible.includes(c))) return false;
+      if (medan.length && !p.medan.some((m) => medan.includes(m))) return false;
+      if (fitur.length && !p.fitur.some((f) => fitur.includes(f))) return false;
       if (sizes.length && !p.sizes.some((s) => sizes.includes(s))) return false;
       if (q && !p.name.toLowerCase().includes(q)) return false;
       return true;
@@ -107,19 +100,21 @@ export function CatalogBrowser() {
       sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
     else if (sort === "za")
       sorted.sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true }));
-    else sorted.sort((a, b) => Number(!!b.best) - Number(!!a.best));
     return sorted;
-  }, [brand, veh, pos, fitur, sizes, query, sort]);
+  }, [brand, tipe, compatible, medan, fitur, sizes, query, sort]);
 
   // ── Pagination ──
   const PAGE_SIZE = 9;
   const [page, setPage] = useState(1);
   const topRef = useRef<HTMLDivElement>(null);
 
-  // reset ke halaman 1 tiap hasil berubah
-  useEffect(() => {
+  // reset ke halaman 1 tiap filter berubah (adjust state saat render, bukan effect)
+  const filterSig = [brand, tipe, compatible, medan, fitur, sizes, query, sort].join("|");
+  const [lastSig, setLastSig] = useState(filterSig);
+  if (filterSig !== lastSig) {
+    setLastSig(filterSig);
     setPage(1);
-  }, [brand, veh, pos, fitur, sizes, query, sort]);
+  }
 
   const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const current = Math.min(page, totalPages);
@@ -140,7 +135,7 @@ export function CatalogBrowser() {
 
   const panel = (
     <div className="flex flex-col gap-7">
-      <FilterGroup title="Merek">
+      <FilterGroup title="Merk">
         {brandOptions.map((o) => (
           <CheckRow
             key={o.key}
@@ -152,37 +147,48 @@ export function CatalogBrowser() {
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Kendaraan" dataKey="kendaraan" highlight={highlight === "kendaraan"}>
-        {vehOptions.map((o) => (
-          <CheckRow
-            key={o.i}
-            label={o.label}
-            count={vehCount(o.i)}
-            checked={veh.includes(o.i)}
-            onChange={() => toggle(setVeh, o.i)}
-          />
-        ))}
-      </FilterGroup>
-
-      <FilterGroup title="Posisi / Tipe">
-        {posOptions.map((o) => (
+      <FilterGroup title="Tipe">
+        {tipeOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
-            count={count((p) => p.categories, o.key)}
-            checked={pos.includes(o.key)}
-            onChange={() => toggle(setPos, o.key)}
+            count={count((p) => p.tipe, o.key)}
+            checked={tipe.includes(o.key)}
+            onChange={() => toggle(setTipe, o.key)}
           />
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Fitur / Karakteristik">
+      <FilterGroup title="Compatible" dataKey="kendaraan" highlight={highlight === "kendaraan"}>
+        {compatibleOptions.map((o) => (
+          <CheckRow
+            key={o.key}
+            label={o.label}
+            count={count((p) => p.compatible, o.key)}
+            checked={compatible.includes(o.key)}
+            onChange={() => toggle(setCompatible, o.key)}
+          />
+        ))}
+      </FilterGroup>
+
+      <FilterGroup title="Medan">
+        {medanOptions.map((o) => (
+          <CheckRow
+            key={o.key}
+            label={o.label}
+            count={count((p) => p.medan, o.key)}
+            checked={medan.includes(o.key)}
+            onChange={() => toggle(setMedan, o.key)}
+          />
+        ))}
+      </FilterGroup>
+
+      <FilterGroup title="Fitur">
         {fiturOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
-            icon={<CharIcon name={o.key} className="h-3.5 w-3.5 text-orange" />}
-            count={count((p) => p.characteristics, o.key)}
+            count={count((p) => p.fitur, o.key)}
             checked={fitur.includes(o.key)}
             onChange={() => toggle(setFitur, o.key)}
           />
@@ -322,7 +328,7 @@ export function CatalogBrowser() {
               </div>
 
               {totalPages > 1 && (
-                <div className="mt-10 flex items-center justify-center gap-1.5">
+                <div className="mt-10 flex flex-wrap items-center justify-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => goPage(current - 1)}
@@ -474,14 +480,12 @@ function CheckRow({
   count,
   checked,
   onChange,
-  icon,
   mono,
 }: {
   label: string;
   count: number;
   checked: boolean;
   onChange: () => void;
-  icon?: React.ReactNode;
   mono?: boolean;
 }) {
   return (
@@ -504,7 +508,6 @@ function CheckRow({
           </svg>
         )}
       </span>
-      {icon}
       <span
         className={cn(
           "flex-1 text-[13px] text-ink-soft",

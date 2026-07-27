@@ -1,46 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
-import { VehicleIcon, CharIcon } from "@/components/catalog/CatalogIcons";
-import { charLabels, vehicleLabels, type Product } from "@/lib/catalog";
+import {
+  compatibleLabels,
+  fiturLabels,
+  tipeLabels,
+  type Product,
+} from "@/lib/catalog";
 import { cn } from "@/lib/cn";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/solusi/ban/${product.id}`}
-      className={cn(
-        "beam group relative flex h-full flex-col rounded-[20px] bg-card shadow-[var(--shadow-soft)] ring-1 ring-inset transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]",
-        product.best ? "ring-orange/35" : "ring-line/70"
-      )}
+      className="beam group relative flex h-full flex-col rounded-[20px] bg-card shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
     >
       <span className="beam-line" aria-hidden />
 
-      {/* Badge */}
-      {product.badge && (
-        <span className="absolute right-3.5 top-3.5 z-10 inline-flex items-center gap-1 rounded-full bg-orange px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-white">
-          {product.badge === "Terlaris" && (
-            <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="currentColor" aria-hidden>
-              <path d="m12 2 3 6.5 7 .8-5.2 4.7 1.4 6.9L12 17.8 5.8 20.9l1.4-6.9L2 9.3l7-.8z" />
-            </svg>
-          )}
-          {product.badge}
-        </span>
-      )}
-
-      {/* Image */}
+      {/* Gambar */}
       <div className="relative flex h-44 items-center justify-center overflow-hidden rounded-t-[20px] bg-paper-2">
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(241,90,36,0.08),transparent_70%)]"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(252,61,4,0.08),transparent_70%)]"
         />
         {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             width={400}
-            height={300}
-            className="h-[85%] w-[85%] object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.15)] transition-transform duration-500 group-hover:scale-105"
+            height={400}
+            className="h-[88%] w-auto object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.15)] transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <Icon
@@ -58,77 +47,69 @@ export function ProductCard({ product }: { product: Product }) {
         >
           {product.brandChip}
         </span>
+        <span className="absolute right-3 top-3 rounded-full bg-orange/10 px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
+          {tipeLabels[product.tipe]}
+        </span>
       </div>
 
       {/* Body */}
       <div className="flex flex-1 flex-col p-5">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-orange">
-          {product.series}
-        </div>
-        <h3 className="mt-1 font-display text-xl font-bold leading-tight text-ink">
+        <h3 className="font-display text-xl font-bold leading-tight text-ink">
           {product.name}
         </h3>
         <div className="mt-0.5 text-xs font-medium text-muted">
-          {product.subname}
+          Ban {tipeLabels[product.tipe]} {product.brandChip}
         </div>
 
-        {/* Vehicle fit */}
-        <div className="mt-4 flex items-center gap-3 rounded-lg border border-line bg-paper-2/60 px-3 py-2.5">
-          <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-muted">
-            Cocok untuk
-          </span>
-          <div className="flex items-center gap-2.5 text-ink">
-            {product.fit.map((active, i) => (
-              <span key={i} title={vehicleLabels[i]}>
-                <VehicleIcon type={i as 0 | 1 | 2} active={active} />
+        {product.compatible.length > 0 && (
+          <ChipRow title="Cocok untuk" items={product.compatible.map((c) => compatibleLabels[c])} />
+        )}
+        {product.fitur.length > 0 && (
+          <ChipRow title="Fitur" items={product.fitur.map((f) => fiturLabels[f])} />
+        )}
+
+        {/* Ukuran */}
+        <div className="mt-auto border-t border-line pt-4">
+          <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink/45">
+            Ukuran tersedia
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {product.sizes.slice(0, 5).map((s, i) => (
+              <span
+                key={`${s + i}`}
+                className="rounded-md bg-paper-2 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink"
+              >
+                {s}
               </span>
             ))}
-          </div>
-        </div>
-
-        {/* Characteristics */}
-        <div className="mt-4">
-          <div className="font-mono text-[9px] font-semibold uppercase tracking-wider text-muted">
-            Karakteristik
-          </div>
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
-            {product.characteristics.map((c) => (
-              <span key={c} className="flex items-center gap-1.5 text-[11px] font-medium text-ink">
-                <CharIcon name={c} className="h-3.5 w-3.5 text-orange" />
-                {charLabels[c]}
+            {product.sizes.length > 5 && (
+              <span className="rounded-md bg-paper-2 px-2.5 py-1 font-mono text-[10px] font-semibold text-muted">
+                +{product.sizes.length - 5}
               </span>
-            ))}
+            )}
           </div>
-        </div>
-
-        <p className="mt-4 text-[13px] leading-relaxed text-muted text-pretty">
-          {product.description}
-        </p>
-
-        {/* Tags */}
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {product.tags.map((t) => (
-            <span
-              key={t}
-              className="rounded-full border border-line bg-paper-2/60 px-2.5 py-1 text-[10px] font-medium text-muted"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-
-        {/* Sizes */}
-        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-line pt-4">
-          {product.sizes.map((s) => (
-            <span
-              key={s}
-              className="rounded-md bg-paper-2 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink"
-            >
-              {s}
-            </span>
-          ))}
         </div>
       </div>
     </Link>
+  );
+}
+
+function ChipRow({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="mt-4">
+      <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink/45">
+        {title}
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map((t) => (
+          <span
+            key={t}
+            className="rounded-full border border-line bg-paper-2/60 px-2.5 py-1 text-[10px] font-medium text-muted"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }

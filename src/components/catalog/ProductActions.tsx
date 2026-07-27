@@ -12,67 +12,57 @@ import { cn } from "@/lib/cn";
 export function ProductActions({
   brandChip,
   name,
-  subname,
+  tipe,
   sizes,
-  tags,
   whatsapp,
 }: {
   brandChip: string;
   name: string;
-  subname: string;
+  tipe: string;
   sizes: string[];
-  tags: string[];
   whatsapp: string;
 }) {
-  const [size, setSize] = useState(sizes[0]);
+  const [size, setSize] = useState(sizes[0] ?? "");
 
-  const message = `Halo SaveMile, saya tertarik dengan ban berikut:\n\n• Merek: ${brandChip}\n• Nama: ${name}\n• Tipe: ${subname}\n• Ukuran: ${size}\n\nBoleh minta info ketersediaan & harga?`;
+  const message = `Halo SaveMile, saya tertarik dengan ban berikut:\n\n• Merek: ${brandChip}\n• Nama: ${name}\n• Tipe: ${tipe}\n${size ? `• Ukuran: ${size}\n` : ""}\nBoleh minta info ketersediaan & harga?`;
   const waHref = `${whatsapp}?text=${encodeURIComponent(message)}`;
 
   return (
     <div className="mt-7">
       {/* Ukuran (pilih) */}
-      <div className="flex items-center justify-between">
-        <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
-          Pilih ukuran
-        </h2>
-        <span className="text-xs text-muted">
-          Dipilih: <span className="font-mono font-semibold text-orange">{size}</span>
-        </span>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {sizes.map((s) => {
-          const selected = s === size;
-          return (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setSize(s)}
-              aria-pressed={selected}
-              className={cn(
-                "rounded-lg px-3 py-2 font-mono text-sm font-semibold ring-1 ring-inset transition-all duration-150",
-                selected
-                  ? "bg-orange text-white ring-orange"
-                  : "bg-paper-2 text-ink ring-line hover:-translate-y-0.5 hover:ring-orange/50"
-              )}
-            >
-              {s}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Tags */}
-      <div className="mt-6 flex flex-wrap gap-1.5">
-        {tags.map((t) => (
-          <span
-            key={t}
-            className="rounded-full bg-orange-soft/50 px-3 py-1 text-[11px] font-medium text-orange-deep"
-          >
-            {t}
-          </span>
-        ))}
-      </div>
+      {sizes.length > 0 && (
+        <>
+          <div className="flex items-center justify-between">
+            <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
+              Pilih ukuran
+            </h2>
+            <span className="text-xs text-muted">
+              Dipilih: <span className="font-mono font-semibold text-orange">{size}</span>
+            </span>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {sizes.map((s) => {
+              const selected = s === size;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSize(s)}
+                  aria-pressed={selected}
+                  className={cn(
+                    "rounded-lg px-3 py-2 font-mono text-sm font-semibold ring-1 ring-inset transition-all duration-150",
+                    selected
+                      ? "bg-orange text-white ring-orange"
+                      : "bg-paper-2 text-ink ring-line hover:-translate-y-0.5 hover:ring-orange/50"
+                  )}
+                >
+                  {s}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {/* CTA */}
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">

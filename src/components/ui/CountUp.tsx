@@ -35,8 +35,9 @@ export function CountUp({
       "(prefers-reduced-motion: reduce)"
     ).matches;
     if (prefersReduced) {
-      setDisplay(target);
-      return;
+      // setState di rAF agar tidak dipanggil sinkron di body effect
+      const raf0 = requestAnimationFrame(() => setDisplay(target));
+      return () => cancelAnimationFrame(raf0);
     }
 
     let raf = 0;

@@ -11,7 +11,7 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-5">
           {/* Brand + address */}
           <div className="lg:col-span-2">
-            <Logo className="h-14" />
+            <Logo className="h-6" />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
               {site.blurb}
             </p>
@@ -43,7 +43,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-line pt-6 sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-line pt-6 pb-16 sm:flex-row sm:items-center sm:pb-6 sm:pr-24">
           <p className="text-sm text-muted">
             © {new Date().getFullYear()} {site.name}. Seluruh hak cipta dilindungi.
           </p>

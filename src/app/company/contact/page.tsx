@@ -10,7 +10,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { contact } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Kontak",
+  title: "Hubungi Kami",
   description: contact.hero.description,
 };
 
@@ -24,6 +24,7 @@ export default function ContactPage() {
           titleLead={contact.hero.titleLead}
           titleAccent={contact.hero.titleAccent}
           description={contact.hero.description}
+          image="/assets/images/contact-banner.webp"
         />
 
         {/* Help options */}
@@ -34,6 +35,9 @@ export default function ContactPage() {
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
                   {contact.help.title}
                 </h2>
+              </Reveal>
+              <Reveal delay={120}>
+                <p className="mt-4 text-lg text-muted text-pretty">{contact.help.body}</p>
               </Reveal>
             </div>
 

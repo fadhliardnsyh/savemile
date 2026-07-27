@@ -9,7 +9,7 @@ import { CtaSection } from "@/components/sections/CtaSection";
 import { career } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Karier",
+  title: "Karir",
   description: career.hero.description,
 };
 
@@ -23,6 +23,7 @@ export default function CareerPage() {
           titleLead={career.hero.titleLead}
           titleAccent={career.hero.titleAccent}
           description={career.hero.description}
+          image="/assets/images/career-banner.webp"
         />
 
         {/* Values */}

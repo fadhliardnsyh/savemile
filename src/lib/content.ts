@@ -37,9 +37,9 @@ export const nav: NavItem[] = [
         desc: "Katalog ban truk, bus & kendaraan komersial",
       },
       {
-        label: "Tire Monitoring System",
+        label: "Tire Management Solution",
         href: "/solusi/tire-monitoring-system",
-        desc: "Kelola ban berbasis data dari awal sampai akhir",
+        desc: "Solusi pengelolaan ban armada menyeluruh",
       },
     ],
   },
@@ -56,9 +56,9 @@ export const nav: NavItem[] = [
   {
     label: "Company",
     children: [
-      { label: "About Brand", href: "/company/about", desc: "Tentang SaveMile" },
-      { label: "Career", href: "/company/career", desc: "Bergabung dengan tim kami" },
-      { label: "Contact", href: "/company/contact", desc: "Hubungi kami" },
+      { label: "Tentang Kami", href: "/company/about", desc: "Tentang SaveMile" },
+      { label: "Karir", href: "/company/career", desc: "Bergabung dengan tim kami" },
+      { label: "Hubungi Kami", href: "/company/contact", desc: "Terhubung dengan tim SaveMile" },
     ],
   },
 ];
@@ -71,7 +71,7 @@ export const hero = {
   // public/assets/images/hero.jpg lalu isi path di bawah. Biarkan kosong ("")
   // untuk menampilkan fallback gelap bertekstur.
   // Sumber saat ini: Unsplash (foto truk di jalan, di-crop ke bagian roda), lisensi gratis, komersial, tanpa atribusi.
-  image: "/assets/images/hero-wheels.webp",
+  image: "/assets/images/hero-savemile.webp",
   description:
     "Solusi ban berkualitas untuk kendaraan Anda, dilengkapi teknologi pengelolaan ban berbasis data dalam satu platform.",
   finder: {
@@ -112,10 +112,10 @@ export const clients = {
 };
 
 export const stats = [
-  { value: "30.000+", label: "Ban kendaraan aktif terpasang", icon: "tire" },
+  { value: "10.000+", label: "Ban kendaraan aktif terpasang di seluruh Indonesia", icon: "tire" },
   { value: "99%", label: "Bebas dari fraud", icon: "shield" },
-  { value: "340+", label: "Jaringan mitra di seluruh Indonesia", icon: "pin" },
-  { value: "30%", label: "Efisiensi biaya operasional per tahun", icon: "consult" },
+  { value: "60+", label: "Jaringan mitra & gudang di seluruh Indonesia", icon: "pin" },
+  { value: "25%", label: "Efisiensi biaya operasional per tahun", icon: "consult" },
 ] as const;
 
 /* ---------- Section 2: Kenapa memilih SaveMile ---------- */
@@ -141,24 +141,21 @@ export const whyChoose = {
       title:
         "Kurangi biaya operasional secara signifikan dengan jenis ban yang tepat",
       body: "Kami membantu menganalisa data ban kendaraan dan rute untuk merekomendasikan ban dengan cost per kilometer terendah.",
+      image: "/assets/images/why-consulting.webp",
     },
     {
       icon: "laser",
       tag: "Laser Tire Marking",
       title: "Kurangi risiko kehilangan ban hingga 99%",
       body: "Tandai ban dengan teknologi laser permanen. Setiap ban teridentifikasi secara akurat, mudah dilacak, dan aman dari penyalahgunaan.",
+      image: "/assets/images/why-marking.webp",
     },
     {
       icon: "bell",
       tag: "Automate Notification",
       title: "Ketahui kerusakan lebih awal sebelum jadi kerugian besar",
       body: "Notifikasi otomatis ketika umur ban mendekati batas aman, sehingga kendaraan tetap produktif dan biaya operasional tetap terkendali.",
-    },
-    {
-      icon: "shield",
-      tag: "Authentic Product Guarantee",
-      title: "Jaminan keaslian 100% produk resmi",
-      body: "Seluruh produk kami bersumber langsung dari pabrikan resmi untuk keamanan kendaraan Anda.",
+      image: "/assets/images/why-notification.webp",
     },
   ] as WhyItem[],
 };
@@ -169,35 +166,32 @@ export type Branch = {
   city: string;
   lat: number; // -11 .. 6
   lon: number; // 95 .. 141
+  type: "service" | "warehouse"; // service point atau gudang
 };
 
 export const coverage = {
-  title: "Hadir dekat dengan armada Anda",
-  accent: "dekat",
-  body: "Jaringan cabang dan mitra SaveMile tersebar dari Sumatra hingga Papua, dukungan konsultasi, pemasangan, dan suplai ban selalu ada di dekat operasional Anda.",
-  stats: [
-    { value: "18", label: "Cabang & titik layanan" },
-    { value: "340+", label: "Jaringan mitra" },
-    { value: "34", label: "Provinsi terjangkau" },
-  ],
-  // NOTE: kota di bawah masih placeholder, silakan sesuaikan dengan cabang asli.
+  title: "Jangkauan layanan kami sampai di seluruh Indonesia",
+  accent: "seluruh Indonesia",
+  body: "Jaringan service point dan gudang SaveMile tersebar dari Sumatra hingga Papua, sehingga dukungan konsultasi, pemasangan, dan suplai ban selalu dekat dengan operasional Anda.",
+  // NOTE: lokasi & tipe (service point / gudang) di bawah masih placeholder,
+  // silakan sesuaikan dengan data cabang asli.
   branches: [
-    { city: "Medan", lat: 3.6, lon: 98.7 },
-    { city: "Batam", lat: 1.1, lon: 104.0 },
-    { city: "Pekanbaru", lat: 0.5, lon: 101.4 },
-    { city: "Palembang", lat: -3.0, lon: 104.8 },
-    { city: "Jakarta", lat: -6.2, lon: 106.8 },
-    { city: "Bandung", lat: -6.9, lon: 107.6 },
-    { city: "Semarang", lat: -7.0, lon: 110.4 },
-    { city: "Surabaya", lat: -7.3, lon: 112.7 },
-    { city: "Denpasar", lat: -8.7, lon: 115.2 },
-    { city: "Pontianak", lat: -0.02, lon: 109.3 },
-    { city: "Banjarmasin", lat: -3.3, lon: 114.6 },
-    { city: "Balikpapan", lat: -1.2, lon: 116.8 },
-    { city: "Makassar", lat: -5.1, lon: 119.4 },
-    { city: "Manado", lat: 1.5, lon: 124.8 },
-    { city: "Ambon", lat: -3.7, lon: 128.2 },
-    { city: "Jayapura", lat: -2.5, lon: 140.7 },
+    { city: "Medan", lat: 3.6, lon: 98.7, type: "warehouse" },
+    { city: "Batam", lat: 1.1, lon: 104.0, type: "service" },
+    { city: "Pekanbaru", lat: 0.5, lon: 101.4, type: "service" },
+    { city: "Palembang", lat: -3.0, lon: 104.8, type: "service" },
+    { city: "Jakarta", lat: -6.2, lon: 106.8, type: "warehouse" },
+    { city: "Bandung", lat: -6.9, lon: 107.6, type: "service" },
+    { city: "Semarang", lat: -7.0, lon: 110.4, type: "service" },
+    { city: "Surabaya", lat: -7.3, lon: 112.7, type: "warehouse" },
+    { city: "Denpasar", lat: -8.7, lon: 115.2, type: "service" },
+    { city: "Pontianak", lat: -0.02, lon: 109.3, type: "service" },
+    { city: "Banjarmasin", lat: -3.3, lon: 114.6, type: "service" },
+    { city: "Balikpapan", lat: -1.2, lon: 116.8, type: "warehouse" },
+    { city: "Makassar", lat: -5.1, lon: 119.4, type: "warehouse" },
+    { city: "Manado", lat: 1.5, lon: 124.8, type: "service" },
+    { city: "Ambon", lat: -3.7, lon: 128.2, type: "service" },
+    { city: "Jayapura", lat: -2.5, lon: 140.7, type: "service" },
   ] as Branch[],
 };
 
@@ -282,7 +276,14 @@ export const consultCta: CtaContent = {
 
 /* ---------- Tire Monitoring System (TMS) ---------- */
 
-export type TmsIcon = "laser" | "route" | "bell" | "consult";
+export type TmsIcon =
+  | "laser"
+  | "route"
+  | "bell"
+  | "consult"
+  | "wrench"
+  | "search"
+  | "leaf";
 
 export const tms = {
   hero: {
@@ -298,112 +299,86 @@ export const tms = {
   },
   how: {
     eyebrow: "Cara Kerja",
-    titleLead: "Empat langkah, ",
+    titleLead: "Kelola ban dari awal hingga akhir dalam ",
     titleAccent: "satu sistem",
     description:
-      "SaveMile menghubungkan setiap tahap, dari pemasangan sampai pengakhiran, dalam satu sistem yang saling terhubung.",
+      "SaveMile menghubungkan setiap tahap, dari pemasangan sampai pengakhiran, dalam satu alur yang saling terhubung.",
     steps: [
       {
         icon: "laser" as TmsIcon,
-        tag: "Laser Marking",
-        title: "Identitas Permanen",
-        desc: "Setiap ban yang dibeli lewat SaveMile diberi kode unik dengan laser, tidak bisa dihapus, tidak bisa dipalsukan.",
+        title: "Laser Marking",
+        desc: "Identitas permanen untuk setiap ban SaveMile.",
       },
       {
-        icon: "route" as TmsIcon,
-        tag: "Kilometer Tracking",
-        title: "Hitung Setiap KM",
-        desc: "Setelah ban terpasang, sistem menghitung jarak tempuh. Data ini jadi dasar Tire Health Report tiap ban.",
+        icon: "wrench" as TmsIcon,
+        title: "Bongkar Pasang Ban",
+        desc: "Proses bongkar pasang dilakukan teknisi profesional di lokasi customer.",
+      },
+      {
+        icon: "search" as TmsIcon,
+        title: "Tire Age Tracking",
+        desc: "Hitung umur ban per kilometer melalui inspeksi ban.",
       },
       {
         icon: "bell" as TmsIcon,
-        tag: "Auto Notification",
-        title: "Alert Sebelum Rusak",
-        desc: "Notifikasi otomatis dikirim ke fleet manager saat ban mendekati batas aman kilometer. Penggantian bisa direncanakan.",
+        title: "Auto Notification",
+        desc: "Reminder penggantian ban sebelum rusak.",
+      },
+      {
+        icon: "leaf" as TmsIcon,
+        title: "Manajemen Ban Bekas",
+        desc: "Pengelolaan ban bekas secara ramah lingkungan.",
       },
       {
         icon: "consult" as TmsIcon,
-        tag: "Analytics",
-        title: "Data Jadi Keputusan",
-        desc: "Dashboard lengkap: merk ban, umur km, posisi di kendaraan mana. Semua dalam satu tampilan, real-time.",
+        title: "Analytics",
+        desc: "Ambil keputusan pemilihan ban berbasis data.",
       },
     ],
   },
   features: {
-    eyebrow: "Fitur",
-    titleLead: "Kelola ban dari awal hingga akhir dalam ",
-    titleAccent: "satu sistem",
+    eyebrow: "Yang Anda dapatkan",
+    titleLead: "Kendali penuh atas ban armada, ",
+    titleAccent: "berbasis data",
     items: [
       {
         icon: "laser" as TmsIcon,
-        tag: "Fitur 01 · Laser Tire Marking",
         title: "Identitas permanen untuk setiap ban",
-        product: "Laser Permanent ID System",
-        desc: "Setiap ban yang dibeli melalui SaveMile mendapatkan identitas unik yang diukir permanen dengan teknologi laser. Marking ini tidak bisa dihapus, dipalsukan, atau pudar, tanda yang bertahan selama ban itu digunakan.",
-        bullets: [
-          "Kode unik per-ban, terhubung langsung ke database SaveMile",
-          "Dapat diverifikasi kapan saja dengan scan sederhana di lapangan",
-          "Mencegah ban ilegal masuk ke armada tanpa sepengetahuan Anda",
-        ],
-        stat: { value: "99%", label: "Risiko kehilangan ban", sub: "turun setelah laser marking" },
+        desc: "Setiap ban yang dibeli melalui SaveMile mendapatkan identitas unik yang diukir secara permanen menggunakan teknologi laser. Marking ini tidak bisa dihapus, tidak bisa dipalsukan, dan tidak akan pudar seiring waktu, tanda yang akan bertahan selama ban itu digunakan.",
       },
       {
         icon: "route" as TmsIcon,
-        tag: "Fitur 02 · Tire Health Report",
         title: "Lacak setiap kilometer yang ditempuh ban Anda",
-        product: "Kilometer-Based Health Scoring",
-        desc: "Begitu ban terpasang, sistem otomatis menghitung jarak tempuhnya. Data ini menjadi dasar Tire Health Report, sehingga Anda mendapat gambaran akurat kondisi ban dari waktu ke waktu.",
-        bullets: [
-          "Health score real-time: km tempuh vs umur rekomendasi pabrikan",
-          "Laporan per-ban, per-kendaraan, per-rute dalam satu dashboard",
-          "Histori lengkap sejak ban dipasang hingga dilepas",
-        ],
-        stat: { value: "±0.1 km", label: "Akurasi tracking", sub: "per siklus perjalanan" },
+        desc: "Setelah ban terpasang, kami secara berkala menghitung jarak tempuh ban tersebut. Data ini menjadi dasar dari Tire Health Report, sehingga Anda mendapatkan gambaran akurat tentang kondisi ban dari waktu ke waktu.",
       },
       {
         icon: "bell" as TmsIcon,
-        tag: "Fitur 03 · Automate Notification",
         title: "Ganti ban di waktu yang tepat, bukan saat darurat",
-        product: "Smart Alert System",
-        desc: "Notifikasi otomatis dikirim ke fleet manager saat umur ban mendekati batas aman, jauh sebelum bermasalah di jalan. Rencanakan penggantian sesuai jadwal dan anggaran Anda.",
-        bullets: [
-          "Alert via WhatsApp, email, atau notifikasi in-app",
-          "Threshold bisa diatur: 80%, 90%, atau 95% umur ban",
-          "Armada tetap produktif, downtime mendadak turun drastis",
-        ],
-        stat: { value: "Rp 4,2 jt", label: "Rata-rata penghematan", sub: "per kendaraan per tahun" },
+        desc: "Saat ban mendekati batas kilometer aman, Anda akan menerima notifikasi jauh sebelum menjadi masalah di jalan. Rencanakan penggantian sesuai jadwal dan anggaran Anda.",
       },
       {
         icon: "consult" as TmsIcon,
-        tag: "Fitur 04 · Fleet Analytics",
-        title: "Pantau ban paling sesuai kebutuhan dalam satu tampilan",
-        product: "Tire Intelligence Dashboard",
-        desc: "Dashboard analytics khusus fleet manager. Lihat merk ban yang paling awet di rute Anda, ban mana di kendaraan mana, dan sisa umur tiap ban, tanpa perlu tanya satu per satu.",
-        bullets: [
-          "Filter: merk, jenis kendaraan, rute, kondisi jalan, periode",
-          "Bandingkan performa antar merk di rute & beban yang sama",
-          "Export laporan untuk audit, budgeting, atau evaluasi vendor",
-        ],
-        stat: { value: "12+", label: "Metrik per ban", sub: "terpantau setiap saat" },
+        title: "Pantau ban yang paling sesuai kebutuhan dalam satu tampilan",
+        desc: "Ketahui ban yang paling sesuai untuk Anda: merk ban apa yang paling awet di rute Anda, ban mana yang terpasang di kendaraan mana, dan berapa sisa umur tiap ban, tanpa perlu konfirmasi satu per satu.",
       },
     ],
   },
-  dashboard: {
-    eyebrow: "Preview Dashboard",
-    titleLead: "Semua ban kendaraan, terpantau dalam ",
-    titleAccent: "satu layar",
+  consultation: {
+    eyebrow: "Konsultasi Berkala",
+    titleLead: "Konsultasi berkualitas secara berkala, ",
+    titleAccent: "berbasis data",
     description:
-      "Kelola kondisi ban seluruh armada Anda dalam satu dashboard, kapan saja dan di mana saja.",
+      "Kami selalu memberikan konsultasi laporan CPK ban untuk memastikan setiap ban yang Anda gunakan konsisten sesuai standar kualitas dan performa terbaik.",
   },
 };
 
 export const tmsCta: CtaContent = {
-  eyebrow: "Mulai pantau hari ini",
+  eyebrow: "Konsultasi",
   titleLead: "Siap membuat setiap kilometer lebih ",
   titleAccent: "bernilai?",
   description:
-    "Setup dalam 2 jam, hemat mulai bulan pertama. Pantau seluruh armada Anda dalam satu sistem.",
-  whatsappLabel: "Coba Gratis 30 Hari",
+    "Temukan solusi ban yang sesuai dengan kendaraan Anda dan ketahui seberapa besar biaya yang bisa dihemat.",
+  whatsappLabel: "Konsultasi Gratis Sekarang",
 };
 
 /* ---------- Company: About ---------- */
@@ -411,17 +386,17 @@ export const tmsCta: CtaContent = {
 export const about = {
   hero: {
     eyebrow: "Tentang SaveMile",
-    titleLead: "Kami bukan sekadar ",
-    titleAccent: "distributor ban",
+    titleLead: "Tentang ",
+    titleAccent: "Kami",
     description:
       "Kami hadir untuk memastikan setiap kendaraan Anda menggunakan ban yang tepat, biaya operasional lebih efisien, tanpa mengorbankan kualitas.",
   },
   story: {
     eyebrow: "Misi Kami",
-    title: "Menekan biaya operasional armada, berbasis data",
+    title: "Kami bukan sekadar distributor ban",
     body: [
-      "Sejak pertama kali berdiri, SaveMile telah mendistribusikan ribuan ban untuk perusahaan di seluruh Indonesia dengan satu tujuan: menekan biaya operasional armada secara signifikan.",
-      "Kami tidak hanya menjual ban, kami menganalisa data kendaraan dan rute untuk merekomendasikan ban dengan cost-per-kilometer terendah, lalu membantu mengelolanya lewat Tire Monitoring System.",
+      "Kami hadir untuk memastikan setiap kendaraan Anda menggunakan ban yang tepat sehingga biaya operasional lebih efisien tanpa mengorbankan kualitas.",
+      "Sejak pertama kali berdiri, SaveMile telah mendistribusikan ribuan ban untuk perusahaan di seluruh Indonesia dengan satu tujuan: menekan biaya operasional kendaraan secara signifikan berbasis data.",
     ],
     points: [
       { icon: "consult", title: "Berbasis data", desc: "Rekomendasi ban dari analisa rute & beban nyata." },
@@ -430,8 +405,8 @@ export const about = {
     ],
   },
   trust: {
-    title: "Dari BUMN hingga swasta terkemuka di Indonesia",
-    body: "Mereka mempercayakan kebutuhan ban armadanya kepada SaveMile.",
+    title: "Dari BUMN hingga perusahaan swasta terkemuka di Indonesia",
+    body: "Mereka mempercayakan kebutuhan ban kendaraan mereka kepada SaveMile.",
   },
 };
 
@@ -443,12 +418,12 @@ export const career = {
     titleLead: "Wujudkan karir impian bersama ",
     titleAccent: "SaveMile",
     description:
-      "Ambil bagian dalam menciptakan solusi yang memberi dampak nyata bagi banyak bisnis di Indonesia.",
+      "Ambil bagian dalam menciptakan solusi yang memberikan dampak nyata bagi banyak bisnis di Indonesia.",
   },
   values: {
     eyebrow: "Nilai Kami",
     title: "Nilai yang membentuk cara kami bekerja",
-    body: "Bukan sekadar tulisan, keyakinan yang memandu cara kami bekerja dan bertumbuh setiap hari.",
+    body: "Nilai-nilai ini bukan sekadar tulisan, melainkan keyakinan yang memandu cara kami bekerja dan bertumbuh setiap harinya.",
     items: [
       { icon: "target", title: "Ownership", desc: "Bertanggung jawab penuh atas setiap pekerjaan dan menyelesaikannya dengan standar terbaik." },
       { icon: "bulb", title: "Invert Thinking", desc: "Menemukan solusi dari sudut pandang yang belum pernah terpikirkan." },
@@ -463,7 +438,7 @@ export const career = {
     titleLead: "Bergabunglah dengan tim ",
     titleAccent: "SaveMile",
     description:
-      "Kirimkan CV terbaik Anda, kami akan meninjau dan menghubungi kandidat yang sesuai.",
+      "Ambil bagian dalam menciptakan solusi yang memberikan dampak nyata bagi banyak bisnis di Indonesia.",
     whatsappLabel: `Kirim CV ke ${site.hrEmail}`,
     action: {
       label: `Kirim CV ke ${site.hrEmail}`,
@@ -481,17 +456,18 @@ export const contact = {
     titleLead: "Kami siap memberikan layanan terbaik untuk ",
     titleAccent: "Anda",
     description:
-      "Pilih kontak yang sesuai dengan kebutuhan Anda, dan tim kami akan dengan senang hati membantu.",
+      "Pilih kontak yang sesuai dengan kebutuhan Anda, dan kami akan dengan senang hati menghubungi Anda.",
   },
   help: {
     eyebrow: "Hubungi Kami",
     title: "Bagaimana kami dapat membantu Anda?",
+    body: "Pilih kontak yang sesuai dengan kebutuhan Anda, dan kami akan dengan senang hati menghubungi Anda.",
     options: [
       {
         icon: "whatsapp",
         tag: "Layanan Pelanggan",
         title: "Pertanyaan produk & platform",
-        desc: "Pertanyaan seputar produk ban, layanan, atau platform SaveMile? Tim kami siap membantu.",
+        desc: "Pertanyaan seputar produk, layanan, atau platform SaveMile? Kami siap membantu.",
         actionLabel: "Chat WhatsApp",
         href: site.whatsapp,
         external: true,
@@ -521,7 +497,7 @@ export const footerColumns = [
     title: "Solution",
     links: [
       { label: "Ban", href: "/solusi/ban" },
-      { label: "Tire Monitoring System", href: "/solusi/tire-monitoring-system" },
+      { label: "Tire Management Solution", href: "/solusi/tire-monitoring-system" },
     ],
   },
   {
@@ -531,9 +507,9 @@ export const footerColumns = [
   {
     title: "Company",
     links: [
-      { label: "About Brand", href: "/company/about" },
-      { label: "Career", href: "/company/career" },
-      { label: "Contact", href: "/company/contact" },
+      { label: "Tentang Kami", href: "/company/about" },
+      { label: "Karir", href: "/company/career" },
+      { label: "Hubungi Kami", href: "/company/contact" },
     ],
   },
 ];
