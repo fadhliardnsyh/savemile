@@ -5,6 +5,22 @@ import { Icon } from "@/components/ui/Icon";
 import { whyChoose } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
+/** Render judul dengan kata/frasa tertentu diberi aksen oranye. */
+function renderHighlighted(title: string, highlight?: string[]) {
+  if (!highlight || highlight.length === 0) return title;
+  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
+  return parts.map((part, i) =>
+    highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={i} className="text-orange">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+}
+
 export function WhyChoose() {
   return (
     <section id="kenapa-savemile" className="scroll-mt-24 py-20 sm:py-28">
@@ -39,7 +55,7 @@ export function WhyChoose() {
                     {item.tag}
                   </span>
                   <h3 className="mt-4 font-display text-2xl font-bold leading-tight tracking-tight text-ink text-balance sm:text-3xl">
-                    {item.title}
+                    {renderHighlighted(item.title, item.highlight)}
                   </h3>
                   <p className="mt-4 text-lg leading-relaxed text-muted text-pretty">
                     {item.body}

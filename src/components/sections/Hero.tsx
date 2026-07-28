@@ -34,7 +34,7 @@ export function Hero() {
           >
             Pilih ban yang{" "}
             <span className="whitespace-nowrap">
-              <span className="glow-breathe relative inline-block text-orange">
+              <span className="relative inline-block text-orange">
                 tepat
                 <svg
                   aria-hidden
@@ -53,7 +53,7 @@ export function Hero() {
               </span>,
             </span>{" "}
             kelola lebih{" "}
-            <span className="glow-breathe text-orange [animation-delay:1.4s]">
+            <span className="text-orange">
               cerdas.
             </span>
           </h1>
@@ -70,24 +70,21 @@ export function Hero() {
             className="fade-up mx-auto mt-11 max-w-2xl"
             style={{ ["--d" as string]: "270ms" }}
           >
-            <div className="flex flex-col gap-px overflow-hidden rounded-[20px] bg-white/5 backdrop-blur-md">
-              <p className="bg-dark/40 px-5 py-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
-                {hero.finder.label}
-              </p>
-              <div className="grid gap-px bg-white/5 sm:grid-cols-2">
-                <FinderCard
-                  href={hero.finder.byVehicle.href}
-                  icon="truck"
-                  label={hero.finder.byVehicle.label}
-                  sub={hero.finder.byVehicle.sub}
-                />
-                <FinderCard
-                  href={hero.finder.bySize.href}
-                  icon="ruler"
-                  label={hero.finder.bySize.label}
-                  sub={hero.finder.bySize.sub}
-                />
-              </div>
+            <div className="grid gap-px overflow-hidden rounded-[20px] bg-white/5 backdrop-blur-md sm:grid-cols-2">
+              <FinderCard
+                href={hero.finder.byVehicle.href}
+                icon="truck"
+                caption={hero.finder.caption}
+                label={hero.finder.byVehicle.label}
+                sub={hero.finder.byVehicle.sub}
+              />
+              <FinderCard
+                href={hero.finder.bySize.href}
+                icon="ruler"
+                caption={hero.finder.caption}
+                label={hero.finder.bySize.label}
+                sub={hero.finder.bySize.sub}
+              />
             </div>
           </div>
         </div>
@@ -129,11 +126,13 @@ function HeroFallback() {
 function FinderCard({
   href,
   icon,
+  caption,
   label,
   sub,
 }: {
   href: string;
   icon: "truck" | "ruler";
+  caption: string;
   label: string;
   sub: string;
 }) {
@@ -147,6 +146,7 @@ function FinderCard({
         <Icon name={icon} className="h-6 w-6" />
       </span>
       <span className="min-w-0 flex-1 text-left">
+        <span className="block text-xs text-white/50">{caption}</span>
         <span className="block text-[15px] font-semibold text-white">{label}</span>
         <span className="mt-0.5 block truncate text-xs text-white/55">{sub}</span>
       </span>

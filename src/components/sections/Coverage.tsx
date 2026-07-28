@@ -1,35 +1,24 @@
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { Icon } from "@/components/ui/Icon";
 import { coverage } from "@/lib/content";
 
 /* Peta Indonesia (SVG) — pin digambar di ruang koordinat viewBox yang sama
-   dengan peta, jadi posisinya selalu presisi (tidak bergantung layout HTML). */
+   dengan peta (0..1014, 0..405), jadi posisinya selalu presisi (tidak
+   bergantung layout HTML). Peta ini bukan proyeksi geografis akurat, jadi
+   posisi tiap kota di `coverage.branches` (content.ts) dikalibrasi visual
+   satu per satu — bukan dihitung dari lat/lon. */
 const MAP_SRC = "/assets/images/indonesia-geo.svg";
 const W = 1014;
 const H = 405;
-
-/* Kalibrasi geografis (equirectangular) → piksel viewBox peta.
-   Sudah diverifikasi terhadap render peta asli. Kalau perlu geser,
-   cukup setel keempat angka di bawah. */
-const LON_MIN = 95; // tepi kiri peta (°BT)
-const LON_MAX = 141; // tepi kanan peta (°BT)
-const LAT_TOP = 6; // tepi atas peta (°LU)
-const LAT_BOTTOM = -12.37; // tepi bawah peta (°LS)
 
 const ORANGE = "#fc3d04";
 const INK = "#14171c";
 const PAPER = "#f7f8fa";
 
-const geoToXY = (lon: number, lat: number) => ({
-  x: ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * W,
-  y: ((LAT_TOP - lat) / (LAT_TOP - LAT_BOTTOM)) * H,
-});
-
 // Kota yang diberi label teks (sisanya cukup titik agar tidak sesak).
-const LABELED = new Set([
-  "Medan", "Jakarta", "Surabaya", "Pontianak",
-  "Balikpapan", "Makassar", "Manado", "Jayapura",
-]);
+// Diisi seiring marker ditambahkan.
+const LABELED = new Set<string>([]);
 
 export function Coverage() {
   return (
@@ -45,6 +34,20 @@ export function Coverage() {
           <Reveal delay={120}>
             <p className="mt-4 text-lg text-muted text-pretty">{coverage.body}</p>
           </Reveal>
+          <Reveal delay={160}>
+            <div className="mx-auto mt-8 flex max-w-xs justify-center gap-10">
+              {coverage.stats.map((s) => (
+                <div key={s.label}>
+                  <div className="font-display text-3xl font-extrabold tracking-tight text-orange tabular-nums">
+                    {s.value}
+                  </div>
+                  <div className="mt-1 text-xs leading-snug text-muted text-pretty">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
 
         {/* Peta + pin (satu ruang koordinat SVG) */}
@@ -57,9 +60,9 @@ export function Coverage() {
           >
             <image href={MAP_SRC} x="0" y="0" width={W} height={H} />
             {coverage.branches.map((b) => {
-              const { x, y } = geoToXY(b.lon, b.lat);
+              const { x, y } = b;
               const labelLeft = x > W * 0.72;
-              const isWarehouse = b.type === "warehouse";
+              const isWarehouse = b.types.includes("warehouse");
               return (
                 <g key={b.city}>
                   {/* halo berdenyut (khusus gudang = hub utama) */}
@@ -98,12 +101,12 @@ export function Coverage() {
         {/* Legend */}
         <Reveal delay={160}>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-ink/75">
-            <span className="inline-flex items-center gap-2.5">
-              <span className="h-3 w-3 rounded-full bg-orange ring-2 ring-paper" />
+            <span className="inline-flex items-center gap-2">
+              <Icon name="pin" className="h-4 w-4 text-orange" />
               Service Point
             </span>
-            <span className="inline-flex items-center gap-2.5">
-              <span className="h-3.5 w-3.5 rounded-full bg-dark ring-2 ring-inset ring-orange" />
+            <span className="inline-flex items-center gap-2">
+              <Icon name="warehouse" className="h-4 w-4 text-orange" />
               Gudang
             </span>
           </div>
@@ -112,18 +115,18 @@ export function Coverage() {
         {/* Daftar lengkap kota */}
         <Reveal delay={220}>
           <div className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2">
-            {coverage.branches.map((b) => (
+            {coverage.locations.map((loc) => (
               <span
-                key={b.city}
+                key={loc.city}
                 className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-xs font-medium text-ink/70"
               >
-                <span
-                  className={
-                    "h-1.5 w-1.5 rounded-full " +
-                    (b.type === "warehouse" ? "bg-dark ring-1 ring-orange" : "bg-orange")
-                  }
-                />
-                {b.city}
+                {loc.types.includes("warehouse") && (
+                  <Icon name="warehouse" className="h-3.5 w-3.5 text-orange" />
+                )}
+                {loc.types.includes("service") && (
+                  <Icon name="pin" className="h-3.5 w-3.5 text-orange" />
+                )}
+                {loc.city}
               </span>
             ))}
           </div>

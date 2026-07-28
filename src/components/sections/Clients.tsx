@@ -13,7 +13,8 @@ export function Clients({ title, body }: { title?: string; body?: string } = {})
               <>
                 {clients.titleLead}
                 <span className="text-orange">{clients.titleAccent}</span>
-                {clients.titleTail}
+                {clients.titleMid}
+                <span className="text-orange">{clients.titleAccent2}</span>
               </>
             )}
           </h2>

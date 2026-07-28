@@ -75,14 +75,14 @@ export const hero = {
   description:
     "Solusi ban berkualitas untuk kendaraan Anda, dilengkapi teknologi pengelolaan ban berbasis data dalam satu platform.",
   finder: {
-    label: "Cari ban berdasarkan",
+    caption: "Cari Ban",
     byVehicle: {
-      label: "Tipe Kendaraan",
+      label: "Berdasarkan Kendaraan",
       sub: "Truk, bus, & komersial",
       href: "/solusi/ban?f=kendaraan",
     },
     bySize: {
-      label: "Ukuran Ban",
+      label: "Berdasarkan Ukuran",
       sub: "mis. 1000-20 · 11R22.5",
       href: "/solusi/ban?f=ukuran",
     },
@@ -94,8 +94,9 @@ export const hero = {
 export const clients = {
   title: "Dipercaya oleh klien dan mitra industri",
   titleLead: "Dipercaya oleh ",
-  titleAccent: "klien dan mitra",
-  titleTail: " industri",
+  titleAccent: "klien",
+  titleMid: " dan ",
+  titleAccent2: "mitra industri",
   body: "Dari BUMN hingga perusahaan swasta terbaik di Indonesia memilih SaveMile.",
   logos: [
     "BGR Logistics",
@@ -124,15 +125,16 @@ export type WhyItem = {
   icon: "consult" | "laser" | "bell" | "shield";
   tag: string;
   title: string;
+  highlight?: string[]; // kata/frasa di dalam title yang diberi aksen oranye
   body: string;
   image?: string; // mis. "/assets/images/tire-consulting.jpg"
 };
 
 export const whyChoose = {
   title: "Kenapa ribuan pengguna memilih SaveMile",
-  titleLead: "Kenapa ",
-  titleAccent: "ribuan",
-  titleTail: " pengguna memilih SaveMile",
+  titleLead: "Kenapa ribuan ",
+  titleAccent: "pengguna",
+  titleTail: " memilih SaveMile",
   body: "Kami tidak hanya menyediakan ban berkualitas, kami membantu mengelola aset ban Anda dengan lebih efektif, efisien, dan berbasis data.",
   items: [
     {
@@ -140,6 +142,7 @@ export const whyChoose = {
       tag: "Tire Consulting",
       title:
         "Kurangi biaya operasional secara signifikan dengan jenis ban yang tepat",
+      highlight: ["signifikan", "tepat"],
       body: "Kami membantu menganalisa data ban kendaraan dan rute untuk merekomendasikan ban dengan cost per kilometer terendah.",
       image: "/assets/images/why-consulting.webp",
     },
@@ -147,6 +150,7 @@ export const whyChoose = {
       icon: "laser",
       tag: "Laser Tire Marking",
       title: "Kurangi risiko kehilangan ban hingga 99%",
+      highlight: ["99%"],
       body: "Tandai ban dengan teknologi laser permanen. Setiap ban teridentifikasi secara akurat, mudah dilacak, dan aman dari penyalahgunaan.",
       image: "/assets/images/why-marking.webp",
     },
@@ -154,6 +158,7 @@ export const whyChoose = {
       icon: "bell",
       tag: "Automate Notification",
       title: "Ketahui kerusakan lebih awal sebelum jadi kerugian besar",
+      highlight: ["kerugian besar"],
       body: "Notifikasi otomatis ketika umur ban mendekati batas aman, sehingga kendaraan tetap produktif dan biaya operasional tetap terkendali.",
       image: "/assets/images/why-notification.webp",
     },
@@ -162,37 +167,51 @@ export const whyChoose = {
 
 /* ---------- Section: Jaringan cabang (peta Indonesia) ---------- */
 
+export type BranchType = "service" | "warehouse";
+
+/** Lokasi tanpa posisi di peta — dipakai untuk daftar chip di bawah peta. */
+export type Location = {
+  city: string;
+  types: BranchType[]; // bisa gudang & titik servis sekaligus
+};
+
 export type Branch = {
   city: string;
-  lat: number; // -11 .. 6
-  lon: number; // 95 .. 141
-  type: "service" | "warehouse"; // service point atau gudang
+  // Koordinat piksel LANGSUNG di ruang viewBox peta (0..1014, 0..405),
+  // bukan lat/lon — peta SVG yang dipakai bukan proyeksi geografis akurat,
+  // jadi tiap titik dikalibrasi manual (visual) agar presisi jatuh di daratan.
+  x: number;
+  y: number;
+  types: BranchType[];
 };
 
 export const coverage = {
   title: "Jangkauan layanan kami sampai di seluruh Indonesia",
   accent: "seluruh Indonesia",
-  body: "Jaringan service point dan gudang SaveMile tersebar dari Sumatra hingga Papua, sehingga dukungan konsultasi, pemasangan, dan suplai ban selalu dekat dengan operasional Anda.",
-  // NOTE: lokasi & tipe (service point / gudang) di bawah masih placeholder,
-  // silakan sesuaikan dengan data cabang asli.
-  branches: [
-    { city: "Medan", lat: 3.6, lon: 98.7, type: "warehouse" },
-    { city: "Batam", lat: 1.1, lon: 104.0, type: "service" },
-    { city: "Pekanbaru", lat: 0.5, lon: 101.4, type: "service" },
-    { city: "Palembang", lat: -3.0, lon: 104.8, type: "service" },
-    { city: "Jakarta", lat: -6.2, lon: 106.8, type: "warehouse" },
-    { city: "Bandung", lat: -6.9, lon: 107.6, type: "service" },
-    { city: "Semarang", lat: -7.0, lon: 110.4, type: "service" },
-    { city: "Surabaya", lat: -7.3, lon: 112.7, type: "warehouse" },
-    { city: "Denpasar", lat: -8.7, lon: 115.2, type: "service" },
-    { city: "Pontianak", lat: -0.02, lon: 109.3, type: "service" },
-    { city: "Banjarmasin", lat: -3.3, lon: 114.6, type: "service" },
-    { city: "Balikpapan", lat: -1.2, lon: 116.8, type: "warehouse" },
-    { city: "Makassar", lat: -5.1, lon: 119.4, type: "warehouse" },
-    { city: "Manado", lat: 1.5, lon: 124.8, type: "service" },
-    { city: "Ambon", lat: -3.7, lon: 128.2, type: "service" },
-    { city: "Jayapura", lat: -2.5, lon: 140.7, type: "service" },
-  ] as Branch[],
+  body: "Jaringan gudang dan titik servis SaveMile tersebar di Jabodetabek, Jawa, Bali, hingga Nusa Tenggara dan Kalimantan Barat, sehingga dukungan konsultasi, pemasangan, dan suplai ban selalu dekat dengan operasional Anda.",
+  stats: [
+    { value: "4", label: "Gudang (Warehouse)" },
+    { value: "62", label: "Titik Servis" },
+  ],
+  // Daftar lokasi asli (ditampilkan sebagai chip di bawah peta).
+  locations: [
+    { city: "Tangerang", types: ["warehouse"] },
+    { city: "Jabodetabek", types: ["service"] },
+    { city: "Karawang", types: ["service"] },
+    { city: "Bandung", types: ["warehouse", "service"] },
+    { city: "Cilacap", types: ["service"] },
+    { city: "Boyolali", types: ["service"] },
+    { city: "Klaten", types: ["service"] },
+    { city: "Solo", types: ["service"] },
+    { city: "Rembang", types: ["service"] },
+    { city: "Bali", types: ["warehouse", "service"] },
+    { city: "Lombok", types: ["service"] },
+    { city: "Sumbawa", types: ["service"] },
+    { city: "Pontianak", types: ["warehouse", "service"] },
+  ] as Location[],
+  // Pin di peta — kosong dulu, ditambah satu per satu setelah posisi
+  // dikalibrasi visual (lihat komentar di type Branch).
+  branches: [] as Branch[],
 };
 
 /* ---------- Section 3: Success Story ---------- */

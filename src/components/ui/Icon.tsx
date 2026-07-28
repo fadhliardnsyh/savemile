@@ -20,7 +20,8 @@ export type IconName =
   | "mail"
   | "phone"
   | "wrench"
-  | "leaf";
+  | "leaf"
+  | "warehouse";
 
 const paths: Record<IconName, React.ReactNode> = {
   consult: (
@@ -137,6 +138,14 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
       <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+    </>
+  ),
+  warehouse: (
+    <>
+      <path d="M3 21V10.5L12 4l9 6.5V21" />
+      <path d="M3 21h18" />
+      <rect x="7.5" y="12.5" width="9" height="8.5" />
+      <path d="M10.5 21v-4h3v4" />
     </>
   ),
   whatsapp: (
