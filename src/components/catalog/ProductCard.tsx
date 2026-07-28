@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import {
   compatibleLabels,
   fiturLabels,
+  medanLabels,
   tipeLabels,
   type Product,
 } from "@/lib/catalog";
@@ -64,12 +65,15 @@ export function ProductCard({ product }: { product: Product }) {
         {product.compatible.length > 0 && (
           <ChipRow title="Cocok untuk" items={product.compatible.map((c) => compatibleLabels[c])} />
         )}
+        {product.medan.length > 0 && (
+          <ChipRow title="Medan" items={product.medan.map((m) => medanLabels[m])} />
+        )}
         {product.fitur.length > 0 && (
           <ChipRow title="Fitur" items={product.fitur.map((f) => fiturLabels[f])} />
         )}
 
         {/* Ukuran */}
-        <div className="mt-auto border-t border-line pt-4">
+        <div className="mt-4 border-t border-line pt-4">
           <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink/45">
             Ukuran tersedia
           </p>
