@@ -442,6 +442,8 @@ export const career = {
   values: {
     eyebrow: "Nilai Kami",
     title: "Nilai yang membentuk cara kami bekerja",
+    titleLead: "Nilai yang membentuk ",
+    titleAccent: "cara kami bekerja",
     body: "Nilai-nilai ini bukan sekadar tulisan, melainkan keyakinan yang memandu cara kami bekerja dan bertumbuh setiap harinya.",
     items: [
       { icon: "target", title: "Ownership", desc: "Bertanggung jawab penuh atas setiap pekerjaan dan menyelesaikannya dengan standar terbaik." },

@@ -32,7 +32,8 @@ export default function CareerPage() {
             <div className="mx-auto max-w-2xl text-center">
               <Reveal delay={60}>
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-                  {career.values.title}
+                  {career.values.titleLead}
+                  <span className="text-orange">{career.values.titleAccent}</span>
                 </h2>
               </Reveal>
               <Reveal delay={120}>

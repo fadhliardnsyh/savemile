@@ -6,13 +6,13 @@ import { footerColumns, site } from "@/lib/content";
 
 export function Footer() {
   return (
-    <footer className="relative z-10 mt-auto bg-orange text-white">
+    <footer className="relative z-10 mt-auto bg-dark text-white">
       <Container className="py-14">
         <div className="grid gap-10 lg:grid-cols-5">
           {/* Brand + address */}
           <div className="lg:col-span-2">
             <Image
-              src="/assets/logos/savemile-logo-white.webp"
+              src="/assets/logos/savemile-logo.png"
               alt="SaveMile"
               width={1350}
               height={164}
@@ -38,7 +38,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/85 transition-colors hover:text-white"
+                      className="text-sm text-white/85 transition-colors hover:text-orange"
                     >
                       {link.label}
                     </Link>
@@ -49,7 +49,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-black/10 pt-6 pb-16 sm:flex-row sm:items-center sm:pb-6 sm:pr-24">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-dark-line pt-6 pb-16 sm:flex-row sm:items-center sm:pb-6 sm:pr-24">
           <p className="text-sm text-white/70">
             © {new Date().getFullYear()} {site.name}. Seluruh hak cipta dilindungi.
           </p>
