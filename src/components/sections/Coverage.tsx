@@ -3,12 +3,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { coverage } from "@/lib/content";
 
-/* Peta Indonesia (SVG) — pin digambar di ruang koordinat viewBox yang sama
-   dengan peta (0..1014, 0..405), jadi posisinya selalu presisi (tidak
-   bergantung layout HTML). Peta ini bukan proyeksi geografis akurat, jadi
-   posisi tiap kota di `coverage.branches` (content.ts) dikalibrasi visual
-   satu per satu — bukan dihitung dari lat/lon. */
-const MAP_SRC = "/assets/images/indonesia-geo.svg";
+/* Peta Indonesia (SVG) — marker gudang & service point sudah digambar
+   langsung di dalam file ini (tidak lagi di-render lewat JS), jadi
+   posisinya persis seperti yang dikalibrasi secara visual di file asetnya. */
+const MAP_SRC = "/assets/images/indonesia-map.svg";
 const W = 1014;
 const H = 405;
 

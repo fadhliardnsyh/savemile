@@ -32,7 +32,7 @@ export const nav: NavItem[] = [
     label: "Solution",
     children: [
       {
-        label: "Ban",
+        label: "Catalogue",
         href: "/solusi/ban",
         desc: "Katalog ban truk, bus & kendaraan komersial",
       },
@@ -56,9 +56,9 @@ export const nav: NavItem[] = [
   {
     label: "Company",
     children: [
-      { label: "Tentang Kami", href: "/company/about", desc: "Tentang SaveMile" },
-      { label: "Karir", href: "/company/career", desc: "Bergabung dengan tim kami" },
-      { label: "Hubungi Kami", href: "/company/contact", desc: "Terhubung dengan tim SaveMile" },
+      { label: "About Us", href: "/company/about", desc: "Tentang SaveMile" },
+      { label: "Career", href: "/company/career", desc: "Bergabung dengan tim kami" },
+      { label: "Contact Us", href: "/company/contact", desc: "Terhubung dengan tim SaveMile" },
     ],
   },
 ];
@@ -515,7 +515,7 @@ export const footerColumns = [
   {
     title: "Solution",
     links: [
-      { label: "Ban", href: "/solusi/ban" },
+      { label: "Catalogue", href: "/solusi/ban" },
       { label: "Tire Management Solution", href: "/solusi/tire-monitoring-system" },
     ],
   },
@@ -526,9 +526,9 @@ export const footerColumns = [
   {
     title: "Company",
     links: [
-      { label: "Tentang Kami", href: "/company/about" },
-      { label: "Karir", href: "/company/career" },
-      { label: "Hubungi Kami", href: "/company/contact" },
+      { label: "About Us", href: "/company/about" },
+      { label: "Career", href: "/company/career" },
+      { label: "Contact Us", href: "/company/contact" },
     ],
   },
 ];
