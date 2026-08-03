@@ -2,21 +2,14 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { coverage } from "@/lib/content";
+import { MapPin, Warehouse } from "lucide-react";
+import { GenericIconCircle } from "../ui/GenericIconCircle";
 
-/* Peta Indonesia (SVG) — marker gudang & service point sudah digambar
-   langsung di dalam file ini (tidak lagi di-render lewat JS), jadi
-   posisinya persis seperti yang dikalibrasi secara visual di file asetnya. */
-const MAP_SRC = "/assets/images/indonesia-map.svg";
+const MAP_SRC = "/assets/images/indonesia-geo.svg";
 const W = 1014;
 const H = 405;
 
 const ORANGE = "#fc3d04";
-const INK = "#14171c";
-const PAPER = "#f7f8fa";
-
-// Kota yang diberi label teks (sisanya cukup titik agar tidak sesak).
-// Diisi seiring marker ditambahkan.
-const LABELED = new Set<string>([]);
 
 export function Coverage() {
   return (
@@ -25,12 +18,14 @@ export function Coverage() {
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              Jangkauan layanan kami sampai di{" "}
+              {`${coverage.title} `}
               <span className="text-orange">{coverage.accent}</span>
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-4 text-lg text-muted text-pretty">{coverage.body}</p>
+            <p className="mt-4 text-lg text-muted text-pretty">
+              {coverage.body}
+            </p>
           </Reveal>
           <Reveal delay={160}>
             <div className="mx-auto mt-8 flex max-w-xs justify-center gap-10">
@@ -48,47 +43,77 @@ export function Coverage() {
           </Reveal>
         </div>
 
-        {/* Peta + pin (satu ruang koordinat SVG) */}
+        {/* Peta + Marker Lingkaran Presisi 1:1 sesuai desain */}
         <Reveal delay={120}>
           <svg
             viewBox={`0 0 ${W} ${H}`}
-            className="mx-auto mt-12 h-auto w-full max-w-5xl"
+            className="mx-auto mt-12 h-auto w-full max-w-5xl overflow-visible select-none"
             role="img"
             aria-label="Peta jaringan service point & gudang SaveMile di Indonesia"
           >
             <image href={MAP_SRC} x="0" y="0" width={W} height={H} />
             {coverage.branches.map((b) => {
               const { x, y } = b;
-              const labelLeft = x > W * 0.72;
               const isWarehouse = b.types.includes("warehouse");
+
               return (
-                <g key={b.city}>
-                  {/* halo berdenyut (khusus gudang = hub utama) */}
-                  {isWarehouse && (
-                    <circle cx={x} cy={y} r={5} fill={ORANGE} opacity={0.5}>
-                      <animate attributeName="r" values="5;13;5" dur="2.4s" repeatCount="indefinite" />
-                      <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
-                    </circle>
-                  )}
-                  {/* titik: gudang = inti gelap ber-ring oranye, service = titik oranye */}
+                <g
+                  key={b.city}
+                  className="group cursor-pointer transition-transform duration-200 hover:scale-125"
+                  style={{ transformOrigin: `${x}px ${y}px` }}
+                >
                   {isWarehouse ? (
-                    <circle cx={x} cy={y} r={5.5} fill={INK} stroke={ORANGE} strokeWidth={2.5} />
+                    <>
+                      <circle cx={x} cy={y} r={10} fill={ORANGE} opacity={0.35}>
+                        <animate
+                          attributeName="r"
+                          values="7;15;7"
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="0.45;0.1;0.45"
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+
+                      <GenericIconCircle
+                        icon={Warehouse}
+                        x={x}
+                        y={y}
+                        size={20}
+                        iconSize={14}
+                        bgColor={ORANGE}
+                      />
+                    </>
                   ) : (
-                    <circle cx={x} cy={y} r={3.6} fill={ORANGE} stroke={PAPER} strokeWidth={1.3} />
-                  )}
-                  {LABELED.has(b.city) && (
-                    <text
-                      x={labelLeft ? x - 9 : x + 9}
-                      y={y + 4}
-                      textAnchor={labelLeft ? "end" : "start"}
-                      fontSize={12}
-                      fontWeight={700}
-                      fill={INK}
-                      className="hidden sm:inline"
-                      style={{ paintOrder: "stroke", stroke: PAPER, strokeWidth: 3 }}
-                    >
-                      {b.city}
-                    </text>
+                    <>
+                      <circle cx={x} cy={y} r={12} fill={ORANGE} opacity={0.3}>
+                        <animate
+                          attributeName="r"
+                          values="7;15;7"
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="0.4;0.05;0.4"
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+
+                      <GenericIconCircle
+                        icon={MapPin}
+                        x={x}
+                        y={y}
+                        size={20}
+                        iconSize={14}
+                        bgColor={ORANGE}
+                      />
+                    </>
                   )}
                 </g>
               );
