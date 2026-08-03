@@ -1,9 +1,22 @@
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { clients } from "@/lib/content";
 
-export function Clients({ title, body }: { title?: string; body?: string } = {}) {
-  const logos = [...clients.logos, ...clients.logos];
+export function Clients({
+  title,
+  body,
+}: { title?: string; body?: string } = {}) {
+  const logoItems = [
+    ...clients.logos,
+    ...clients.logos,
+    ...clients.logos,
+    ...clients.logos,
+  ].map((logo, index) => ({
+    logo,
+    id: `set-${index}-${typeof logo === "string" ? logo : logo.name}`,
+  }));
+
   return (
     <section className="relative z-10 pt-16 pb-10 sm:pt-20 sm:pb-12">
       <Container>
@@ -22,16 +35,26 @@ export function Clients({ title, body }: { title?: string; body?: string } = {})
         </Reveal>
       </Container>
 
-      <div className="relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+      <div className="relative mt-10 overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
         <div className="animate-marquee flex w-max items-center gap-4 pr-4">
-          {logos.map((name, i) => (
+          {logoItems.map(({ logo, id }) => (
             <div
-              key={i}
-              className="flex h-16 min-w-[150px] items-center justify-center rounded-xl border border-line bg-card px-6"
+              key={id}
+              className="flex h-16 min-w-37.5 items-center justify-center rounded-xl border border-line bg-card px-6"
             >
-              <span className="font-display text-lg font-semibold text-ink/40 whitespace-nowrap">
-                {name}
-              </span>
+              {typeof logo === "string" ? (
+                <span className="font-display text-lg font-semibold text-ink/40 whitespace-nowrap">
+                  {logo}
+                </span>
+              ) : (
+                <Image
+                  src={logo.src}
+                  alt={logo.name}
+                  width={128}
+                  height={32}
+                  className="h-12 max-w-32 object-contain opacity-70 transition-all hover:opacity-100"
+                />
+              )}
             </div>
           ))}
         </div>

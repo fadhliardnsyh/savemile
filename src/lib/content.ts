@@ -107,16 +107,12 @@ export const clients = {
   titleAccent2: "mitra industri",
   body: "Dari BUMN hingga perusahaan swasta terbaik di Indonesia memilih SaveMile.",
   logos: [
-    "BGR Logistics",
-    "BRI",
-    "Cleo",
-    "DAMRI",
-    "Pelindo",
-    "Pertamina",
-    "PLN",
-    "Paragon",
-    "Nestlé",
-    "GrahaTrans",
+    { name: "Shell", src: "/assets/logos/Logo Shell.svg" },
+    { name: "Blog", src: "/assets/logos/Logo_Blog.png" },
+    { name: "Doublestar", src: "/assets/logos/Logo_Doublestar.png" },
+    { name: "SCB", src: "/assets/logos/Logo_SCB.png" },
+    { name: "Tiron", src: "/assets/logos/Logo_Tiron.png" },
+    { name: "Yosua", src: "/assets/logos/Logo_Yosua.png" },
   ],
 };
 
