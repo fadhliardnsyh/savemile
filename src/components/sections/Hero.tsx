@@ -7,7 +7,6 @@ import { hero } from "@/lib/content";
 export function Hero() {
   return (
     <section className="relative flex min-h-svh items-center overflow-hidden bg-dark pt-28 pb-16 text-paper">
-      {/* Background photo (Ban + Sistem + Truk) atau fallback gelap */}
       <div aria-hidden className="absolute inset-0">
         {hero.image ? (
           <Image
@@ -22,7 +21,7 @@ export function Hero() {
           <HeroFallback />
         )}
         {/* Overlay untuk keterbacaan teks (dilembutkan agar warna truk tetap muncul) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/45" />
+        <div className="absolute inset-0 bg-linear-to-t from-dark via-dark/70 to-dark/45" />
         <div className="absolute inset-0 bg-dark/20" />
       </div>
 
@@ -37,7 +36,7 @@ export function Hero() {
               <span className="relative inline-block text-orange">
                 tepat
                 <svg
-                  aria-hidden
+                  aria-hidden="true"
                   viewBox="0 0 200 12"
                   className="absolute -bottom-1 left-0 h-2.5 w-full text-orange"
                   preserveAspectRatio="none"
@@ -50,12 +49,10 @@ export function Hero() {
                     strokeLinecap="round"
                   />
                 </svg>
-              </span>,
+              </span>
+              ,
             </span>{" "}
-            kelola lebih{" "}
-            <span className="text-orange">
-              cerdas.
-            </span>
+            kelola lebih <span className="text-orange">cerdas.</span>
           </h1>
 
           <p
@@ -89,12 +86,6 @@ export function Hero() {
           </div>
         </div>
       </Container>
-
-      {/* Scroll hint */}
-      <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-paper/50 sm:flex">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em]">Scroll</span>
-        <span className="h-8 w-px animate-pulse bg-paper/30" />
-      </div>
     </section>
   );
 }
@@ -109,12 +100,10 @@ function HeroFallback() {
       />
       <div className="absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-orange/20 blur-3xl" />
       <div className="absolute left-1/3 bottom-0 h-72 w-72 rounded-full bg-orange/10 blur-3xl" />
-      {/* Big faint tire motif */}
       <Icon
         name="tire"
-        className="absolute -right-10 top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 text-white/5"
+        className="absolute -right-10 top-1/2 h-112 w-md -translate-y-1/2 text-white/5"
       />
-      {/* Hint badge */}
       <div className="absolute bottom-6 right-6 hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-white/50 sm:flex">
         <Icon name="truck" className="h-3.5 w-3.5" />
         Taruh foto di /assets/images/hero.jpg
@@ -147,8 +136,12 @@ function FinderCard({
       </span>
       <span className="min-w-0 flex-1 text-left">
         <span className="block text-xs text-white/50">{caption}</span>
-        <span className="block text-[15px] font-semibold text-white">{label}</span>
-        <span className="mt-0.5 block truncate text-xs text-white/55">{sub}</span>
+        <span className="block text-[15px] font-semibold text-white">
+          {label}
+        </span>
+        <span className="mt-0.5 block truncate text-xs text-white/55">
+          {sub}
+        </span>
       </span>
       <Icon
         name="arrow"

@@ -16,30 +16,34 @@ export function HowItWorks() {
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-4 text-lg text-muted text-pretty">{h.description}</p>
+            <p className="mt-4 text-lg text-muted text-pretty">
+              {h.description}
+            </p>
           </Reveal>
         </div>
 
-        {/* Workflow: node bernomor terhubung garis alur */}
         <div className="relative mt-16">
-          {/* garis alur horizontal (desktop) */}
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-8 hidden lg:block">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-8 hidden lg:block"
+          >
             <div className="mx-[8.33%] border-t-2 border-dashed border-line" />
           </div>
 
           <div className="grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-6">
             {h.steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 80} className="relative flex flex-col items-center text-center">
-                <span className="relative z-10 grid h-16 w-16 place-items-center rounded-full bg-card text-orange ring-2 ring-orange/30 shadow-[var(--shadow-soft)]">
-                  <Icon name={step.icon} className="h-7 w-7" />
-                  <span className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-orange text-[11px] font-bold text-white ring-2 ring-paper">
-                    {i + 1}
-                  </span>
+              <Reveal
+                key={step.title}
+                delay={i * 80}
+                className="relative flex flex-col items-center text-center"
+              >
+                <span className="relative z-10 grid h-18 w-18 place-items-center rounded-full bg-card text-orange ring-2 ring-orange/30">
+                  <Icon name={step.icon} className="h-10 w-10" />
                 </span>
-                <h3 className="mt-4 font-display text-base font-bold text-ink text-balance">
+                <h3 className="mt-4 font-display text-sm font-bold text-ink text-balance">
                   {step.title}
                 </h3>
-                <p className="mt-1.5 text-sm leading-snug text-muted text-pretty">
+                <p className="mt-1.5 text-xs leading-snug text-muted text-pretty">
                   {step.desc}
                 </p>
               </Reveal>

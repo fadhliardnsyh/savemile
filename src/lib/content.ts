@@ -57,8 +57,16 @@ export const nav: NavItem[] = [
     label: "Company",
     children: [
       { label: "About Us", href: "/company/about", desc: "Tentang SaveMile" },
-      { label: "Career", href: "/company/career", desc: "Bergabung dengan tim kami" },
-      { label: "Contact Us", href: "/company/contact", desc: "Terhubung dengan tim SaveMile" },
+      {
+        label: "Career",
+        href: "/company/career",
+        desc: "Bergabung dengan tim kami",
+      },
+      {
+        label: "Contact Us",
+        href: "/company/contact",
+        desc: "Terhubung dengan tim SaveMile",
+      },
     ],
   },
 ];
@@ -113,10 +121,22 @@ export const clients = {
 };
 
 export const stats = [
-  { value: "10.000+", label: "Ban kendaraan aktif terpasang di seluruh Indonesia", icon: "tire" },
+  {
+    value: "10.000+",
+    label: "Ban kendaraan aktif terpasang di seluruh Indonesia",
+    icon: "tire",
+  },
   { value: "99%", label: "Bebas dari fraud", icon: "shield" },
-  { value: "60+", label: "Jaringan mitra & gudang di seluruh Indonesia", icon: "pin" },
-  { value: "25%", label: "Efisiensi biaya operasional per tahun", icon: "consult" },
+  {
+    value: "60+",
+    label: "Jaringan mitra & gudang di seluruh Indonesia",
+    icon: "pin",
+  },
+  {
+    value: "25%",
+    label: "Efisiensi biaya operasional per tahun",
+    icon: "consult",
+  },
 ] as const;
 
 /* ---------- Section 2: Kenapa memilih SaveMile ---------- */
@@ -188,7 +208,7 @@ export type Branch = {
 export const coverage = {
   title: "Jangkauan layanan kami sampai di seluruh Indonesia",
   accent: "seluruh Indonesia",
-  body: "Jaringan gudang dan titik servis SaveMile tersebar di Jabodetabek, Jawa, Bali, hingga Nusa Tenggara dan Kalimantan Barat, sehingga dukungan konsultasi, pemasangan, dan suplai ban selalu dekat dengan operasional Anda.",
+  body: "Team SaveMile siap mendukung operasional Anda dari Sabang sampai Merauke",
   stats: [
     { value: "4", label: "Gudang (Warehouse)" },
     { value: "62", label: "Titik Servis" },
@@ -209,9 +229,24 @@ export const coverage = {
     { city: "Sumbawa", types: ["service"] },
     { city: "Pontianak", types: ["warehouse", "service"] },
   ] as Location[],
-  // Pin di peta — kosong dulu, ditambah satu per satu setelah posisi
-  // dikalibrasi visual (lihat komentar di type Branch).
-  branches: [] as Branch[],
+  branches: [
+    { city: "Tangerang", x: 240, y: 303, types: ["warehouse"] },
+    { city: "Jabodetabek", x: 265, y: 298, types: ["service"] },
+    { city: "Karawang", x: 285, y: 300, types: ["service"] },
+    { city: "Bandung - WH", x: 266, y: 316, types: ["warehouse"] },
+    { city: "Bandung - S", x: 280, y: 316, types: ["service"] },
+    { city: "Cilacap", x: 351, y: 330, types: ["service"] },
+    { city: "Boyolali", x: 305, y: 325, types: ["service"] },
+    { city: "Klaten", x: 335, y: 326, types: ["service"] },
+    { city: "Solo", x: 350, y: 320, types: ["service"] },
+    { city: "Rembang", x: 355, y: 305, types: ["service"] },
+    { city: "Bali - WH", x: 434, y: 343, types: ["warehouse"] },
+    { city: "Bali - S", x: 447, y: 340, types: ["service"] },
+    { city: "Lombok", x: 490, y: 350, types: ["service"] },
+    { city: "Sumbawa", x: 467, y: 347, types: ["service"] },
+    { city: "Pontianak - WH", x: 334, y: 161, types: ["warehouse"] },
+    { city: "Pontianak - S", x: 320, y: 150, types: ["service"] },
+  ] as Branch[],
 };
 
 /* ---------- Section 3: Success Story ---------- */
@@ -251,7 +286,8 @@ export const successStory = {
     },
     {
       tag: "Konstruksi",
-      title: "PT Selaras Cipta Bersatu: umur ban lebih panjang, biaya turun drastis",
+      title:
+        "PT Selaras Cipta Bersatu: umur ban lebih panjang, biaya turun drastis",
       units: "300 unit",
       description:
         "Rekomendasi ban yang tepat untuk medan berat memperpanjang umur ban dan memangkas biaya penggantian.",
@@ -418,9 +454,21 @@ export const about = {
       "Sejak pertama kali berdiri, SaveMile telah mendistribusikan ribuan ban untuk perusahaan di seluruh Indonesia dengan satu tujuan: menekan biaya operasional kendaraan secara signifikan berbasis data.",
     ],
     points: [
-      { icon: "consult", title: "Berbasis data", desc: "Rekomendasi ban dari analisa rute & beban nyata." },
-      { icon: "shield", title: "Produk resmi", desc: "Bersumber langsung dari pabrikan resmi." },
-      { icon: "route", title: "Dikelola end-to-end", desc: "Dari pemasangan sampai penggantian ban." },
+      {
+        icon: "consult",
+        title: "Berbasis data",
+        desc: "Rekomendasi ban dari analisa rute & beban nyata.",
+      },
+      {
+        icon: "shield",
+        title: "Produk resmi",
+        desc: "Bersumber langsung dari pabrikan resmi.",
+      },
+      {
+        icon: "route",
+        title: "Dikelola end-to-end",
+        desc: "Dari pemasangan sampai penggantian ban.",
+      },
     ],
   },
   trust: {
@@ -446,12 +494,36 @@ export const career = {
     titleAccent: "cara kami bekerja",
     body: "Nilai-nilai ini bukan sekadar tulisan, melainkan keyakinan yang memandu cara kami bekerja dan bertumbuh setiap harinya.",
     items: [
-      { icon: "target", title: "Ownership", desc: "Bertanggung jawab penuh atas setiap pekerjaan dan menyelesaikannya dengan standar terbaik." },
-      { icon: "bulb", title: "Invert Thinking", desc: "Menemukan solusi dari sudut pandang yang belum pernah terpikirkan." },
-      { icon: "bolt", title: "Speed", desc: "Kemajuan kecil yang konsisten lebih berharga dari kesempurnaan yang ditunda." },
-      { icon: "badge", title: "Integrity", desc: "Apa yang diucapkan selalu sama dengan apa yang dilakukan." },
-      { icon: "growth", title: "Growth Mindset", desc: "Pencapaian besar berasal dari orang yang tidak pernah berhenti belajar." },
-      { icon: "users", title: "Collaboration", desc: "Hasil terbaik lahir ketika semua bergerak menuju tujuan yang sama." },
+      {
+        icon: "target",
+        title: "Ownership",
+        desc: "Bertanggung jawab penuh atas setiap pekerjaan dan menyelesaikannya dengan standar terbaik.",
+      },
+      {
+        icon: "bulb",
+        title: "Invert Thinking",
+        desc: "Menemukan solusi dari sudut pandang yang belum pernah terpikirkan.",
+      },
+      {
+        icon: "bolt",
+        title: "Speed",
+        desc: "Kemajuan kecil yang konsisten lebih berharga dari kesempurnaan yang ditunda.",
+      },
+      {
+        icon: "badge",
+        title: "Integrity",
+        desc: "Apa yang diucapkan selalu sama dengan apa yang dilakukan.",
+      },
+      {
+        icon: "growth",
+        title: "Growth Mindset",
+        desc: "Pencapaian besar berasal dari orang yang tidak pernah berhenti belajar.",
+      },
+      {
+        icon: "users",
+        title: "Collaboration",
+        desc: "Hasil terbaik lahir ketika semua bergerak menuju tujuan yang sama.",
+      },
     ],
   },
   join: {
@@ -506,8 +578,18 @@ export const contact = {
   },
   info: [
     { icon: "pin", label: "Alamat", value: site.address },
-    { icon: "mail", label: "Email", value: site.email, href: `mailto:${site.email}` },
-    { icon: "phone", label: "Telepon", value: "+62 812-3456-7890", href: `tel:${site.phone}` },
+    {
+      icon: "mail",
+      label: "Email",
+      value: site.email,
+      href: `mailto:${site.email}`,
+    },
+    {
+      icon: "phone",
+      label: "Telepon",
+      value: "+62 812-3456-7890",
+      href: `tel:${site.phone}`,
+    },
   ],
 };
 
@@ -518,7 +600,10 @@ export const footerColumns = [
     title: "Solution",
     links: [
       { label: "Catalogue", href: "/solusi/ban" },
-      { label: "Tire Management Solution", href: "/solusi/tire-monitoring-system" },
+      {
+        label: "Tire Management Solution",
+        href: "/solusi/tire-monitoring-system",
+      },
     ],
   },
   {

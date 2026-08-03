@@ -21,7 +21,7 @@ export default function SolusiBanPage() {
         <CatalogHero />
         <CatalogBrowser />
         <InfoStrip />
-        <CtaSection content={consultCta} />
+        {/* <CtaSection content={consultCta} /> */}
       </main>
       <Footer />
     </>
