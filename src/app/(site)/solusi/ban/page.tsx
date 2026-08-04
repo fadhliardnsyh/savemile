@@ -5,7 +5,11 @@ import { CatalogHero } from "@/components/catalog/CatalogHero";
 import { InfoStrip } from "@/components/catalog/InfoStrip";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 
-import { getCatalogProductsServer } from "@/lib/payload";
+import {
+  getCatalogPageServer,
+  getCatalogProductsServer,
+  getSiteConfigServer,
+} from "@/lib/payload";
 
 export const metadata: Metadata = {
   title: "Ban Truk & Kendaraan Niaga",
@@ -14,17 +18,21 @@ export const metadata: Metadata = {
 };
 
 export default async function SolusiBanPage() {
-  const products = await getCatalogProductsServer();
+  const [products, catalogPageData, siteData] = await Promise.all([
+    getCatalogProductsServer(),
+    getCatalogPageServer(),
+    getSiteConfigServer(),
+  ]);
 
   return (
     <>
       <Navbar overHero />
       <main className="relative z-10 flex-1">
-        <CatalogHero />
+        <CatalogHero data={catalogPageData} />
         <CatalogBrowser initialProducts={products} />
         <InfoStrip />
       </main>
-      <Footer />
+      <Footer siteData={siteData} />
     </>
   );
 }

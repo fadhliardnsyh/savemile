@@ -9,20 +9,36 @@ import { Icon } from "@/components/ui/Icon";
  * pemanggil lama, tapi tidak lagi ditampilkan.
  */
 export function PageHero({
+  title,
   titleLead,
   titleAccent,
   image,
+  video,
 }: {
   eyebrow?: string;
-  titleLead: string;
-  titleAccent: string;
+  title?: string;
+  titleLead?: string;
+  titleAccent?: string;
   description?: string;
   image?: string;
+  video?: string;
 }) {
+  const displayTitle = title || `${titleLead || ""}${titleAccent || ""}`;
+
   return (
     <section className="relative flex min-h-[38vh] items-end overflow-hidden bg-dark pt-28 pb-10 text-paper sm:min-h-[42vh] sm:pb-12">
       <div aria-hidden className="absolute inset-0">
-        {image ? (
+        {video ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover"
+          >
+            <source src={video} />
+          </video>
+        ) : image ? (
           <Image
             src={image}
             alt=""
@@ -46,8 +62,7 @@ export function PageHero({
 
       <Container className="relative z-10">
         <h1 className="fade-up font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl">
-          {titleLead}
-          <span className="text-white">{titleAccent}</span>
+          {displayTitle}
         </h1>
       </Container>
     </section>

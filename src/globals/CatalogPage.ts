@@ -18,9 +18,10 @@ export const CatalogPage: GlobalConfig = {
       type: 'textarea',
     },
     {
-      name: 'heroImage',
+      name: 'heroMedia',
       type: 'relationship',
       relationTo: 'media',
+      label: 'Hero Media (Image or Video)',
     },
   ],
 };

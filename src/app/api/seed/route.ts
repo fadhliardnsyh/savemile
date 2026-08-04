@@ -3,8 +3,8 @@ import path from 'path';
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
-import { site, clients, successStory } from '@/lib/content';
-import { products } from '@/lib/catalog';
+import { site, hero, whyChoose, tms, clients, successStory } from '@/lib/content';
+import { catalogHero, products } from '@/lib/catalog';
 
 interface BrandDoc {
   id: string | number;
@@ -15,6 +15,25 @@ interface BrandDoc {
 export async function GET() {
   try {
     const payload = await getPayload({ config: configPromise });
+
+    async function uploadMediaIfExist(relativePath?: string, alt?: string) {
+      if (!relativePath) return undefined;
+      const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+      const fullPath = path.resolve(process.cwd(), 'public', cleanPath);
+      if (fs.existsSync(fullPath)) {
+        try {
+          const mediaDoc = await payload.create({
+            collection: 'media',
+            filePath: fullPath,
+            data: { alt: alt || 'Hero Media' },
+          });
+          return mediaDoc.id;
+        } catch (err) {
+          console.warn(`Could not upload media for ${cleanPath}:`, err);
+        }
+      }
+      return undefined;
+    }
 
     // 1. Seed SiteConfig Global
     await payload.updateGlobal({
@@ -28,6 +47,54 @@ export async function GET() {
         phone: site.phone,
         whatsapp: site.whatsapp,
         address: site.address,
+      },
+    });
+
+    // 1b. Seed HomePage Global
+    const homeHeroMediaId = await uploadMediaIfExist(hero.image, 'Home Hero Media');
+    await payload.updateGlobal({
+      slug: 'home-page',
+      data: {
+        title: 'SaveMile · Pilih ban yang tepat, kelola lebih cerdas',
+        heroEyebrow: 'Tire Consultant & Distributor',
+        heroDescription: hero.description,
+        heroMedia: homeHeroMediaId,
+        whyChooseTitle: `${whyChoose.titleLead}${whyChoose.titleAccent}${whyChoose.titleTail}`,
+        whyChooseBody: whyChoose.body,
+      },
+    });
+
+    // 1c. Seed CatalogPage Global
+    const catalogHeroMediaId = await uploadMediaIfExist(catalogHero.image, 'Catalog Hero Media');
+    await payload.updateGlobal({
+      slug: 'catalog-page',
+      data: {
+        eyebrow: catalogHero.eyebrow,
+        title: catalogHero.title,
+        description: catalogHero.description,
+        heroMedia: catalogHeroMediaId,
+      },
+    });
+
+    // 1d. Seed TmsPage Global
+    const tmsHeroMediaId = await uploadMediaIfExist('/assets/images/tms-banner.webp', 'TMS Hero Media');
+    const seededTmsFeatureItems = [];
+    for (const item of tms.features.items) {
+      const mediaId = await uploadMediaIfExist(item.image, `${item.title} Media`);
+      seededTmsFeatureItems.push({
+        title: item.title,
+        desc: item.desc,
+        media: mediaId,
+      });
+    }
+
+    await payload.updateGlobal({
+      slug: 'tms-page',
+      data: {
+        title: 'Tire Management Solution',
+        heroMedia: tmsHeroMediaId,
+        featuresTitle: `${tms.features.titleLead}${tms.features.titleAccent}`,
+        featureItems: seededTmsFeatureItems,
       },
     });
 
@@ -213,6 +280,32 @@ export async function GET() {
           },
         });
       }
+    }
+
+    // Link success stories to HomePage global
+    const allStories = await payload.find({ collection: 'success-stories', limit: 100 });
+    if (allStories.docs.length > 0) {
+      const storyIds = allStories.docs.map((doc) => doc.id);
+      await payload.updateGlobal({
+        slug: 'home-page',
+        data: {
+          successStories: storyIds,
+        },
+      });
+    }
+
+    // Seed TmsPage global default consultation values
+    const tmsPageDoc = await payload.findGlobal({ slug: 'tms-page' }).catch(() => null);
+    if (tmsPageDoc && !tmsPageDoc.consultationTitle) {
+      await payload.updateGlobal({
+        slug: 'tms-page',
+        data: {
+          consultationTitle: 'Konsultasi berkualitas secara berkala, berbasis data',
+          consultationHighlight: 'berbasis data',
+          consultationDescription:
+            'Kami selalu memberikan konsultasi laporan CPK ban untuk memastikan setiap ban yang Anda gunakan konsisten sesuai standar kualitas dan performa terbaik.',
+        },
+      });
     }
 
     return NextResponse.json({

@@ -24,27 +24,65 @@ function renderHighlighted(title: string, highlight?: string[]) {
   });
 }
 
-export function WhyChoose() {
+export interface WhyChooseItemData {
+  tag?: string;
+  title?: string;
+  highlight?: string[];
+  body?: string;
+  icon?: "consult" | "laser" | "bell" | "shield";
+  image?: string;
+}
+
+interface WhyChooseProps {
+  data?: {
+    whyChooseTitle?: string;
+    whyChooseBody?: string;
+    whyChooseItems?: WhyChooseItemData[];
+  };
+}
+
+export function WhyChoose({ data }: WhyChooseProps) {
+  const body = data?.whyChooseBody || whyChoose.body;
+  const items = data?.whyChooseItems && data.whyChooseItems.length > 0
+    ? data.whyChooseItems.map((item, idx) => {
+        const fallbackItem = whyChoose.items[idx] || whyChoose.items[0];
+        return {
+          tag: item.tag || fallbackItem.tag,
+          title: item.title || fallbackItem.title,
+          highlight: item.highlight ?? fallbackItem.highlight,
+          body: item.body || fallbackItem.body,
+          icon: item.icon || fallbackItem.icon,
+          image: item.image || fallbackItem.image,
+        };
+      })
+    : whyChoose.items;
+
   return (
     <section id="kenapa-savemile" className="scroll-mt-24 py-20 sm:py-28">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              {whyChoose.titleLead}
-              <span className="text-orange">{whyChoose.titleAccent}</span>
-              {whyChoose.titleTail}
+              {data?.whyChooseTitle ? (
+                data.whyChooseTitle
+              ) : (
+                <>
+                  {whyChoose.titleLead}
+                  <span className="text-orange">{whyChoose.titleAccent}</span>
+                  {whyChoose.titleTail}
+                </>
+              )}
             </h2>
           </Reveal>
           <Reveal delay={120}>
             <p className="mt-4 text-lg text-muted text-pretty">
-              {whyChoose.body}
+              {body}
             </p>
           </Reveal>
         </div>
 
         <div className="mt-16 flex flex-col gap-16 sm:gap-24">
-          {whyChoose.items.map((item, i) => {
+          {items.map((item, i) => {
             const flip = i % 2 === 1;
             return (
               <div

@@ -12,9 +12,11 @@ import { Products } from "./src/collections/Products";
 import { SuccessStories } from "./src/collections/SuccessStories";
 import { Users } from "./src/collections/Users";
 
+import { AboutPage } from "./src/globals/AboutPage";
 import { CatalogPage } from "./src/globals/CatalogPage";
 import { HomePage } from "./src/globals/HomePage";
 import { SiteConfig } from "./src/globals/SiteConfig";
+import { TmsPage } from "./src/globals/TmsPage";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -24,7 +26,7 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users, Media, Brands, Products, Clients, SuccessStories],
-  globals: [SiteConfig, HomePage, CatalogPage],
+  globals: [SiteConfig, HomePage, CatalogPage, TmsPage, AboutPage],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || "DEFAULT_SAVEMILE_DEV_SECRET_KEY_12345",
   db: sqliteAdapter({

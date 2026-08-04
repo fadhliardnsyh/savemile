@@ -3,14 +3,40 @@ import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { catalogHero } from "@/lib/catalog";
 
-export function CatalogHero() {
+interface CatalogHeroProps {
+  data?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    heroImage?: string;
+    heroVideo?: string;
+  };
+}
+
+export function CatalogHero({ data }: CatalogHeroProps) {
+  const heroVideo = data?.heroVideo;
+  const bgImage = data?.heroImage || (!heroVideo ? catalogHero.image : undefined);
+  const eyebrowText = data?.eyebrow || catalogHero.eyebrow;
+  const titleText = data?.title || catalogHero.title;
+  const descriptionText = data?.description || catalogHero.description;
+
   return (
     <section className="relative flex min-h-[62vh] items-end overflow-hidden bg-dark pt-24 pb-14 text-paper sm:min-h-[70vh]">
       {/* Background */}
       <div aria-hidden className="absolute inset-0">
-        {catalogHero.image ? (
+        {heroVideo ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover"
+          >
+            <source src={heroVideo} />
+          </video>
+        ) : bgImage ? (
           <Image
-            src={catalogHero.image}
+            src={bgImage}
             alt=""
             fill
             priority
@@ -32,9 +58,19 @@ export function CatalogHero() {
       </div>
 
       <Container className="relative z-10">
+        {eyebrowText && (
+          <span className="mb-3 inline-flex items-center rounded-full bg-orange/10 px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
+            {eyebrowText}
+          </span>
+        )}
         <h1 className="max-w-2xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl">
-          Katalog Ban
+          {titleText}
         </h1>
+        {descriptionText && (
+          <p className="mt-4 max-w-xl text-base text-white/80 leading-relaxed">
+            {descriptionText}
+          </p>
+        )}
       </Container>
     </section>
   );

@@ -7,6 +7,7 @@ import { FeatureDeepDive } from "@/components/tms/FeatureDeepDive";
 import { Consultation } from "@/components/tms/Consultation";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { tmsCta } from "@/lib/content";
+import { getTmsPageServer } from "@/lib/payload";
 
 export const metadata: Metadata = {
   title: "Tire Management Solution",
@@ -14,19 +15,21 @@ export const metadata: Metadata = {
     "Solusi pengelolaan ban armada menyeluruh: laser marking, bongkar pasang, inspeksi umur ban, notifikasi penggantian, manajemen ban bekas, dan konsultasi CPK berbasis data.",
 };
 
-export default function TmsPage() {
+export default async function TmsPage() {
+  const tmsData = await getTmsPageServer();
+
   return (
     <>
       <Navbar overHero />
       <main className="relative z-10 flex-1">
         <PageHero
-          titleLead="Tire Management "
-          titleAccent="Solution"
-          image="/assets/images/tms-banner.webp"
+          title={tmsData.title}
+          image={tmsData.heroImage}
+          video={tmsData.heroVideo}
         />
         <HowItWorks />
-        <FeatureDeepDive />
-        <Consultation />
+        <FeatureDeepDive features={tmsData.features} />
+        <Consultation consultation={tmsData.consultation} />
         <CtaSection content={tmsCta} />
       </main>
       <Footer />

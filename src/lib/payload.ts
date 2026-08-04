@@ -8,6 +8,7 @@ import {
   type Medan,
   type Product,
   type Tipe,
+  catalogHero,
   products,
 } from "./catalog";
 import {
@@ -29,6 +30,332 @@ import {
   whyChoose,
   type Story,
 } from "./content";
+
+function extractMediaUrl(media: unknown): string | undefined {
+  if (typeof media === "object" && media !== null) {
+    const obj = media as { filename?: string; url?: string };
+    const rawUrl = (obj.filename ? `/uploads/${obj.filename}` : undefined) || obj.url;
+    if (rawUrl) {
+      return rawUrl.startsWith("http") || rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
+    }
+  } else if (typeof media === "string" && media) {
+    return media.startsWith("http") || media.startsWith("/") ? media : `/${media}`;
+  }
+  return undefined;
+}
+
+function extractMediaInfo(media: unknown): { url?: string; isVideo: boolean } {
+  if (typeof media === "object" && media !== null) {
+    const obj = media as { filename?: string; url?: string; mimeType?: string };
+    const rawUrl = (obj.filename ? `/uploads/${obj.filename}` : undefined) || obj.url;
+    const url = rawUrl
+      ? rawUrl.startsWith("http") || rawUrl.startsWith("/")
+        ? rawUrl
+        : `/${rawUrl}`
+      : undefined;
+
+    const mime = obj.mimeType || "";
+    const isVideo =
+      mime.startsWith("video/") ||
+      Boolean(rawUrl && /\.(mp4|webm|ogg|mov|m4v)$/i.test(rawUrl));
+
+    return { url, isVideo };
+  } else if (typeof media === "string" && media) {
+    const url = media.startsWith("http") || media.startsWith("/") ? media : `/${media}`;
+    const isVideo = Boolean(/\.(mp4|webm|ogg|mov|m4v)$/i.test(media));
+    return { url, isVideo };
+  }
+  return { url: undefined, isVideo: false };
+}
+
+export async function getSiteConfigServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const siteConfig = await payload
+      .findGlobal({ slug: "site-config" })
+      .catch(() => null);
+    if (siteConfig) {
+      return {
+        ...site,
+        name: siteConfig.name || site.name,
+        tagline: siteConfig.tagline || site.tagline,
+        blurb: siteConfig.blurb || site.blurb,
+        email: siteConfig.email || site.email,
+        hrEmail: siteConfig.hrEmail || site.hrEmail,
+        phone: siteConfig.phone || site.phone,
+        whatsapp: siteConfig.whatsapp || site.whatsapp,
+        address: siteConfig.address || site.address,
+      };
+    }
+  } catch {
+    // Fallback to static site object
+  }
+  return site;
+}
+
+export async function getHomePageServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const homePage = await payload
+      .findGlobal({ slug: "home-page", depth: 2 })
+      .catch(() => null);
+    if (homePage) {
+      const mediaInfo = extractMediaInfo(homePage.heroMedia);
+      let heroImage: string | undefined;
+      let heroVideo: string | undefined;
+
+      if (mediaInfo.url) {
+        if (mediaInfo.isVideo) {
+          heroVideo = mediaInfo.url;
+        } else {
+          heroImage = mediaInfo.url;
+        }
+      }
+
+      if (!heroImage && !heroVideo) {
+        heroImage = extractMediaUrl(homePage.heroImage);
+        heroVideo = extractMediaUrl(homePage.heroVideo);
+      }
+
+      const whyChooseItems = Array.isArray(homePage.whyChooseItems)
+        ? homePage.whyChooseItems.map((item: any) => ({
+            tag: item.tag || undefined,
+            title: item.title || undefined,
+            highlight: typeof item.highlight === "string"
+              ? item.highlight.split(",").map((s: string) => s.trim()).filter(Boolean)
+              : Array.isArray(item.highlight)
+              ? item.highlight
+              : undefined,
+            body: item.body || undefined,
+            icon: item.icon || undefined,
+            image: extractMediaUrl(item.image),
+          }))
+        : undefined;
+
+      const successStories: Story[] = Array.isArray(homePage.successStories)
+        ? homePage.successStories
+            .map((item: any): Story | null => {
+              if (typeof item !== "object" || !item) return null;
+              const imageUrl = extractMediaUrl(item.image);
+              return {
+                tag: item.tag || "",
+                title: item.title || "",
+                units: item.units || "",
+                description: item.description || "",
+                href: item.href || "/insight/success-story",
+                ...(imageUrl ? { image: imageUrl } : {}),
+              };
+            })
+            .filter((item): item is Story => item !== null && Boolean(item.title))
+        : [];
+
+      return {
+        title: homePage.title || undefined,
+        heroEyebrow: homePage.heroEyebrow || undefined,
+        heroDescription: homePage.heroDescription || hero.description,
+        heroImage: heroImage || (heroVideo ? undefined : hero.image),
+        heroVideo: heroVideo || undefined,
+        whyChooseTitle: homePage.whyChooseTitle || undefined,
+        whyChooseBody: homePage.whyChooseBody || whyChoose.body,
+        whyChooseItems: whyChooseItems && whyChooseItems.length > 0 ? whyChooseItems : undefined,
+        successStories: successStories && successStories.length > 0 ? successStories : undefined,
+      };
+    }
+  } catch {
+    // Fallback to static defaults
+  }
+  return {
+    title: undefined,
+    heroEyebrow: undefined,
+    heroDescription: hero.description,
+    heroImage: hero.image,
+    heroVideo: undefined,
+    whyChooseTitle: undefined,
+    whyChooseBody: whyChoose.body,
+    whyChooseItems: undefined,
+    successStories: undefined,
+  };
+}
+
+export async function getCatalogPageServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const catalogPage = await payload
+      .findGlobal({ slug: "catalog-page", depth: 2 })
+      .catch(() => null);
+    if (catalogPage) {
+      const mediaInfo = extractMediaInfo(catalogPage.heroMedia);
+      let heroImage: string | undefined;
+      let heroVideo: string | undefined;
+
+      if (mediaInfo.url) {
+        if (mediaInfo.isVideo) {
+          heroVideo = mediaInfo.url;
+        } else {
+          heroImage = mediaInfo.url;
+        }
+      }
+
+      if (!heroImage && !heroVideo) {
+        heroImage = extractMediaUrl(catalogPage.heroImage);
+      }
+
+      return {
+        eyebrow: catalogPage.eyebrow || catalogHero.eyebrow,
+        title: catalogPage.title || catalogHero.title,
+        description: catalogPage.description || catalogHero.description,
+        heroImage: heroImage || (heroVideo ? undefined : catalogHero.image),
+        heroVideo,
+      };
+    }
+  } catch {
+    // Fallback to static defaults
+  }
+  return {
+    eyebrow: catalogHero.eyebrow,
+    title: catalogHero.title,
+    description: catalogHero.description,
+    heroImage: catalogHero.image,
+    heroVideo: undefined,
+  };
+}
+
+export async function getTmsPageServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const tmsPage = await payload
+      .findGlobal({ slug: "tms-page", depth: 2 })
+      .catch(() => null);
+    if (tmsPage) {
+      const mediaInfo = extractMediaInfo(tmsPage.heroMedia);
+      let heroImage: string | undefined;
+      let heroVideo: string | undefined;
+
+      if (mediaInfo.url) {
+        if (mediaInfo.isVideo) {
+          heroVideo = mediaInfo.url;
+        } else {
+          heroImage = mediaInfo.url;
+        }
+      }
+
+      const featureItems = Array.isArray(tmsPage.featureItems)
+        ? tmsPage.featureItems.map((item: any) => {
+            const mInfo = extractMediaInfo(item.media);
+            return {
+              title: item.title || "",
+              desc: item.desc || "",
+              image: !mInfo.isVideo ? mInfo.url : undefined,
+              video: mInfo.isVideo ? mInfo.url : undefined,
+            };
+          })
+        : undefined;
+
+      const features = featureItems && featureItems.length > 0
+        ? {
+            titleLead: tmsPage.featuresTitle || tms.features.titleLead + tms.features.titleAccent,
+            items: featureItems,
+          }
+        : undefined;
+
+      const consultMediaInfo = extractMediaInfo(tmsPage.consultationMedia);
+      let consultationImage: string | undefined;
+      let consultationVideo: string | undefined;
+      if (consultMediaInfo.url) {
+        if (consultMediaInfo.isVideo) {
+          consultationVideo = consultMediaInfo.url;
+        } else {
+          consultationImage = consultMediaInfo.url;
+        }
+      }
+
+      const consultationHighlightRaw = tmsPage.consultationHighlight;
+      const consultationHighlight =
+        typeof consultationHighlightRaw === "string"
+          ? consultationHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
+      const consultation = {
+        title: tmsPage.consultationTitle || undefined,
+        highlight: consultationHighlight && consultationHighlight.length > 0 ? consultationHighlight : undefined,
+        description: tmsPage.consultationDescription || undefined,
+        image: consultationImage,
+        video: consultationVideo,
+      };
+
+      return {
+        title: tmsPage.title || "Tire Management Solution",
+        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/tms-banner.webp"),
+        heroVideo,
+        features,
+        consultation,
+      };
+    }
+  } catch {
+    // Fallback to defaults
+  }
+  return {
+    title: "Tire Management Solution",
+    heroImage: "/assets/images/tms-banner.webp",
+    heroVideo: undefined,
+    features: undefined,
+    consultation: undefined,
+  };
+}
+
+export async function getAboutPageServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const aboutPage = await payload
+      .findGlobal({ slug: "about-page", depth: 2 })
+      .catch(() => null);
+    if (aboutPage) {
+      const mediaInfo = extractMediaInfo(aboutPage.heroMedia);
+      let heroImage: string | undefined;
+      let heroVideo: string | undefined;
+
+      if (mediaInfo.url) {
+        if (mediaInfo.isVideo) {
+          heroVideo = mediaInfo.url;
+        } else {
+          heroImage = mediaInfo.url;
+        }
+      }
+
+      const storyBodyItems = Array.isArray(aboutPage.storyBody)
+        ? aboutPage.storyBody
+            .map((item: any) =>
+              typeof item === "object" && item ? item.paragraph : String(item),
+            )
+            .filter(Boolean)
+        : undefined;
+
+      return {
+        title: aboutPage.title || `${about.hero.titleLead}${about.hero.titleAccent}`,
+        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/about-banner.webp"),
+        heroVideo,
+        storyTitle: aboutPage.storyTitle || about.story.title,
+        storyBody: storyBodyItems && storyBodyItems.length > 0 ? storyBodyItems : about.story.body,
+        trustTitle: aboutPage.trustTitle || about.trust.title,
+        trustBody: aboutPage.trustBody || about.trust.body,
+      };
+    }
+  } catch {
+    // Fallback to static defaults
+  }
+  return {
+    title: `${about.hero.titleLead}${about.hero.titleAccent}`,
+    heroImage: "/assets/images/about-banner.webp",
+    heroVideo: undefined,
+    storyTitle: about.story.title,
+    storyBody: about.story.body,
+    trustTitle: about.trust.title,
+    trustBody: about.trust.body,
+  };
+}
 
 interface PayloadClientDoc {
   id?: string | number;

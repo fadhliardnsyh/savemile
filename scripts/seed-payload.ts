@@ -18,8 +18,8 @@ modProto.require = function (this: unknown, ...args: unknown[]) {
 
 import fs from "node:fs";
 import path from "node:path";
-import { products } from "../src/lib/catalog";
-import { clients, site, successStory } from "../src/lib/content";
+import { catalogHero, products } from "../src/lib/catalog";
+import { about, clients, hero, site, successStory, tms, whyChoose } from "../src/lib/content";
 
 async function seed() {
   console.log("Seeding Payload CMS with initial data...");
@@ -42,6 +42,107 @@ async function seed() {
     },
   });
   console.log("✅ SiteConfig seeded");
+
+  async function uploadMediaIfExist(relativePath?: string, alt?: string) {
+    if (!relativePath) return undefined;
+    const cleanPath = relativePath.startsWith("/") ? relativePath.slice(1) : relativePath;
+    const fullPath = path.resolve(process.cwd(), "public", cleanPath);
+    if (fs.existsSync(fullPath)) {
+      try {
+        const mediaDoc = await payload.create({
+          collection: "media",
+          filePath: fullPath,
+          data: { alt: alt || "Hero Media" },
+        });
+        return mediaDoc.id;
+      } catch (err) {
+        console.warn(`Could not upload media for ${cleanPath}:`, err);
+      }
+    }
+    return undefined;
+  }
+
+  // Upload Why Choose images to media if needed
+  const seededWhyChooseItems = [];
+  for (const item of whyChoose.items) {
+    const mediaId = await uploadMediaIfExist(item.image, `${item.tag} Image`);
+
+    seededWhyChooseItems.push({
+      tag: item.tag,
+      title: item.title,
+      highlight: item.highlight ? item.highlight.join(", ") : undefined,
+      body: item.body,
+      icon: item.icon,
+      image: mediaId,
+    });
+  }
+
+  // 1b. Seed HomePage Global
+  const homeHeroMediaId = await uploadMediaIfExist(hero.image, "Home Hero Media");
+  await payload.updateGlobal({
+    slug: "home-page",
+    data: {
+      title: "SaveMile · Pilih ban yang tepat, kelola lebih cerdas",
+      heroEyebrow: "Tire Consultant & Distributor",
+      heroDescription: hero.description,
+      heroMedia: homeHeroMediaId,
+      whyChooseTitle: `${whyChoose.titleLead}${whyChoose.titleAccent}${whyChoose.titleTail}`,
+      whyChooseBody: whyChoose.body,
+      whyChooseItems: seededWhyChooseItems,
+    },
+  });
+  console.log("✅ HomePage seeded");
+
+  // 1c. Seed CatalogPage Global
+  const catalogHeroMediaId = await uploadMediaIfExist(catalogHero.image, "Catalog Hero Media");
+  await payload.updateGlobal({
+    slug: "catalog-page",
+    data: {
+      eyebrow: catalogHero.eyebrow,
+      title: catalogHero.title,
+      description: catalogHero.description,
+      heroMedia: catalogHeroMediaId,
+    },
+  });
+  console.log("✅ CatalogPage seeded");
+
+  // 1d. Seed TmsPage Global
+  const tmsHeroMediaId = await uploadMediaIfExist("/assets/images/tms-banner.webp", "TMS Hero Media");
+  const seededTmsFeatureItems = [];
+  for (const item of tms.features.items) {
+    const mediaId = await uploadMediaIfExist(item.image, `${item.title} Media`);
+    seededTmsFeatureItems.push({
+      title: item.title,
+      desc: item.desc,
+      media: mediaId,
+    });
+  }
+
+  await payload.updateGlobal({
+    slug: "tms-page",
+    data: {
+      title: "Tire Management Solution",
+      heroMedia: tmsHeroMediaId,
+      featuresTitle: `${tms.features.titleLead}${tms.features.titleAccent}`,
+      featureItems: seededTmsFeatureItems,
+    },
+  });
+  console.log("✅ TmsPage seeded");
+
+  // 1e. Seed AboutPage Global
+  const aboutHeroMediaId = await uploadMediaIfExist("/assets/images/about-banner.webp", "About Hero Media");
+  await payload.updateGlobal({
+    slug: "about-page",
+    data: {
+      title: `${about.hero.titleLead}${about.hero.titleAccent}`,
+      heroMedia: aboutHeroMediaId,
+      storyTitle: about.story.title,
+      storyBody: about.story.body.map((p) => ({ paragraph: p })),
+      trustTitle: about.trust.title,
+      trustBody: about.trust.body,
+    },
+  });
+  console.log("✅ AboutPage seeded");
 
   // 2. Seed Brands
   const brandDocs: Record<string, { id: string | number; slug?: string }> = {};
@@ -234,6 +335,34 @@ async function seed() {
     }
   }
   console.log(`✅ Seeded ${seededStoriesCount} new success stories (Total items: ${successStory.items.length})`);
+
+  // Link success stories to HomePage global
+  const allStories = await payload.find({ collection: "success-stories", limit: 100 });
+  if (allStories.docs.length > 0) {
+    const storyIds = allStories.docs.map((doc) => doc.id);
+    await payload.updateGlobal({
+      slug: "home-page",
+      data: {
+        successStories: storyIds,
+      },
+    });
+    console.log(`✅ Linked ${storyIds.length} success stories to HomePage global`);
+  }
+
+  // Seed TmsPage global default consultation values
+  const tmsPageDoc = await payload.findGlobal({ slug: "tms-page" }).catch(() => null);
+  if (tmsPageDoc && !tmsPageDoc.consultationTitle) {
+    await payload.updateGlobal({
+      slug: "tms-page",
+      data: {
+        consultationTitle: "Konsultasi berkualitas secara berkala, berbasis data",
+        consultationHighlight: "berbasis data",
+        consultationDescription:
+          "Kami selalu memberikan konsultasi laporan CPK ban untuk memastikan setiap ban yang Anda gunakan konsisten sesuai standar kualitas dan performa terbaik.",
+      },
+    });
+    console.log("✅ Seeded TmsPage consultation fields");
+  }
 
   console.log("Seeding process complete!");
   process.exit(0);
