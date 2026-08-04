@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getClientsServer } from "@/lib/payload";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
   description: about.hero.description,
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const clientsData = await getClientsServer();
+
   return (
     <>
       <Navbar overHero />
@@ -36,7 +39,7 @@ export default function AboutPage() {
               </Reveal>
               <div className="mt-5 space-y-4">
                 {about.story.body.map((p, i) => (
-                  <Reveal key={i} delay={120 + i * 60}>
+                  <Reveal key={p} delay={120 + i * 60}>
                     <p className="text-lg leading-relaxed text-muted text-pretty">{p}</p>
                   </Reveal>
                 ))}
@@ -46,7 +49,7 @@ export default function AboutPage() {
         </section>
 
         {/* Section 2: Trust / logo klien */}
-        <Clients title={about.trust.title} body={about.trust.body} />
+        <Clients title={about.trust.title} body={about.trust.body} logos={clientsData.logos} />
       </main>
       <Footer />
     </>

@@ -31,7 +31,8 @@ export function Select({
   useEffect(() => {
     if (!open) return;
     const onDoc = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("mousedown", onDoc);
@@ -50,19 +51,19 @@ export function Select({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={ariaLabel}
-        className="flex h-12 items-center gap-2 rounded-full border border-line bg-card pl-4 pr-3.5 text-sm font-medium text-ink outline-none transition-all duration-200 hover:border-orange/50 hover:shadow-[var(--shadow-soft)] focus-visible:border-orange focus-visible:shadow-none focus-visible:ring-4 focus-visible:ring-orange/15"
+        className="flex h-12 items-center gap-2 rounded-full border border-line bg-card pl-4 pr-3.5 text-sm font-medium text-ink outline-none transition-all duration-200 hover:border-orange/50 hover:shadow-(--shadow-soft) focus-visible:border-orange focus-visible:shadow-none focus-visible:ring-4 focus-visible:ring-orange/15"
       >
         <span className="whitespace-nowrap">{current?.label}</span>
         <svg
           viewBox="0 0 24 24"
           className={cn(
             "h-4 w-4 text-muted transition-transform duration-200",
-            open && "rotate-180"
+            open && "rotate-180",
           )}
           fill="none"
           stroke="currentColor"
           strokeWidth={2}
-          aria-hidden
+          aria-hidden="true"
         >
           <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -71,11 +72,11 @@ export function Select({
       <div
         role="listbox"
         className={cn(
-          "absolute z-40 mt-2 min-w-44 origin-top rounded-2xl border border-line bg-card p-1.5 shadow-[var(--shadow-lift)] transition-all duration-200 ease-out",
+          "absolute z-40 mt-2 min-w-44 origin-top rounded-2xl border border-line bg-card p-1.5 shadow-(--shadow-lift) transition-all duration-200 ease-out",
           align === "right" ? "right-0" : "left-0",
           open
             ? "visible translate-y-0 scale-100 opacity-100"
-            : "pointer-events-none invisible -translate-y-1 scale-95 opacity-0"
+            : "pointer-events-none invisible -translate-y-1 scale-95 opacity-0",
         )}
       >
         {options.map((o) => {
@@ -94,7 +95,7 @@ export function Select({
                 "flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors duration-150",
                 selected
                   ? "bg-orange-soft/70 font-semibold text-orange-deep"
-                  : "text-ink-soft hover:bg-ink/[0.04]"
+                  : "text-ink-soft hover:bg-ink/4",
               )}
             >
               {o.label}
@@ -105,9 +106,13 @@ export function Select({
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2.4}
-                  aria-hidden
+                  aria-hidden="true"
                 >
-                  <path d="m5 12 4 4 10-10" strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="m5 12 4 4 10-10"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               )}
             </button>

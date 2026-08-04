@@ -4,8 +4,8 @@ import { Footer } from "@/components/layout/Footer";
 import { CatalogHero } from "@/components/catalog/CatalogHero";
 import { InfoStrip } from "@/components/catalog/InfoStrip";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
-import { CtaSection } from "@/components/sections/CtaSection";
-import { consultCta } from "@/lib/content";
+
+import { getCatalogProductsServer } from "@/lib/payload";
 
 export const metadata: Metadata = {
   title: "Ban Truk & Kendaraan Niaga",
@@ -13,15 +13,16 @@ export const metadata: Metadata = {
     "Katalog ban truk & kendaraan niaga dari Tiron & Doublestar: steer, drive, trailer, off-road, hingga forklift. Distributor resmi SaveMile.",
 };
 
-export default function SolusiBanPage() {
+export default async function SolusiBanPage() {
+  const products = await getCatalogProductsServer();
+
   return (
     <>
       <Navbar overHero />
       <main className="relative z-10 flex-1">
         <CatalogHero />
-        <CatalogBrowser />
+        <CatalogBrowser initialProducts={products} />
         <InfoStrip />
-        {/* <CtaSection content={consultCta} /> */}
       </main>
       <Footer />
     </>

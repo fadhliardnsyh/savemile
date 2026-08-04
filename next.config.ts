@@ -1,11 +1,21 @@
+import { withPayload } from '@payloadcms/next/withPayload';
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // Kirim gambar dalam format modern (AVIF/WebP) ke browser yang mendukung,
-    // untuk ukuran transfer sekecil mungkin.
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
+  serverExternalPackages: ['@payloadcms/db-sqlite', '@payloadcms/db-postgres', 'drizzle-kit', 'libsql', 'sharp'],
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);

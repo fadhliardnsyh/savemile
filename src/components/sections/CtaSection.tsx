@@ -31,7 +31,7 @@ export function CtaSection({
     <section className="relative z-10 py-16 sm:py-20">
       <Container>
         <Reveal delay={60}>
-          <div className="rounded-[32px] bg-paper-2 px-6 py-14 text-center sm:px-12 sm:py-20">
+          <div className="rounded-4xl bg-paper-2 px-6 py-14 text-center sm:px-12 sm:py-20">
             <Logo className="mx-auto h-6" />
 
             <h2 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-extrabold tracking-tight text-ink text-balance sm:text-5xl">
@@ -45,8 +45,15 @@ export function CtaSection({
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               {action ? (
-                <Button href={action.href} variant="primary" size="lg" external={action.external}>
-                  {action.icon && <Icon name={action.icon} className="h-5 w-5" />}
+                <Button
+                  href={action.href}
+                  variant="primary"
+                  size="lg"
+                  external={action.external}
+                >
+                  {action.icon && (
+                    <Icon name={action.icon} className="h-5 w-5" />
+                  )}
                   {action.label}
                 </Button>
               ) : (
@@ -63,7 +70,7 @@ export function CtaSection({
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={1.6}
-                    aria-hidden
+                    aria-hidden="true"
                   >
                     <path
                       d="M4 5c0 8 7 15 15 15l2.5-3.5-4-2-2 2c-3-1.5-5.5-4-7-7l2-2-2-4z"

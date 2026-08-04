@@ -5,7 +5,8 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SuccessStoryGrid } from "@/components/sections/SuccessStoryGrid";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { successStory, consultCta } from "@/lib/content";
+import { consultCta } from "@/lib/content";
+import { getSuccessStoriesServer } from "@/lib/payload";
 
 export const metadata: Metadata = {
   title: "Success Story",
@@ -13,7 +14,9 @@ export const metadata: Metadata = {
     "Cerita nyata armada yang berhenti menebak dan mulai mengelola ban berbasis data bersama SaveMile.",
 };
 
-export default function SuccessStoryPage() {
+export default async function SuccessStoryPage() {
+  const stories = await getSuccessStoriesServer();
+
   return (
     <>
       <Navbar overHero />
@@ -28,7 +31,7 @@ export default function SuccessStoryPage() {
 
         <section className="py-20 sm:py-28">
           <Container>
-            <SuccessStoryGrid items={successStory.items} />
+            <SuccessStoryGrid items={stories} />
           </Container>
         </section>
 

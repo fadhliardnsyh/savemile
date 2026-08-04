@@ -16,9 +16,9 @@ export function InfoStrip() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {infoStrip.map((item, i) => (
             <Reveal key={item.title} delay={i * 80} className="h-full">
-              <div className="beam group flex h-full flex-col gap-4 rounded-2xl bg-card p-6 shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+              <div className="beam group flex h-full flex-col gap-4 rounded-2xl bg-card p-6 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)">
                 <span className="beam-line" aria-hidden />
-                <span className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-orange to-orange-deep text-white shadow-[var(--shadow-orange)] transition-transform duration-300 group-hover:scale-105">
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-linear-to-br from-orange to-orange-deep text-white shadow-(--shadow-orange) transition-transform duration-300 group-hover:scale-105">
                   <InfoIcon name={item.icon} className="h-6 w-6" />
                 </span>
                 <div>

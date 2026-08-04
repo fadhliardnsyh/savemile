@@ -4,17 +4,18 @@
  * Foto produk diunduh dari Google Drive spreadsheet -> /assets/images/produk/.
  */
 
-export type Brand = "tiron" | "doublestar";
-export type Tipe = "radial" | "bias";
-export type Compatible = "bus" | "trukBerat" | "trukRingan";
-export type Medan = "perjalananPanjang" | "jalanPerkotaan" | "standar" | "offRoad";
+export type Brand = "tiron" | "doublestar" | (string & {});
+export type Tipe = "radial" | "bias" | (string & {});
+export type Compatible = "bus" | "trukBerat" | "trukRingan" | (string & {});
+export type Medan = "perjalananPanjang" | "jalanPerkotaan" | "standar" | "offRoad" | (string & {});
 export type Fitur =
   | "jarakTempuh"
   | "handling"
   | "fuelEfficiency"
   | "antiTear"
   | "antiAus"
-  | "bebanBerat";
+  | "bebanBerat"
+  | (string & {});
 
 export type Product = {
   id: string;
@@ -64,18 +65,18 @@ export const fiturOptions: { key: Fitur; label: string }[] = [
   { key: "jarakTempuh", label: "Jarak Tempuh Tinggi" },
 ];
 
-export const tipeLabels: Record<Tipe, string> = Object.fromEntries(
+export const tipeLabels: Record<string, string> = Object.fromEntries(
   tipeOptions.map((o) => [o.key, o.label])
-) as Record<Tipe, string>;
-export const compatibleLabels: Record<Compatible, string> = Object.fromEntries(
+);
+export const compatibleLabels: Record<string, string> = Object.fromEntries(
   compatibleOptions.map((o) => [o.key, o.label])
-) as Record<Compatible, string>;
-export const medanLabels: Record<Medan, string> = Object.fromEntries(
+);
+export const medanLabels: Record<string, string> = Object.fromEntries(
   medanOptions.map((o) => [o.key, o.label])
-) as Record<Medan, string>;
-export const fiturLabels: Record<Fitur, string> = Object.fromEntries(
+);
+export const fiturLabels: Record<string, string> = Object.fromEntries(
   fiturOptions.map((o) => [o.key, o.label])
-) as Record<Fitur, string>;
+);
 
 export const brands: Record<Brand, { name: string; tagline: string; note: string }> = {
   tiron: {
@@ -649,3 +650,5 @@ export const products: Product[] = [
     image: "/assets/images/produk/dsr188pro-t.webp",
   },
 ];
+
+

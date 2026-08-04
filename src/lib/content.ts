@@ -615,3 +615,5 @@ export const footerColumns = [
     ],
   },
 ];
+
+

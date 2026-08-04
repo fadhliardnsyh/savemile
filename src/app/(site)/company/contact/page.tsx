@@ -37,22 +37,26 @@ export default function ContactPage() {
                 </h2>
               </Reveal>
               <Reveal delay={120}>
-                <p className="mt-4 text-lg text-muted text-pretty">{contact.help.body}</p>
+                <p className="mt-4 text-lg text-muted text-pretty">
+                  {contact.help.body}
+                </p>
               </Reveal>
             </div>
 
             <div className="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
               {contact.help.options.map((o, i) => (
                 <Reveal key={o.title} delay={i * 90} className="h-full">
-                  <div className="beam group relative flex h-full flex-col rounded-2xl bg-card p-7 shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+                  <div className="beam group relative flex h-full flex-col rounded-2xl bg-card p-7 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)">
                     <span className="beam-line" aria-hidden />
-                    <span className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-orange to-orange-deep text-white shadow-[var(--shadow-orange)]">
+                    <span className="grid h-12 w-12 place-items-center rounded-xl bg-linear-to-br from-orange to-orange-deep text-white shadow-(--shadow-orange)">
                       <Icon name={o.icon as IconName} className="h-6 w-6" />
                     </span>
                     <div className="mt-5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-orange">
                       {o.tag}
                     </div>
-                    <h3 className="mt-2 font-display text-xl font-bold text-ink">{o.title}</h3>
+                    <h3 className="mt-2 font-display text-xl font-bold text-ink">
+                      {o.title}
+                    </h3>
                     <p className="mt-2 flex-1 text-sm leading-relaxed text-muted text-pretty">
                       {o.desc}
                     </p>
@@ -63,7 +67,10 @@ export default function ContactPage() {
                         size="md"
                         external={o.external}
                       >
-                        <Icon name={o.icon === "whatsapp" ? "whatsapp" : "mail"} className="h-4 w-4" />
+                        <Icon
+                          name={o.icon === "whatsapp" ? "whatsapp" : "mail"}
+                          className="h-4 w-4"
+                        />
                         {o.actionLabel}
                       </Button>
                     </div>
@@ -84,7 +91,9 @@ export default function ContactPage() {
                       <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
                         {info.label}
                       </div>
-                      <div className="truncate text-sm font-medium text-ink">{info.value}</div>
+                      <div className="truncate text-sm font-medium text-ink">
+                        {info.value}
+                      </div>
                     </div>
                   </div>
                 );

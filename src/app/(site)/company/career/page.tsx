@@ -33,24 +33,32 @@ export default function CareerPage() {
               <Reveal delay={60}>
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
                   {career.values.titleLead}
-                  <span className="text-orange">{career.values.titleAccent}</span>
+                  <span className="text-orange">
+                    {career.values.titleAccent}
+                  </span>
                 </h2>
               </Reveal>
               <Reveal delay={120}>
-                <p className="mt-4 text-lg text-muted text-pretty">{career.values.body}</p>
+                <p className="mt-4 text-lg text-muted text-pretty">
+                  {career.values.body}
+                </p>
               </Reveal>
             </div>
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {career.values.items.map((v, i) => (
                 <Reveal key={v.title} delay={(i % 3) * 80}>
-                  <div className="beam group relative h-full rounded-2xl bg-card p-7 shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+                  <div className="beam group relative h-full rounded-2xl bg-card p-7 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)">
                     <span className="beam-line" aria-hidden />
                     <div className="grid h-12 w-12 place-items-center rounded-xl bg-orange/10 text-orange ring-1 ring-inset ring-orange/20 transition-colors duration-300 group-hover:bg-orange group-hover:text-white group-hover:ring-orange">
                       <Icon name={v.icon as IconName} className="h-6 w-6" />
                     </div>
-                    <h3 className="mt-5 font-display text-lg font-bold text-ink">{v.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted text-pretty">{v.desc}</p>
+                    <h3 className="mt-5 font-display text-lg font-bold text-ink">
+                      {v.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted text-pretty">
+                      {v.desc}
+                    </p>
                   </div>
                 </Reveal>
               ))}
@@ -59,7 +67,11 @@ export default function CareerPage() {
         </section>
 
         {/* Join — pakai CtaSection standar (konsisten) */}
-        <CtaSection content={career.join} showPhone={false} action={career.join.action} />
+        <CtaSection
+          content={career.join}
+          showPhone={false}
+          action={career.join.action}
+        />
       </main>
       <Footer />
     </>

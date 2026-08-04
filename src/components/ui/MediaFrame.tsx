@@ -30,15 +30,21 @@ export function MediaFrame({
         "relative w-full overflow-hidden border border-ink/10 bg-paper-2",
         ratio,
         rounded,
-        className
+        className,
       )}
     >
       {src ? (
-        <Image src={src} alt={alt} fill className="object-cover" sizes="(max-width:768px) 100vw, 50vw" />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover"
+          sizes="(max-width:768px) 100vw, 50vw"
+        />
       ) : (
         <div className="dotgrid absolute inset-0 grid place-items-center text-orange/30">
           <div className="flex flex-col items-center gap-3 text-center">
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-card text-orange shadow-[var(--shadow-soft)]">
+            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-card text-orange shadow-(--shadow-soft)">
               <Icon name={icon} className="h-8 w-8" />
             </span>
             <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">

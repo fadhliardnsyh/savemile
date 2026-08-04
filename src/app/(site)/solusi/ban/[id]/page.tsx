@@ -10,8 +10,6 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductActions } from "@/components/catalog/ProductActions";
 import { CtaSection } from "@/components/sections/CtaSection";
 import {
-  getProduct,
-  products,
   relatedProducts,
   tipeLabels,
   compatibleLabels,
@@ -21,7 +19,10 @@ import {
 import { consultCta, site } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
-export function generateStaticParams() {
+import { getCatalogProductsServer, getProductByIdServer } from "@/lib/payload";
+
+export async function generateStaticParams() {
+  const products = await getCatalogProductsServer();
   return products.map((p) => ({ id: p.id }));
 }
 
@@ -31,11 +32,13 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const p = getProduct(id);
+  const p = await getProductByIdServer(id);
   if (!p) return { title: "Produk tidak ditemukan" };
   return {
     title: `${p.name} · Ban ${p.brandChip}`,
-    description: p.description || `Ban ${tipeLabels[p.tipe]} ${p.brandChip} ${p.name} dari SaveMile.`,
+    description:
+      p.description ||
+      `Ban ${tipeLabels[p.tipe]} ${p.brandChip} ${p.name} dari SaveMile.`,
   };
 }
 
@@ -45,10 +48,13 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = getProduct(id);
+  const product = await getProductByIdServer(id);
   if (!product) notFound();
 
-  const related = relatedProducts(product);
+  const allProducts = await getCatalogProductsServer();
+  const related = relatedProducts(product, 3).map(
+    (rp) => allProducts.find((ap) => ap.id === rp.id) || rp,
+  );
 
   return (
     <>
@@ -57,11 +63,17 @@ export default async function ProductDetailPage({
         <Container>
           {/* Breadcrumb */}
           <nav className="mb-8 flex flex-wrap items-center gap-2 text-xs">
-            <Link href="/" className="text-muted transition-colors hover:text-orange">
+            <Link
+              href="/"
+              className="text-muted transition-colors hover:text-orange"
+            >
               Beranda
             </Link>
             <span className="text-line">/</span>
-            <Link href="/solusi/ban" className="text-muted transition-colors hover:text-orange">
+            <Link
+              href="/solusi/ban"
+              className="text-muted transition-colors hover:text-orange"
+            >
               Ban
             </Link>
             <span className="text-line">/</span>
@@ -89,14 +101,14 @@ export default async function ProductDetailPage({
                   <Icon name="tire" className="h-48 w-48 text-ink/12" />
                 )}
                 <span className="absolute right-5 top-5 rounded-full bg-orange/10 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
-                  {tipeLabels[product.tipe]}
+                  {tipeLabels[product.tipe] || product.tipe}
                 </span>
                 <span
                   className={cn(
                     "absolute bottom-5 left-5 rounded-full px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider",
                     product.brand === "tiron"
                       ? "bg-[#c0392b]/10 text-[#c0392b] ring-1 ring-inset ring-[#c0392b]/20"
-                      : "bg-dark/8 text-dark ring-1 ring-inset ring-dark/15"
+                      : "bg-dark/8 text-dark ring-1 ring-inset ring-dark/15",
                   )}
                 >
                   {product.brandChip}
@@ -129,12 +141,18 @@ export default async function ProductDetailPage({
 
               {/* Medan */}
               {product.medan.length > 0 && (
-                <ChipBlock title="Medan" items={product.medan.map((m) => medanLabels[m])} />
+                <ChipBlock
+                  title="Medan"
+                  items={product.medan.map((m) => medanLabels[m])}
+                />
               )}
 
               {/* Fitur */}
               {product.fitur.length > 0 && (
-                <ChipBlock title="Fitur" items={product.fitur.map((f) => fiturLabels[f])} />
+                <ChipBlock
+                  title="Fitur"
+                  items={product.fitur.map((f) => fiturLabels[f])}
+                />
               )}
 
               {/* Ukuran (pilih) + CTA */}
@@ -160,7 +178,10 @@ export default async function ProductDetailPage({
                   className="group inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted transition-colors hover:text-orange"
                 >
                   Lihat semua
-                  <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <Icon
+                    name="arrow"
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  />
                 </Link>
               </div>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

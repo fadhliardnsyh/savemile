@@ -21,7 +21,7 @@ export function SuccessStoryGrid({ items }: { items: Story[] }) {
     <div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((s, i) => (
-          <Reveal key={`${s.title}-${start + i}`} delay={(i % 3) * 90}>
+          <Reveal key={s.title} delay={(i % 3) * 90}>
             <GridStoryCard story={s} />
           </Reveal>
         ))}
@@ -40,13 +40,14 @@ export function SuccessStoryGrid({ items }: { items: Story[] }) {
           {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
             <button
               key={n}
+              type="button"
               onClick={() => setPage(n)}
               aria-current={n === current ? "page" : undefined}
               className={cn(
                 "grid h-10 w-10 place-items-center rounded-full text-sm font-semibold transition-colors",
                 n === current
                   ? "bg-orange text-white"
-                  : "text-ink/70 hover:bg-ink/5"
+                  : "text-ink/70 hover:bg-ink/5",
               )}
             >
               {n}
@@ -71,12 +72,12 @@ function GridStoryCard({ story }: { story: Story }) {
   return (
     <Link
       href={story.href}
-      className="beam group relative flex h-full flex-col overflow-hidden rounded-[22px] bg-card shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
+      className="beam group relative flex h-full flex-col overflow-hidden rounded-card bg-card shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)"
     >
       <span className="beam-line" aria-hidden />
 
       {/* Gambar */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-dark">
+      <div className="relative aspect-16/10 overflow-hidden bg-dark">
         {story.image ? (
           <Image
             src={story.image}
@@ -87,10 +88,10 @@ function GridStoryCard({ story }: { story: Story }) {
           />
         ) : (
           <div aria-hidden className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-dark-2 to-dark" />
+            <div className="absolute inset-0 bg-linear-to-br from-dark-2 to-dark" />
             <Icon
               name="truck"
-              className="absolute -right-4 bottom-2 h-28 w-28 text-white/[0.06]"
+              className="absolute -right-4 bottom-2 h-28 w-28 text-white/6"
             />
           </div>
         )}
@@ -109,7 +110,10 @@ function GridStoryCard({ story }: { story: Story }) {
         </p>
         <span className="mt-4 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-orange">
           Read case study
-          <Icon name="arrow" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          <Icon
+            name="arrow"
+            className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
+          />
         </span>
       </div>
     </Link>
@@ -129,6 +133,7 @@ function PageArrow({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       aria-label={label}

@@ -20,15 +20,17 @@ export function FeatureDeepDive() {
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           {f.items.map((item, i) => (
             <Reveal key={item.title} delay={(i % 2) * 90} className="h-full">
-              <div className="beam group relative flex h-full flex-col rounded-2xl bg-card p-7 shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:p-8">
+              <div className="beam group relative flex h-full flex-col rounded-2xl bg-card p-7 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift) sm:p-8">
                 <span className="beam-line" aria-hidden />
-                <div className="grid h-13 w-13 place-items-center rounded-2xl bg-gradient-to-br from-orange to-orange-deep text-white shadow-[var(--shadow-orange)] transition-transform duration-300 group-hover:scale-105">
+                <div className="grid h-13 w-13 place-items-center rounded-2xl bg-linear-to-br from-orange to-orange-deep text-white shadow-(--shadow-orange) transition-transform duration-300 group-hover:scale-105">
                   <Icon name={item.icon} className="h-6 w-6" />
                 </div>
                 <h3 className="mt-5 font-display text-xl font-bold leading-snug text-ink text-balance">
                   {item.title}
                 </h3>
-                <p className="mt-3 leading-relaxed text-muted text-pretty">{item.desc}</p>
+                <p className="mt-3 leading-relaxed text-muted text-pretty">
+                  {item.desc}
+                </p>
               </div>
             </Reveal>
           ))}

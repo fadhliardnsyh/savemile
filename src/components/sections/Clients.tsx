@@ -3,15 +3,24 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { clients } from "@/lib/content";
 
+export type ClientLogoProp = string | { name: string; src: string };
+
 export function Clients({
   title,
   body,
-}: { title?: string; body?: string } = {}) {
+  logos,
+}: {
+  title?: string;
+  body?: string;
+  logos?: ClientLogoProp[];
+} = {}) {
+  const activeLogos = logos && logos.length > 0 ? logos : clients.logos;
+
   const logoItems = [
-    ...clients.logos,
-    ...clients.logos,
-    ...clients.logos,
-    ...clients.logos,
+    ...activeLogos,
+    ...activeLogos,
+    ...activeLogos,
+    ...activeLogos,
   ].map((logo, index) => ({
     logo,
     id: `set-${index}-${typeof logo === "string" ? logo : logo.name}`,

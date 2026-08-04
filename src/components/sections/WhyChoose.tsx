@@ -10,15 +10,18 @@ function renderHighlighted(title: string, highlight?: string[]) {
   if (!highlight || highlight.length === 0) return title;
   const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
   const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
-  return parts.map((part, i) =>
-    highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
-      <span key={i} className="text-orange">
+  let offset = 0;
+  return parts.map((part) => {
+    const key = `${part}-${offset}`;
+    offset += part.length;
+    return highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={key} className="text-orange">
         {part}
       </span>
     ) : (
       part
-    )
-  );
+    );
+  });
 }
 
 export function WhyChoose() {
@@ -34,7 +37,9 @@ export function WhyChoose() {
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-4 text-lg text-muted text-pretty">{whyChoose.body}</p>
+            <p className="mt-4 text-lg text-muted text-pretty">
+              {whyChoose.body}
+            </p>
           </Reveal>
         </div>
 
@@ -47,7 +52,9 @@ export function WhyChoose() {
                 className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16"
               >
                 {/* Text */}
-                <Reveal className={cn("order-2", flip ? "lg:order-2" : "lg:order-1")}>
+                <Reveal
+                  className={cn("order-2", flip ? "lg:order-2" : "lg:order-1")}
+                >
                   <span className="inline-flex items-center gap-2 rounded-full bg-orange-soft px-3 py-1 font-mono text-xs uppercase tracking-wider text-orange-deep">
                     <span className="grid h-5 w-5 place-items-center">
                       <Icon name={item.icon} className="h-4 w-4" />
@@ -73,7 +80,7 @@ export function WhyChoose() {
                     icon={item.icon}
                     caption={item.tag}
                     ratio="aspect-[4/3]"
-                    className="shadow-[var(--shadow-soft)]"
+                    className="shadow-(--shadow-soft)"
                   />
                 </Reveal>
               </div>

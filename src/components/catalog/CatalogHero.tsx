@@ -19,15 +19,15 @@ export function CatalogHero() {
           />
         ) : (
           <div className="absolute inset-0 bg-dark">
-            <div className="linegrid absolute inset-0 opacity-[0.14] [color:#fff]" />
+            <div className="linegrid absolute inset-0 opacity-[0.14] text-white" />
             <Icon
               name="tire"
-              className="absolute -right-16 top-1/2 h-[26rem] w-[26rem] -translate-y-1/2 text-white/5"
+              className="absolute -right-16 top-1/2 h-104 w-104 -translate-y-1/2 text-white/5"
             />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-dark/75 via-dark/25 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-dark via-dark/70 to-dark/40" />
+        <div className="absolute inset-0 bg-linear-to-r from-dark/75 via-dark/25 to-transparent" />
         <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-orange/15 blur-3xl" />
       </div>
 
