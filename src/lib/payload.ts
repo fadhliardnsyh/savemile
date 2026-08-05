@@ -118,31 +118,31 @@ export async function getHomePageServer() {
       }
 
       const whyChooseItems = Array.isArray(homePage.whyChooseItems)
-        ? homePage.whyChooseItems.map((item: any) => ({
-            tag: item.tag || undefined,
-            title: item.title || undefined,
+        ? homePage.whyChooseItems.map((item: Record<string, unknown>) => ({
+            tag: (item.tag as string) || undefined,
+            title: (item.title as string) || undefined,
             highlight: typeof item.highlight === "string"
               ? item.highlight.split(",").map((s: string) => s.trim()).filter(Boolean)
               : Array.isArray(item.highlight)
-              ? item.highlight
+              ? (item.highlight as string[])
               : undefined,
-            body: item.body || undefined,
-            icon: item.icon || undefined,
+            body: (item.body as string) || undefined,
+            icon: (item.icon as "consult" | "laser" | "bell" | "shield") || undefined,
             image: extractMediaUrl(item.image),
           }))
         : undefined;
 
       const successStories: Story[] = Array.isArray(homePage.successStories)
         ? homePage.successStories
-            .map((item: any): Story | null => {
+            .map((item: Record<string, unknown>): Story | null => {
               if (typeof item !== "object" || !item) return null;
               const imageUrl = extractMediaUrl(item.image);
               return {
-                tag: item.tag || "",
-                title: item.title || "",
-                units: item.units || "",
-                description: item.description || "",
-                href: item.href || "/insight/success-story",
+                tag: (item.tag as string) || "",
+                title: (item.title as string) || "",
+                units: (item.units as string) || "",
+                description: (item.description as string) || "",
+                href: (item.href as string) || "/insight/success-story",
                 ...(imageUrl ? { image: imageUrl } : {}),
               };
             })
@@ -240,11 +240,11 @@ export async function getTmsPageServer() {
       }
 
       const featureItems = Array.isArray(tmsPage.featureItems)
-        ? tmsPage.featureItems.map((item: any) => {
+        ? tmsPage.featureItems.map((item: Record<string, unknown>) => {
             const mInfo = extractMediaInfo(item.media);
             return {
-              title: item.title || "",
-              desc: item.desc || "",
+              title: (item.title as string) || "",
+              desc: (item.desc as string) || "",
               image: !mInfo.isVideo ? mInfo.url : undefined,
               video: mInfo.isVideo ? mInfo.url : undefined,
             };
@@ -327,8 +327,8 @@ export async function getAboutPageServer() {
 
       const storyBodyItems = Array.isArray(aboutPage.storyBody)
         ? aboutPage.storyBody
-            .map((item: any) =>
-              typeof item === "object" && item ? item.paragraph : String(item),
+            .map((item: Record<string, unknown>) =>
+              typeof item === "object" && item ? String(item.paragraph || "") : String(item),
             )
             .filter(Boolean)
         : undefined;
@@ -355,6 +355,112 @@ export async function getAboutPageServer() {
     trustTitle: about.trust.title,
     trustBody: about.trust.body,
   };
+}
+
+export async function getCareerPageServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const careerPage = await payload
+      .findGlobal({ slug: "career-page", depth: 2 })
+      .catch(() => null);
+    if (careerPage) {
+      const mediaInfo = extractMediaInfo(careerPage.heroMedia);
+      let heroImage: string | undefined;
+      let heroVideo: string | undefined;
+
+      if (mediaInfo.url) {
+        if (mediaInfo.isVideo) {
+          heroVideo = mediaInfo.url;
+        } else {
+          heroImage = mediaInfo.url;
+        }
+      }
+
+      const valuesItems = Array.isArray(careerPage.valuesItems)
+        ? careerPage.valuesItems.map((item: Record<string, unknown>) => ({
+            title: String(item.title || ""),
+            desc: String(item.desc || ""),
+            icon: String(item.icon || "target"),
+          }))
+        : undefined;
+
+      return {
+        title: careerPage.title || career.hero.eyebrow,
+        heroTitle: careerPage.heroTitle || `${career.hero.titleLead}${career.hero.titleAccent}`,
+        heroDescription: careerPage.heroDescription || career.hero.description,
+        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/career-banner.webp"),
+        heroVideo,
+        valuesTitle: careerPage.valuesTitle || career.values.title,
+        valuesTitleHighlight: careerPage.valuesTitleHighlight || career.values.titleAccent,
+        valuesBody: careerPage.valuesBody || career.values.body,
+        valuesItems: valuesItems && valuesItems.length > 0 ? valuesItems : career.values.items,
+        ctaTitle: careerPage.ctaTitle || `${career.join.titleLead}${career.join.titleAccent}`,
+        ctaTitleHighlight: careerPage.ctaTitleHighlight || career.join.titleAccent,
+        ctaDescription: careerPage.ctaDescription || career.join.description,
+        ctaActionText: careerPage.ctaActionText || career.join.action.label,
+        ctaActionUrl: careerPage.ctaActionUrl || career.join.action.href,
+      };
+    }
+  } catch {
+    // Fallback to static defaults
+  }
+
+  return {
+    title: career.hero.eyebrow,
+    heroTitle: `${career.hero.titleLead}${career.hero.titleAccent}`,
+    heroDescription: career.hero.description,
+    heroImage: "/assets/images/career-banner.webp",
+    heroVideo: undefined,
+    valuesTitle: career.values.title,
+    valuesTitleHighlight: career.values.titleAccent,
+    valuesBody: career.values.body,
+    valuesItems: career.values.items,
+    ctaTitle: `${career.join.titleLead}${career.join.titleAccent}`,
+    ctaTitleHighlight: career.join.titleAccent,
+    ctaDescription: career.join.description,
+    ctaActionText: career.join.action.label,
+    ctaActionUrl: career.join.action.href,
+  };
+}
+
+export interface JobListing {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  description?: string;
+  applyUrl?: string;
+}
+
+export async function getJobsServer(): Promise<JobListing[]> {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const { docs } = await payload.find({
+      collection: "jobs",
+      where: {
+        isActive: {
+          equals: true,
+        },
+      },
+      limit: 100,
+    });
+
+    if (docs && docs.length > 0) {
+      return docs.map((doc) => ({
+        id: String(doc.id),
+        title: doc.title || "",
+        department: doc.department || "",
+        location: doc.location || "",
+        type: doc.type || "Full-time",
+        description: doc.description || undefined,
+        applyUrl: doc.applyUrl || undefined,
+      }));
+    }
+  } catch {
+    // Fallback
+  }
+  return [];
 }
 
 interface PayloadClientDoc {

@@ -44,3 +44,4 @@ next-env.d.ts
 docs/*
 *.db
 public/uploads/*
+.agents/*

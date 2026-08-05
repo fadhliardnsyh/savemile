@@ -128,6 +128,7 @@ export function FeatureDeepDive({ features }: FeatureDeepDiveProps = {}) {
                           src={mediaUrl}
                           alt={item.title}
                           fill
+                          sizes="(max-width: 1024px) 100vw, 50vw"
                           className="object-cover"
                           priority={i === 0}
                         />

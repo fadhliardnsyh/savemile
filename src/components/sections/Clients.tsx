@@ -56,13 +56,15 @@ export function Clients({
                   {logo}
                 </span>
               ) : (
-                <Image
-                  src={logo.src}
-                  alt={logo.name}
-                  width={128}
-                  height={32}
-                  className="h-12 max-w-32 object-contain opacity-70 transition-all hover:opacity-100"
-                />
+                <div className="relative h-10 w-32 shrink-0">
+                  <Image
+                    src={logo.src}
+                    alt={logo.name}
+                    fill
+                    sizes="128px"
+                    className="object-contain opacity-70 transition-all hover:opacity-100"
+                  />
+                </div>
               )}
             </div>
           ))}

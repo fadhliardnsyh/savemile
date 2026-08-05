@@ -19,7 +19,7 @@ modProto.require = function (this: unknown, ...args: unknown[]) {
 import fs from "node:fs";
 import path from "node:path";
 import { catalogHero, products } from "../src/lib/catalog";
-import { about, clients, hero, site, successStory, tms, whyChoose } from "../src/lib/content";
+import { about, career, clients, hero, site, successStory, tms, whyChoose } from "../src/lib/content";
 
 async function seed() {
   console.log("Seeding Payload CMS with initial data...");
@@ -363,6 +363,32 @@ async function seed() {
     });
     console.log("✅ Seeded TmsPage consultation fields");
   }
+
+  // Seed CareerPage global and Jobs collection
+  const careerHeroMediaId = await uploadMediaIfExist("/assets/images/career-banner.webp", "Career Hero Media");
+  await payload.updateGlobal({
+    slug: "career-page",
+    data: {
+      title: "Karir",
+      heroTitle: `${career.hero.titleLead}${career.hero.titleAccent}`,
+      heroDescription: career.hero.description,
+      heroMedia: careerHeroMediaId,
+      valuesTitle: career.values.title,
+      valuesTitleHighlight: career.values.titleAccent,
+      valuesBody: career.values.body,
+      valuesItems: career.values.items.map((item) => ({
+        title: item.title,
+        desc: item.desc,
+        icon: item.icon,
+      })),
+      ctaTitle: `${career.join.titleLead}${career.join.titleAccent}`,
+      ctaTitleHighlight: career.join.titleAccent,
+      ctaDescription: career.join.description,
+      ctaActionText: career.join.action.label,
+      ctaActionUrl: career.join.action.href,
+    },
+  });
+  console.log("✅ CareerPage seeded");
 
   console.log("Seeding process complete!");
   process.exit(0);

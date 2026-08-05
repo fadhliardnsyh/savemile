@@ -63,6 +63,7 @@ export const CareerPage: GlobalConfig = {
             { label: 'Badge', value: 'badge' },
             { label: 'Growth', value: 'growth' },
             { label: 'Heart', value: 'heart' },
+            { label: 'Users', value: 'users' },
           ],
           defaultValue: 'target',
         },
