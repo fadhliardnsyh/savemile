@@ -1,7 +1,14 @@
 import type { CollectionConfig } from 'payload';
+import { revalidateCollection } from '../hooks/revalidate';
+
+const revalidateJobs = revalidateCollection('/company/career');
 
 export const Jobs: CollectionConfig = {
   slug: 'jobs',
+  hooks: {
+    afterChange: [revalidateJobs],
+    afterDelete: [revalidateJobs],
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'department', 'type', 'isActive'],

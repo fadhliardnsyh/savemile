@@ -1,7 +1,14 @@
 import type { CollectionConfig } from 'payload';
+import { revalidateCollection } from '../hooks/revalidate';
+
+const revalidateSuccessStories = revalidateCollection(['/', '/insight/success-story']);
 
 export const SuccessStories: CollectionConfig = {
   slug: 'success-stories',
+  hooks: {
+    afterChange: [revalidateSuccessStories],
+    afterDelete: [revalidateSuccessStories],
+  },
   admin: {
     useAsTitle: 'title',
   },

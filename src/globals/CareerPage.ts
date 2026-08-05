@@ -1,7 +1,11 @@
 import type { GlobalConfig } from 'payload';
+import { revalidateGlobal } from '../hooks/revalidate';
 
 export const CareerPage: GlobalConfig = {
   slug: 'career-page',
+  hooks: {
+    afterChange: [revalidateGlobal('/company/career')],
+  },
   fields: [
     {
       name: 'title',
