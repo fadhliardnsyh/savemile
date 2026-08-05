@@ -14,7 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/solusi/ban/${product.id}`}
-      className="beam group relative flex h-full flex-col rounded-[20px] bg-card shadow-[var(--shadow-soft)] ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
+      className="beam group relative flex h-full flex-col rounded-[20px] bg-card shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)"
     >
       <span className="beam-line" aria-hidden />
 
@@ -43,13 +43,13 @@ export function ProductCard({ product }: { product: Product }) {
             "absolute bottom-3 left-3 rounded-full px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-wider",
             product.brand === "tiron"
               ? "bg-[#c0392b]/10 text-[#c0392b] ring-1 ring-inset ring-[#c0392b]/20"
-              : "bg-dark/8 text-dark ring-1 ring-inset ring-dark/15"
+              : "bg-dark/8 text-dark ring-1 ring-inset ring-dark/15",
           )}
         >
           {product.brandChip}
         </span>
         <span className="absolute right-3 top-3 rounded-full bg-orange/10 px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
-          {tipeLabels[product.tipe]}
+          {tipeLabels[product.tipe] || product.tipe}
         </span>
       </div>
 
@@ -59,17 +59,26 @@ export function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         <div className="mt-0.5 text-xs font-medium text-muted">
-          Ban {tipeLabels[product.tipe]} {product.brandChip}
+          Ban {tipeLabels[product.tipe] || product.tipe} {product.brandChip}
         </div>
 
         {product.compatible.length > 0 && (
-          <ChipRow title="Cocok untuk" items={product.compatible.map((c) => compatibleLabels[c])} />
+          <ChipRow
+            title="Cocok untuk"
+            items={product.compatible.map((c) => compatibleLabels[c] || c)}
+          />
         )}
         {product.medan.length > 0 && (
-          <ChipRow title="Medan" items={product.medan.map((m) => medanLabels[m])} />
+          <ChipRow
+            title="Medan"
+            items={product.medan.map((m) => medanLabels[m] || m)}
+          />
         )}
         {product.fitur.length > 0 && (
-          <ChipRow title="Fitur" items={product.fitur.map((f) => fiturLabels[f])} />
+          <ChipRow
+            title="Fitur"
+            items={product.fitur.map((f) => fiturLabels[f] || f)}
+          />
         )}
 
         {/* Ukuran */}
@@ -78,9 +87,9 @@ export function ProductCard({ product }: { product: Product }) {
             Ukuran tersedia
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {product.sizes.slice(0, 5).map((s, i) => (
+            {product.sizes.slice(0, 5).map((s) => (
               <span
-                key={`${s + i}`}
+                key={s}
                 className="rounded-md bg-paper-2 px-2.5 py-1 font-mono text-[10px] font-semibold text-ink"
               >
                 {s}

@@ -303,6 +303,8 @@ export type CtaContent = {
   titleAccent: string;
   description: string;
   whatsappLabel: string;
+  whatsappMessage?: string;
+  whatsappUrl?: string;
 };
 
 /** CTA penutup home page. */
@@ -313,6 +315,7 @@ export const finalCta: CtaContent = {
   description:
     "Temukan solusi ban yang sesuai dengan kendaraan Anda dan ketahui seberapa besar biaya yang bisa dihemat.",
   whatsappLabel: "Konsultasi Gratis Sekarang",
+  whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
 };
 
 /** CTA konsultasi (halaman katalog & detail). */
@@ -323,6 +326,7 @@ export const consultCta: CtaContent = {
   description:
     "Tim teknis SaveMile siap membantu memilih ban yang paling sesuai untuk kendaraan, rute, dan anggaran Anda.",
   whatsappLabel: "Chat WhatsApp",
+  whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai kebutuhan ban armada kami.",
 };
 
 /* ---------- Tire Monitoring System (TMS) ---------- */
@@ -434,6 +438,7 @@ export const tmsCta: CtaContent = {
   description:
     "Temukan solusi ban yang sesuai dengan kendaraan Anda dan ketahui seberapa besar biaya yang bisa dihemat.",
   whatsappLabel: "Konsultasi Gratis Sekarang",
+  whatsappMessage: "Halo SaveMile, saya ingin tahu lebih lanjut mengenai Tire Management Solution (TMS).",
 };
 
 /* ---------- Company: About ---------- */
@@ -619,3 +624,5 @@ export const footerColumns = [
     ],
   },
 ];
+
+

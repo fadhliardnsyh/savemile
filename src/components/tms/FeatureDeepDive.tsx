@@ -7,8 +7,25 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { tms } from "@/lib/content";
 
-export function FeatureDeepDive() {
-  const f = tms.features;
+interface FeatureItem {
+  title: string;
+  desc: string;
+  image?: string;
+  video?: string;
+}
+
+interface FeatureDeepDiveProps {
+  features?: {
+    eyebrow?: string;
+    titleLead?: string;
+    titleAccent?: string;
+    items?: FeatureItem[];
+  };
+}
+
+export function FeatureDeepDive({ features }: FeatureDeepDiveProps = {}) {
+  const f = features || tms.features;
+  const items: FeatureItem[] = f.items || [];
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -26,7 +43,7 @@ export function FeatureDeepDive() {
         <div className="mt-14 grid gap-8 lg:grid-cols-12 items-stretch">
           {/* Left Column: Interactive Feature Cards */}
           <div className="lg:col-span-6 flex flex-col justify-between gap-3.5">
-            {f.items.map((item, i) => {
+            {items.map((item, i) => {
               const isActive = activeTab === i;
               return (
                 <Reveal key={item.title} delay={i * 50}>
@@ -75,36 +92,60 @@ export function FeatureDeepDive() {
             })}
           </div>
 
-          {/* Right Column: Edge-to-edge Feature Image Card (Smooth Crossfade) */}
+          {/* Right Column: Edge-to-edge Feature Image/Video Card (Smooth Crossfade) */}
           <div className="lg:col-span-6 flex flex-col">
             <Reveal delay={120} className="h-full flex flex-col">
               <div className="relative w-full h-full min-h-80 sm:min-h-96 rounded-3xl overflow-hidden shadow-xl border border-line/80 bg-white">
-                {f.items.map((item, i) => (
-                  <div
-                    key={item.title}
-                    className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-                      activeTab === i
-                        ? "opacity-100 z-10 pointer-events-auto"
-                        : "opacity-0 z-0 pointer-events-none"
-                    }`}
-                  >
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover"
-                      priority={i === 0}
-                    />
-                  </div>
-                ))}
+                {items.map((item, i) => {
+                  const mediaUrl = item.video || item.image;
+                  const isVideo = Boolean(
+                    item.video ||
+                      (item.image &&
+                        /\.(mp4|webm|ogg|mov|m4v)$/i.test(item.image))
+                  );
+
+                  return (
+                    <div
+                      key={item.title}
+                      className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
+                        activeTab === i
+                          ? "opacity-100 z-10 pointer-events-auto"
+                          : "opacity-0 z-0 pointer-events-none"
+                      }`}
+                    >
+                      {isVideo && mediaUrl ? (
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="h-full w-full object-cover"
+                        >
+                          <source src={mediaUrl} />
+                        </video>
+                      ) : mediaUrl ? (
+                        <Image
+                          src={mediaUrl}
+                          alt={item.title}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                          className="object-cover"
+                          priority={i === 0}
+                        />
+                      ) : null}
+                    </div>
+                  );
+                })}
 
                 {/* Floating Feature Badge */}
-                <div className="absolute bottom-5 left-5 z-20 flex items-center gap-2.5 rounded-full bg-white/90 px-4 py-2 shadow-md backdrop-blur-md border border-white/60">
-                  <span className="h-2 w-2 rounded-full bg-orange animate-pulse" />
-                  <span className="font-display text-xs sm:text-sm font-semibold text-ink">
-                    {f.items[activeTab].title}
-                  </span>
-                </div>
+                {items[activeTab] && (
+                  <div className="absolute bottom-5 left-5 z-20 flex items-center gap-2.5 rounded-full bg-white/90 px-4 py-2 shadow-md backdrop-blur-md border border-white/60">
+                    <span className="h-2 w-2 rounded-full bg-orange animate-pulse" />
+                    <span className="font-display text-xs sm:text-sm font-semibold text-ink">
+                      {items[activeTab].title}
+                    </span>
+                  </div>
+                )}
               </div>
             </Reveal>
           </div>

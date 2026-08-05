@@ -4,7 +4,13 @@ import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { footerColumns, site } from "@/lib/content";
 
-export function Footer() {
+interface FooterProps {
+  siteData?: typeof site;
+}
+
+export function Footer({ siteData }: FooterProps) {
+  const currentSite = siteData || site;
+
   return (
     <footer className="relative z-10 mt-auto bg-dark text-white">
       <Container className="py-14">
@@ -13,17 +19,17 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Image
               src="/assets/logos/savemile-logo.png"
-              alt="SaveMile"
+              alt={currentSite.name}
               width={1350}
               height={164}
               className="h-6 w-auto"
             />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/75">
-              {site.blurb}
+              {currentSite.blurb}
             </p>
             <div className="mt-5 space-y-1.5 text-sm text-white/80">
-              <p className="max-w-xs">{site.address}</p>
-              <p className="font-mono">{site.email}</p>
+              <p className="max-w-xs">{currentSite.address}</p>
+              <p className="font-mono">{currentSite.email}</p>
             </div>
           </div>
 
@@ -51,10 +57,10 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-dark-line pt-6 pb-16 sm:flex-row sm:items-center sm:pb-6 sm:pr-24">
           <p className="text-sm text-white/70">
-            © {new Date().getFullYear()} {site.name}. Seluruh hak cipta dilindungi.
+            © {new Date().getFullYear()} {currentSite.name}. Seluruh hak cipta dilindungi.
           </p>
           <Link
-            href={site.whatsapp}
+            href={currentSite.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-white/85 transition-colors hover:text-white"

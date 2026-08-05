@@ -28,10 +28,10 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
       <div className="relative">
         {/* Background bar — crossfade opacity, tanpa garis border */}
         <div
-          aria-hidden
+          aria-hidden="true"
           className={cn(
             "absolute inset-0 bg-paper/85 shadow-[0_10px_30px_-18px_rgba(22,19,14,0.4)] backdrop-blur-md transition-opacity duration-200 ease-out",
-            scrolled || open ? "opacity-100" : "opacity-0"
+            scrolled || open ? "opacity-100" : "opacity-0",
           )}
         />
         <Container className="relative flex h-16 items-center justify-between">
@@ -50,7 +50,7 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                     "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-colors duration-200 ease-out",
                     light
                       ? "text-white/85 hover:bg-white/10 hover:text-white"
-                      : "text-ink-soft hover:bg-ink/[0.04] hover:text-ink"
+                      : "text-ink-soft hover:bg-ink/4 hover:text-ink",
                   )}
                 >
                   {group.label}
@@ -60,9 +60,13 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2}
-                    aria-hidden
+                    aria-hidden="true"
                   >
-                    <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="m6 9 6 6 6-6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
 
@@ -70,10 +74,10 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                 <div
                   className={cn(
                     "invisible absolute top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100",
-                    i === nav.length - 1 ? "right-0" : "left-0"
+                    i === nav.length - 1 ? "right-0" : "left-0",
                   )}
                 >
-                  <div className="w-72 rounded-2xl border border-line bg-card p-2 shadow-[var(--shadow-lift)]">
+                  <div className="w-72 rounded-2xl border border-line bg-card p-2 shadow-(--shadow-lift)">
                     {group.children.map((child) => (
                       <Link
                         key={child.href}
@@ -120,13 +124,31 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
             aria-expanded={open}
             className={cn(
               "grid h-10 w-10 place-items-center rounded-lg border md:hidden",
-              light ? "border-white/30" : "border-ink/15"
+              light ? "border-white/30" : "border-ink/15",
             )}
           >
             <span className="flex flex-col gap-1.5">
-              <span className={cn("h-0.5 w-5 transition-transform", light ? "bg-white" : "bg-ink", open && "translate-y-2 rotate-45")} />
-              <span className={cn("h-0.5 w-5 transition-opacity", light ? "bg-white" : "bg-ink", open && "opacity-0")} />
-              <span className={cn("h-0.5 w-5 transition-transform", light ? "bg-white" : "bg-ink", open && "-translate-y-2 -rotate-45")} />
+              <span
+                className={cn(
+                  "h-0.5 w-5 transition-transform",
+                  light ? "bg-white" : "bg-ink",
+                  open && "translate-y-2 rotate-45",
+                )}
+              />
+              <span
+                className={cn(
+                  "h-0.5 w-5 transition-opacity",
+                  light ? "bg-white" : "bg-ink",
+                  open && "opacity-0",
+                )}
+              />
+              <span
+                className={cn(
+                  "h-0.5 w-5 transition-transform",
+                  light ? "bg-white" : "bg-ink",
+                  open && "-translate-y-2 -rotate-45",
+                )}
+              />
             </span>
           </button>
         </Container>
@@ -136,14 +158,17 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
       <div
         className={cn(
           "overflow-y-auto border-b border-line/70 bg-paper/97 backdrop-blur-md transition-[max-height] duration-300 md:hidden",
-          open ? "max-h-[80vh]" : "max-h-0"
+          open ? "max-h-[80vh]" : "max-h-0",
         )}
       >
         <Container className="flex flex-col gap-1 py-4">
           {nav.map((group) => {
             const expanded = openGroup === group.label;
             return (
-              <div key={group.label} className="border-b border-line/60 last:border-0">
+              <div
+                key={group.label}
+                className="border-b border-line/60 last:border-0"
+              >
                 <button
                   type="button"
                   onClick={() => setOpenGroup(expanded ? null : group.label)}
@@ -152,16 +177,28 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                   {group.label}
                   <svg
                     viewBox="0 0 24 24"
-                    className={cn("h-4 w-4 transition-transform", expanded && "rotate-180")}
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      expanded && "rotate-180",
+                    )}
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2}
-                    aria-hidden
+                    aria-hidden="true"
                   >
-                    <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="m6 9 6 6 6-6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
-                <div className={cn("overflow-hidden transition-[max-height] duration-300", expanded ? "max-h-60" : "max-h-0")}>
+                <div
+                  className={cn(
+                    "overflow-hidden transition-[max-height] duration-300",
+                    expanded ? "max-h-60" : "max-h-0",
+                  )}
+                >
                   <div className="pb-2 pl-3">
                     {group.children.map((child) => (
                       <Link
@@ -171,7 +208,7 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                           setOpen(false);
                           setOpenGroup(null);
                         }}
-                        className="block rounded-lg px-3 py-2 text-sm text-ink-soft hover:bg-ink/[0.04]"
+                        className="block rounded-lg px-3 py-2 text-sm text-ink-soft hover:bg-ink/4"
                       >
                         {child.label}
                       </Link>

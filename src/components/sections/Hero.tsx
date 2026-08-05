@@ -4,13 +4,36 @@ import { Container } from "@/components/ui/Container";
 import { Icon } from "@/components/ui/Icon";
 import { hero } from "@/lib/content";
 
-export function Hero() {
+interface HeroProps {
+  data?: {
+    heroEyebrow?: string;
+    heroDescription?: string;
+    heroImage?: string;
+    heroVideo?: string;
+  };
+}
+
+export function Hero({ data }: HeroProps) {
+  const heroImage = data?.heroImage || hero.image;
+  const heroVideo = data?.heroVideo;
+  const heroDescription = data?.heroDescription || hero.description;
+
   return (
     <section className="relative flex min-h-svh items-center overflow-hidden bg-dark pt-28 pb-16 text-paper">
       <div aria-hidden className="absolute inset-0">
-        {hero.image ? (
+        {heroVideo ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover"
+          >
+            <source src={heroVideo} />
+          </video>
+        ) : heroImage ? (
           <Image
-            src={hero.image}
+            src={heroImage}
             alt=""
             fill
             priority
@@ -27,6 +50,11 @@ export function Hero() {
 
       <Container className="relative z-10">
         <div className="mx-auto max-w-3xl text-center">
+          {data?.heroEyebrow && (
+            <span className="fade-up mb-4 inline-flex items-center rounded-full bg-orange/10 px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
+              {data.heroEyebrow}
+            </span>
+          )}
           <h1
             className="fade-up font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white text-balance sm:text-6xl"
             style={{ ["--d" as string]: "0ms" }}
@@ -59,7 +87,7 @@ export function Hero() {
             className="fade-up mx-auto mt-6 max-w-xl text-lg leading-relaxed text-paper/80 text-pretty"
             style={{ ["--d" as string]: "180ms" }}
           >
-            {hero.description}
+            {heroDescription}
           </p>
 
           {/* Tire finder */}

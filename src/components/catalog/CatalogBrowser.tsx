@@ -4,37 +4,132 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { Icon } from "@/components/ui/Icon";
 import { Select } from "@/components/ui/Select";
-import { lenisRef } from "@/lib/lenisRef";
 import {
   brandOptions,
-  tipeOptions,
+  compatibleLabels,
   compatibleOptions,
-  medanOptions,
+  fiturLabels,
   fiturOptions,
+  medanLabels,
+  medanOptions,
   products,
+  tipeLabels,
+  tipeOptions,
   type Brand,
-  type Tipe,
   type Compatible,
-  type Medan,
   type Fitur,
+  type Medan,
   type Product,
+  type Tipe,
 } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
+import { lenisRef } from "@/lib/lenisRef";
 
 type Sort = "unggulan" | "az" | "za";
 
-const sizeOptions = Array.from(new Set(products.flatMap((p) => p.sizes))).sort(
-  (a, b) => a.localeCompare(b, undefined, { numeric: true })
-);
+export function CatalogBrowser({
+  initialProducts,
+}: { initialProducts?: Product[] } = {}) {
+  const productList = useMemo(
+    () =>
+      initialProducts && initialProducts.length > 0
+        ? initialProducts
+        : products,
+    [initialProducts],
+  );
 
-function count<T>(pick: (p: Product) => T[] | T, val: T) {
-  return products.filter((p) => {
-    const v = pick(p);
-    return Array.isArray(v) ? v.includes(val) : v === val;
-  }).length;
-}
+  const dynamicBrandOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    brandOptions.forEach((o) => {
+      map.set(o.key, o.label);
+    });
+    productList.forEach((p) => {
+      if (p.brand && !map.has(p.brand)) {
+        map.set(p.brand, p.brandChip || p.brand);
+      }
+    });
+    return Array.from(map.entries()).map(([key, label]) => ({
+      key: key as Brand,
+      label,
+    }));
+  }, [productList]);
 
-export function CatalogBrowser() {
+  const dynamicTipeOptions = useMemo(() => {
+    const set = new Set<string>();
+    tipeOptions.forEach((o) => {
+      set.add(o.key);
+    });
+    productList.forEach((p) => {
+      if (p.tipe) set.add(p.tipe);
+    });
+    return Array.from(set).map((key) => ({
+      key: key as Tipe,
+      label: tipeLabels[key] || key.charAt(0).toUpperCase() + key.slice(1),
+    }));
+  }, [productList]);
+
+  const dynamicCompatibleOptions = useMemo(() => {
+    const set = new Set<string>();
+    compatibleOptions.forEach((o) => {
+      set.add(o.key);
+    });
+    productList.forEach((p) => {
+      p.compatible?.forEach((c) => {
+        set.add(c);
+      });
+    });
+    return Array.from(set).map((key) => ({
+      key: key as Compatible,
+      label: compatibleLabels[key] || key,
+    }));
+  }, [productList]);
+
+  const dynamicMedanOptions = useMemo(() => {
+    const set = new Set<string>();
+    medanOptions.forEach((o) => {
+      set.add(o.key);
+    });
+    productList.forEach((p) => {
+      p.medan?.forEach((m) => {
+        set.add(m);
+      });
+    });
+    return Array.from(set).map((key) => ({
+      key: key as Medan,
+      label: medanLabels[key] || key,
+    }));
+  }, [productList]);
+
+  const dynamicFiturOptions = useMemo(() => {
+    const set = new Set<string>();
+    fiturOptions.forEach((o) => {
+      set.add(o.key);
+    });
+    productList.forEach((p) => {
+      p.fitur?.forEach((f) => {
+        set.add(f);
+      });
+    });
+    return Array.from(set).map((key) => ({
+      key: key as Fitur,
+      label: fiturLabels[key] || key,
+    }));
+  }, [productList]);
+
+  const sizeOptions = useMemo(
+    () =>
+      Array.from(new Set(productList.flatMap((p) => p.sizes))).sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true }),
+      ),
+    [productList],
+  );
+
+  const count = <T,>(pick: (p: Product) => T[] | T, val: T) =>
+    productList.filter((p) => {
+      const v = pick(p);
+      return Array.isArray(v) ? v.includes(val) : v === val;
+    }).length;
+
   const [brand, setBrand] = useState<Brand[]>([]);
   const [tipe, setTipe] = useState<Tipe[]>([]);
   const [compatible, setCompatible] = useState<Compatible[]>([]);
@@ -44,14 +139,26 @@ export function CatalogBrowser() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("unggulan");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [highlight, setHighlight] = useState<"kendaraan" | "ukuran" | null>(null);
+  const [highlight, setHighlight] = useState<"kendaraan" | "ukuran" | null>(
+    null,
+  );
 
   const activeCount =
-    brand.length + tipe.length + compatible.length + medan.length +
-    fitur.length + sizes.length + (query ? 1 : 0);
+    brand.length +
+    tipe.length +
+    compatible.length +
+    medan.length +
+    fitur.length +
+    sizes.length +
+    (query ? 1 : 0);
 
-  const toggle = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, val: T) =>
-    setter((prev) => (prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val]));
+  const toggle = <T,>(
+    setter: React.Dispatch<React.SetStateAction<T[]>>,
+    val: T,
+  ) =>
+    setter((prev) =>
+      prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val],
+    );
 
   const reset = () => {
     setBrand([]);
@@ -85,10 +192,14 @@ export function CatalogBrowser() {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const list = products.filter((p) => {
+    const list = productList.filter((p) => {
       if (brand.length && !brand.includes(p.brand)) return false;
       if (tipe.length && !tipe.includes(p.tipe)) return false;
-      if (compatible.length && !p.compatible.some((c) => compatible.includes(c))) return false;
+      if (
+        compatible.length &&
+        !p.compatible.some((c) => compatible.includes(c))
+      )
+        return false;
       if (medan.length && !p.medan.some((m) => medan.includes(m))) return false;
       if (fitur.length && !p.fitur.some((f) => fitur.includes(f))) return false;
       if (sizes.length && !p.sizes.some((s) => sizes.includes(s))) return false;
@@ -97,19 +208,31 @@ export function CatalogBrowser() {
     });
     const sorted = [...list];
     if (sort === "az")
-      sorted.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+      sorted.sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true }),
+      );
     else if (sort === "za")
-      sorted.sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true }));
+      sorted.sort((a, b) =>
+        b.name.localeCompare(a.name, undefined, { numeric: true }),
+      );
     return sorted;
-  }, [brand, tipe, compatible, medan, fitur, sizes, query, sort]);
+  }, [productList, brand, tipe, compatible, medan, fitur, sizes, query, sort]);
 
   // ── Pagination ──
   const PAGE_SIZE = 9;
   const [page, setPage] = useState(1);
   const topRef = useRef<HTMLDivElement>(null);
 
-  // reset ke halaman 1 tiap filter berubah (adjust state saat render, bukan effect)
-  const filterSig = [brand, tipe, compatible, medan, fitur, sizes, query, sort].join("|");
+  const filterSig = [
+    brand,
+    tipe,
+    compatible,
+    medan,
+    fitur,
+    sizes,
+    query,
+    sort,
+  ].join("|");
   const [lastSig, setLastSig] = useState(filterSig);
   if (filterSig !== lastSig) {
     setLastSig(filterSig);
@@ -136,7 +259,7 @@ export function CatalogBrowser() {
   const panel = (
     <div className="flex flex-col gap-7">
       <FilterGroup title="Merk">
-        {brandOptions.map((o) => (
+        {dynamicBrandOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
@@ -148,7 +271,7 @@ export function CatalogBrowser() {
       </FilterGroup>
 
       <FilterGroup title="Tipe">
-        {tipeOptions.map((o) => (
+        {dynamicTipeOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
@@ -159,8 +282,12 @@ export function CatalogBrowser() {
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Compatible" dataKey="kendaraan" highlight={highlight === "kendaraan"}>
-        {compatibleOptions.map((o) => (
+      <FilterGroup
+        title="Compatible"
+        dataKey="kendaraan"
+        highlight={highlight === "kendaraan"}
+      >
+        {dynamicCompatibleOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
@@ -172,7 +299,7 @@ export function CatalogBrowser() {
       </FilterGroup>
 
       <FilterGroup title="Medan">
-        {medanOptions.map((o) => (
+        {dynamicMedanOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
@@ -184,7 +311,7 @@ export function CatalogBrowser() {
       </FilterGroup>
 
       <FilterGroup title="Fitur">
-        {fiturOptions.map((o) => (
+        {dynamicFiturOptions.map((o) => (
           <CheckRow
             key={o.key}
             label={o.label}
@@ -195,7 +322,11 @@ export function CatalogBrowser() {
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Ukuran" dataKey="ukuran" highlight={highlight === "ukuran"}>
+      <FilterGroup
+        title="Ukuran"
+        dataKey="ukuran"
+        highlight={highlight === "ukuran"}
+      >
         {sizeOptions.map((s) => (
           <CheckRow
             key={s}
@@ -220,7 +351,9 @@ export function CatalogBrowser() {
             className="scrollbar-thin sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain pb-6 pr-2"
           >
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-display text-lg font-bold text-ink">Filter</h2>
+              <h2 className="font-display text-lg font-bold text-ink">
+                Filter
+              </h2>
               {activeCount > 0 && (
                 <button
                   type="button"
@@ -249,16 +382,23 @@ export function CatalogBrowser() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Cari ban berdasarkan nama (mis. HS314, DSR688)"
-                className="h-12 w-full rounded-full border border-line bg-card pl-11 pr-10 text-sm text-ink outline-none transition-all duration-200 placeholder:text-muted hover:border-orange/50 hover:shadow-[var(--shadow-soft)] focus:border-orange focus:shadow-none focus:ring-4 focus:ring-orange/15"
+                className="h-12 w-full rounded-full border border-line bg-card pl-11 pr-10 text-sm text-ink outline-none transition-all duration-200 placeholder:text-muted hover:border-orange/50 hover:shadow-(--shadow-soft) focus:border-orange focus:shadow-none focus:ring-4 focus:ring-orange/15"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Hapus pencarian"
-                  className="absolute right-3.5 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-ink/[0.06] hover:text-ink"
+                  className="absolute right-3.5 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-full text-muted transition-colors hover:bg-ink/6 hover:text-ink"
                 >
-                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2.2}
+                    aria-hidden="true"
+                  >
                     <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -279,8 +419,8 @@ export function CatalogBrowser() {
                 ariaLabel="Urutkan produk"
                 options={[
                   { value: "unggulan", label: "Unggulan" },
-                  { value: "az", label: "Nama A–Z" },
-                  { value: "za", label: "Nama Z–A" },
+                  { value: "az", label: "Nama A-Z" },
+                  { value: "za", label: "Nama Z-A" },
                 ]}
               />
             </div>
@@ -293,11 +433,14 @@ export function CatalogBrowser() {
               <span className="font-semibold text-ink">
                 {rangeStart}–{rangeEnd}
               </span>{" "}
-              dari <span className="font-semibold text-ink">{results.length}</span> produk
+              dari{" "}
+              <span className="font-semibold text-ink">{results.length}</span>{" "}
+              produk
               {query && (
                 <>
                   {" "}
-                  untuk <span className="font-semibold text-ink">“{query}”</span>
+                  untuk{" "}
+                  <span className="font-semibold text-ink">“{query}”</span>
                 </>
               )}
             </p>
@@ -315,7 +458,10 @@ export function CatalogBrowser() {
           {/* Grid */}
           {results.length > 0 ? (
             <>
-              <div key={current} className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div
+                key={current}
+                className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
+              >
                 {paged.map((p, i) => (
                   <div
                     key={p.id}
@@ -336,26 +482,39 @@ export function CatalogBrowser() {
                     aria-label="Halaman sebelumnya"
                     className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-soft transition-colors hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line disabled:hover:text-ink-soft"
                   >
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-                      <path d="m15 18-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m15 18-6-6 6-6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => goPage(n)}
-                      aria-current={n === current ? "page" : undefined}
-                      className={cn(
-                        "h-9 min-w-9 rounded-lg px-3 text-sm font-medium transition-colors",
-                        n === current
-                          ? "bg-orange text-white"
-                          : "text-ink-soft hover:bg-ink/[0.05]"
-                      )}
-                    >
-                      {n}
-                    </button>
-                  ))}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => goPage(n)}
+                        aria-current={n === current ? "page" : undefined}
+                        className={cn(
+                          "h-9 min-w-9 rounded-lg px-3 text-sm font-medium transition-colors",
+                          n === current
+                            ? "bg-orange text-white"
+                            : "text-ink-soft hover:bg-ink/5",
+                        )}
+                      >
+                        {n}
+                      </button>
+                    ),
+                  )}
                   <button
                     type="button"
                     onClick={() => goPage(current + 1)}
@@ -363,8 +522,19 @@ export function CatalogBrowser() {
                     aria-label="Halaman berikutnya"
                     className="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-soft transition-colors hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-line disabled:hover:text-ink-soft"
                   >
-                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-                      <path d="m9 18 6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m9 18 6-6-6-6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -392,21 +562,32 @@ export function CatalogBrowser() {
 
       {/* ── Mobile filter drawer ── */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
-          <div
-            className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+        <div className="fixed inset-0 z-60 lg:hidden">
+          <button
+            type="button"
+            aria-label="Tutup filter"
+            className="absolute inset-0 h-full w-full border-0 bg-ink/40 p-0 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
           <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-sm flex-col bg-paper shadow-2xl">
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
-              <h2 className="font-display text-lg font-bold text-ink">Filter</h2>
+              <h2 className="font-display text-lg font-bold text-ink">
+                Filter
+              </h2>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
                 aria-label="Tutup filter"
                 className="grid h-9 w-9 place-items-center rounded-lg border border-line"
               >
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
               </button>
@@ -459,10 +640,10 @@ function FilterGroup({
         "-mx-2 scroll-mt-4 rounded-xl px-2 py-1.5 transition-all duration-300",
         highlight
           ? "bg-orange-soft/50 ring-2 ring-orange/50"
-          : "ring-2 ring-transparent"
+          : "ring-2 ring-transparent",
       )}
     >
-      <h3 className="mb-2.5 flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-muted">
+      <h3 className="mb-2.5 flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest text-muted">
         {title}
         {highlight && (
           <span className="rounded-full bg-orange px-1.5 py-0.5 text-[9px] font-bold text-white">
@@ -489,7 +670,7 @@ function CheckRow({
   mono?: boolean;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-ink/[0.03]">
+    <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-ink/3">
       <input
         type="checkbox"
         checked={checked}
@@ -499,19 +680,32 @@ function CheckRow({
       <span
         className={cn(
           "grid h-4 w-4 shrink-0 place-items-center rounded-[5px] border transition-colors",
-          checked ? "border-orange bg-orange text-white" : "border-line bg-card"
+          checked
+            ? "border-orange bg-orange text-white"
+            : "border-line bg-card",
         )}
       >
         {checked && (
-          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={3.5} aria-hidden>
-            <path d="m5 12 4 4 10-10" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            viewBox="0 0 24 24"
+            className="h-3 w-3"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3.5}
+            aria-hidden="true"
+          >
+            <path
+              d="m5 12 4 4 10-10"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         )}
       </span>
       <span
         className={cn(
           "flex-1 text-[13px] text-ink-soft",
-          mono && "font-mono text-xs"
+          mono && "font-mono text-xs",
         )}
       >
         {label}

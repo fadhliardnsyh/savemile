@@ -3,15 +3,24 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { clients } from "@/lib/content";
 
+export type ClientLogoProp = string | { name: string; src: string };
+
 export function Clients({
   title,
   body,
-}: { title?: string; body?: string } = {}) {
+  logos,
+}: {
+  title?: string;
+  body?: string;
+  logos?: ClientLogoProp[];
+} = {}) {
+  const activeLogos = logos && logos.length > 0 ? logos : clients.logos;
+
   const logoItems = [
-    ...clients.logos,
-    ...clients.logos,
-    ...clients.logos,
-    ...clients.logos,
+    ...activeLogos,
+    ...activeLogos,
+    ...activeLogos,
+    ...activeLogos,
   ].map((logo, index) => ({
     logo,
     id: `set-${index}-${typeof logo === "string" ? logo : logo.name}`,
@@ -47,13 +56,15 @@ export function Clients({
                   {logo}
                 </span>
               ) : (
-                <Image
-                  src={logo.src}
-                  alt={logo.name}
-                  width={128}
-                  height={32}
-                  className="h-12 max-w-32 object-contain opacity-70 transition-all hover:opacity-100"
-                />
+                <div className="relative h-10 w-32 shrink-0">
+                  <Image
+                    src={logo.src}
+                    alt={logo.name}
+                    fill
+                    sizes="128px"
+                    className="object-contain opacity-70 transition-all hover:opacity-100"
+                  />
+                </div>
               )}
             </div>
           ))}
