@@ -1,8 +1,12 @@
 import type { GlobalConfig } from 'payload';
 import { coverage } from '../lib/content';
+import { revalidateGlobal } from '../hooks/revalidate';
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
+  hooks: {
+    afterChange: [revalidateGlobal('/')],
+  },
   fields: [
     {
       name: 'title',

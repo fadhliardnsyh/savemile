@@ -1,7 +1,11 @@
 import type { GlobalConfig } from 'payload';
+import { revalidateGlobal } from '../hooks/revalidate';
 
 export const TmsPage: GlobalConfig = {
   slug: 'tms-page',
+  hooks: {
+    afterChange: [revalidateGlobal('/solusi/tire-monitoring-system')],
+  },
   fields: [
     {
       name: 'title',

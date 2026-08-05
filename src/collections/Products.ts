@@ -1,7 +1,17 @@
 import type { CollectionConfig } from 'payload';
+import { revalidateCollection } from '../hooks/revalidate';
+
+const revalidateProduct = revalidateCollection((doc) => [
+  '/solusi/ban',
+  `/solusi/ban/${doc.id}`,
+]);
 
 export const Products: CollectionConfig = {
   slug: 'products',
+  hooks: {
+    afterChange: [revalidateProduct],
+    afterDelete: [revalidateProduct],
+  },
   admin: {
     useAsTitle: 'name',
   },

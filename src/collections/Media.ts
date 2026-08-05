@@ -1,7 +1,12 @@
 import type { CollectionConfig } from 'payload';
+import { revalidateCollection } from '../hooks/revalidate';
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  hooks: {
+    afterChange: [revalidateCollection('/', 'layout')],
+    afterDelete: [revalidateCollection('/', 'layout')],
+  },
   access: {
     read: () => true,
   },
