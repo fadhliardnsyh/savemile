@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/layout/Logo";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { site, type CtaContent } from "@/lib/content";
+import { getWaUrl } from "@/lib/whatsapp";
 
 type CtaAction = {
   label: string;
@@ -27,6 +28,8 @@ export function CtaSection({
   showPhone?: boolean;
   action?: CtaAction;
 }) {
+  const waHref = content.whatsappUrl || getWaUrl(site.whatsapp, content.whatsappMessage);
+
   return (
     <section className="relative z-10 py-16 sm:py-20">
       <Container>
@@ -57,7 +60,7 @@ export function CtaSection({
                   {action.label}
                 </Button>
               ) : (
-                <Button href={site.whatsapp} variant="wa" size="lg" external>
+                <Button href={waHref} variant="wa" size="lg" external>
                   <Icon name="whatsapp" className="h-5 w-5" />
                   {content.whatsappLabel}
                 </Button>

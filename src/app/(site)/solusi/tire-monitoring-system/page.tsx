@@ -6,7 +6,6 @@ import { HowItWorks } from "@/components/tms/HowItWorks";
 import { FeatureDeepDive } from "@/components/tms/FeatureDeepDive";
 import { Consultation } from "@/components/tms/Consultation";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { tmsCta } from "@/lib/content";
 import { getTmsPageServer } from "@/lib/payload";
 
 export const metadata: Metadata = {
@@ -30,7 +29,7 @@ export default async function TmsPage() {
         <HowItWorks />
         <FeatureDeepDive features={tmsData.features} />
         <Consultation consultation={tmsData.consultation} />
-        <CtaSection content={tmsCta} />
+        <CtaSection content={tmsData.tmsCta} />
       </main>
       <Footer />
     </>

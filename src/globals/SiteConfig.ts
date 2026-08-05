@@ -34,6 +34,12 @@ export const SiteConfig: GlobalConfig = {
       type: 'text',
     },
     {
+      name: 'whatsappMessage',
+      type: 'textarea',
+      label: 'Default WhatsApp Message Template',
+      defaultValue: 'Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.',
+    },
+    {
       name: 'address',
       type: 'textarea',
     },

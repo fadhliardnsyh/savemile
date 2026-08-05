@@ -14,7 +14,6 @@ import { WhyChoose } from "@/components/sections/WhyChoose";
 import { Coverage } from "@/components/sections/Coverage";
 import { SuccessStory } from "@/components/sections/SuccessStory";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { finalCta } from "@/lib/content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const homeData = await getHomePageServer();
@@ -41,9 +40,9 @@ export default async function Home() {
         <Clients logos={clientsData.logos} />
         <Stats />
         <WhyChoose data={homeData} />
-        <Coverage />
+        <Coverage data={homeData.coverage} />
         <SuccessStory items={homeData?.successStories ?? successStoriesData} />
-        <CtaSection content={finalCta} />
+        <CtaSection content={homeData.finalCta} />
       </main>
       <Footer siteData={siteData} />
     </>

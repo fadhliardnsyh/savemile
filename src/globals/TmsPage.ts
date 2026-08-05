@@ -15,6 +15,12 @@ export const TmsPage: GlobalConfig = {
       label: 'Hero Media (Image or Video)',
     },
     {
+      name: 'whatsappMessage',
+      type: 'textarea',
+      label: 'WhatsApp CTA Message Template',
+      defaultValue: 'Halo SaveMile, saya ingin tahu lebih lanjut mengenai Tire Management Solution (TMS).',
+    },
+    {
       name: 'featuresTitle',
       type: 'text',
       label: 'Features Section Title',

@@ -18,8 +18,29 @@ modProto.require = function (this: unknown, ...args: unknown[]) {
 
 import fs from "node:fs";
 import path from "node:path";
+
+// Load .env file for CLI execution
+try {
+  const envPath = path.resolve(process.cwd(), ".env");
+  if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, "utf-8");
+    for (const line of envConfig.split("\n")) {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith("#")) {
+        const [key, ...values] = trimmed.split("=");
+        if (key && values.length > 0) {
+          const k = key.trim();
+          if (!process.env[k]) {
+            process.env[k] = values.join("=").trim();
+          }
+        }
+      }
+    }
+  }
+} catch (e) {}
+
 import { catalogHero, products } from "../src/lib/catalog";
-import { about, career, clients, hero, site, successStory, tms, whyChoose } from "../src/lib/content";
+import { about, career, clients, contact, coverage, hero, site, successStory, tms, whyChoose } from "../src/lib/content";
 
 async function seed() {
   console.log("Seeding Payload CMS with initial data...");
@@ -38,6 +59,7 @@ async function seed() {
       hrEmail: site.hrEmail,
       phone: site.phone,
       whatsapp: site.whatsapp,
+      whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
       address: site.address,
     },
   });
@@ -89,6 +111,11 @@ async function seed() {
       whyChooseTitle: `${whyChoose.titleLead}${whyChoose.titleAccent}${whyChoose.titleTail}`,
       whyChooseBody: whyChoose.body,
       whyChooseItems: seededWhyChooseItems,
+      coverageTitle: coverage.title,
+      coverageAccent: coverage.accent,
+      coverageBody: coverage.body,
+      coverageStats: coverage.stats,
+      coverageBranches: coverage.branches,
     },
   });
   console.log("✅ HomePage seeded");
@@ -226,30 +253,7 @@ async function seed() {
     const clientSrc = typeof clientItem === "string" ? "" : clientItem.src;
     const existing = existingClientMap.get(clientName);
 
-    let mediaId: string | number | undefined =
-      typeof existing?.logo === "object" && existing?.logo !== null
-        ? (existing.logo as { id: string | number }).id
-        : (existing?.logo as string | number | undefined);
-
-    if (!mediaId && clientSrc) {
-      const relativePath = clientSrc.startsWith("/") ? clientSrc.slice(1) : clientSrc;
-      const logoPath = path.resolve(process.cwd(), "public", relativePath);
-
-      if (fs.existsSync(logoPath)) {
-        try {
-          const mediaDoc = await payload.create({
-            collection: "media",
-            filePath: logoPath,
-            data: {
-              alt: `${clientName} Logo`,
-            },
-          });
-          mediaId = mediaDoc.id;
-        } catch (err) {
-          console.warn(`Could not upload media logo for ${clientName}:`, err);
-        }
-      }
-    }
+    const mediaId = await uploadMediaIfExist(clientSrc, `${clientName} Logo`);
 
     if (!existing) {
       await payload.create({
@@ -262,12 +266,12 @@ async function seed() {
         },
       });
       seededClientsCount++;
-    } else if (!existing.logo || !(existing as { logoUrl?: string }).logoUrl) {
+    } else {
       await payload.update({
         collection: "clients",
         id: existing.id,
         data: {
-          logo: mediaId || existing.logo,
+          logo: mediaId || (typeof existing.logo === "object" && existing.logo !== null ? (existing.logo as { id: string | number }).id : existing.logo as string | number | undefined),
           logoUrl: clientSrc || (existing as { logoUrl?: string }).logoUrl,
           order: i + 1,
         },
@@ -283,33 +287,7 @@ async function seed() {
   let seededStoriesCount = 0;
   for (const storyItem of successStory.items) {
     const existing = existingStoryMap.get(storyItem.title);
-
-    let mediaId: string | number | undefined =
-      typeof existing?.image === "object" && existing?.image !== null
-        ? (existing.image as { id: string | number }).id
-        : (existing?.image as string | number | undefined);
-
-    if (!mediaId && storyItem.image) {
-      const relativePath = storyItem.image.startsWith("/")
-        ? storyItem.image.slice(1)
-        : storyItem.image;
-      const imagePath = path.resolve(process.cwd(), "public", relativePath);
-
-      if (fs.existsSync(imagePath)) {
-        try {
-          const mediaDoc = await payload.create({
-            collection: "media",
-            filePath: imagePath,
-            data: {
-              alt: `${storyItem.title} Image`,
-            },
-          });
-          mediaId = mediaDoc.id;
-        } catch (err) {
-          console.warn(`Could not upload media image for ${storyItem.title}:`, err);
-        }
-      }
-    }
+    const mediaId = await uploadMediaIfExist(storyItem.image, `${storyItem.title} Image`);
 
     if (!existing) {
       await payload.create({
@@ -324,12 +302,12 @@ async function seed() {
         },
       });
       seededStoriesCount++;
-    } else if (!existing.image && mediaId) {
+    } else {
       await payload.update({
         collection: "success-stories",
         id: existing.id,
         data: {
-          image: mediaId,
+          image: mediaId || (typeof existing.image === "object" && existing.image !== null ? (existing.image as { id: string | number }).id : existing.image as string | number | undefined),
         },
       });
     }
@@ -389,6 +367,37 @@ async function seed() {
     },
   });
   console.log("✅ CareerPage seeded");
+
+  // Seed ContactPage global
+  const contactHeroMediaId = await uploadMediaIfExist("/assets/images/contact-banner.webp", "Contact Hero Media");
+  await payload.updateGlobal({
+    slug: "contact-page",
+    data: {
+      title: "Hubungi Kami",
+      heroTitle: `${contact.hero.titleLead}${contact.hero.titleAccent}`,
+      heroDescription: contact.hero.description,
+      heroMedia: contactHeroMediaId,
+      whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.",
+      helpTitle: contact.help.title,
+      helpBody: contact.help.body,
+      helpOptions: contact.help.options.map((item) => ({
+        title: item.title,
+        tag: item.tag,
+        desc: item.desc,
+        icon: item.icon,
+        actionLabel: item.actionLabel,
+        href: item.href,
+        external: item.external,
+      })),
+      infoItems: contact.info.map((item) => ({
+        label: item.label,
+        value: item.value,
+        icon: item.icon,
+        href: "href" in item ? item.href : undefined,
+      })),
+    },
+  });
+  console.log("✅ ContactPage seeded");
 
   console.log("Seeding process complete!");
   process.exit(0);

@@ -1,11 +1,15 @@
-import { site } from "@/lib/content";
+import { getSiteConfigServer } from "@/lib/payload";
+import { getWaUrl } from "@/lib/whatsapp";
 import { Icon } from "@/components/ui/Icon";
 
 /** Tombol WhatsApp mengambang, tampil di semua halaman. */
-export function FloatingWhatsApp() {
+export async function FloatingWhatsApp() {
+  const siteConfig = await getSiteConfigServer();
+  const waUrl = getWaUrl(siteConfig.whatsapp, siteConfig.whatsappMessage);
+
   return (
     <a
-      href={site.whatsapp}
+      href={waUrl}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat WhatsApp"

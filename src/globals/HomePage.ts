@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload';
+import { coverage } from '../lib/content';
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
@@ -23,6 +24,12 @@ export const HomePage: GlobalConfig = {
       type: 'relationship',
       relationTo: 'media',
       label: 'Hero Media (Image or Video)',
+    },
+    {
+      name: 'whatsappMessage',
+      type: 'textarea',
+      label: 'WhatsApp CTA Message Template',
+      defaultValue: 'Halo SaveMile, saya ingin berkonsultasi mengenai ban untuk armada saya.',
     },
     {
       name: 'whyChooseTitle',
@@ -78,6 +85,53 @@ export const HomePage: GlobalConfig = {
       relationTo: 'success-stories',
       hasMany: true,
       label: 'Selected Success Stories (First item will be the large featured card)',
+    },
+    {
+      name: 'coverageTitle',
+      type: 'text',
+      label: 'Coverage Section Title',
+      defaultValue: 'Jangkauan layanan kami sampai di seluruh Indonesia',
+    },
+    {
+      name: 'coverageAccent',
+      type: 'text',
+      label: 'Coverage Title Accent Text (highlighted in orange)',
+      defaultValue: 'seluruh Indonesia',
+    },
+    {
+      name: 'coverageBody',
+      type: 'textarea',
+      label: 'Coverage Subtitle / Body',
+      defaultValue: 'Team SaveMile siap mendukung operasional Anda dari Sabang sampai Merauke',
+    },
+    {
+      name: 'coverageStats',
+      type: 'array',
+      label: 'Coverage Key Statistics',
+      defaultValue: coverage.stats as unknown as Record<string, unknown>[],
+      fields: [
+        {
+          name: 'value',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'coverageBranches',
+      type: 'json',
+      label: 'Coverage Branches & Map Pins',
+      defaultValue: coverage.branches,
+      admin: {
+        components: {
+          Field: '@/components/admin/MapPicker#MapPicker',
+        },
+      },
     },
   ],
 };

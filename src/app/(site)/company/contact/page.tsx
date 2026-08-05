@@ -7,24 +7,28 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { contact } from "@/lib/content";
+import { getContactPageServer } from "@/lib/payload";
 
-export const metadata: Metadata = {
-  title: "Hubungi Kami",
-  description: contact.hero.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const contactData = await getContactPageServer();
+  return {
+    title: contactData.title || "Hubungi Kami",
+    description: contactData.heroDescription,
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contactData = await getContactPageServer();
+
   return (
     <>
       <Navbar overHero />
       <main className="relative z-10 flex-1">
         <PageHero
-          eyebrow={contact.hero.eyebrow}
-          titleLead={contact.hero.titleLead}
-          titleAccent={contact.hero.titleAccent}
-          description={contact.hero.description}
-          image="/assets/images/contact-banner.webp"
+          title={contactData.heroTitle}
+          description={contactData.heroDescription}
+          image={contactData.heroImage}
+          video={contactData.heroVideo}
         />
 
         {/* Help options */}
@@ -33,18 +37,18 @@ export default function ContactPage() {
             <div className="mx-auto max-w-2xl text-center">
               <Reveal delay={60}>
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-                  {contact.help.title}
+                  {contactData.helpTitle}
                 </h2>
               </Reveal>
               <Reveal delay={120}>
                 <p className="mt-4 text-lg text-muted text-pretty">
-                  {contact.help.body}
+                  {contactData.helpBody}
                 </p>
               </Reveal>
             </div>
 
             <div className="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
-              {contact.help.options.map((o, i) => (
+              {contactData.helpOptions.map((o, i) => (
                 <Reveal key={o.title} delay={i * 90} className="h-full">
                   <div className="beam group relative flex h-full flex-col rounded-2xl bg-card p-7 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)">
                     <span className="beam-line" aria-hidden />
@@ -81,7 +85,7 @@ export default function ContactPage() {
 
             {/* Info kontak */}
             <div className="mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-3">
-              {contact.info.map((info, i) => {
+              {contactData.infoItems.map((info, i) => {
                 const inner = (
                   <div className="flex items-center gap-3 rounded-2xl border border-line bg-paper-2/40 p-4 transition-colors hover:border-orange/40">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-orange/10 text-orange ring-1 ring-inset ring-orange/20">
@@ -99,7 +103,7 @@ export default function ContactPage() {
                 );
                 return (
                   <Reveal key={info.label} delay={i * 70}>
-                    {"href" in info && info.href ? (
+                    {info.href ? (
                       <Link href={info.href}>{inner}</Link>
                     ) : (
                       inner

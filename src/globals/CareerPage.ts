@@ -25,6 +25,12 @@ export const CareerPage: GlobalConfig = {
       label: 'Hero Media (Image or Video)',
     },
     {
+      name: 'whatsappMessage',
+      type: 'textarea',
+      label: 'WhatsApp CTA Message Template',
+      defaultValue: 'Halo SaveMile, saya ingin bertanya mengenai kesempatan karir.',
+    },
+    {
       name: 'valuesTitle',
       type: 'text',
       defaultValue: 'Nilai yang membentuk cara kami bekerja',

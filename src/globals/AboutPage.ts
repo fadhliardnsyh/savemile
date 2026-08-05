@@ -15,6 +15,12 @@ export const AboutPage: GlobalConfig = {
       label: 'Hero Media (Image or Video)',
     },
     {
+      name: 'whatsappMessage',
+      type: 'textarea',
+      label: 'WhatsApp CTA Message Template',
+      defaultValue: 'Halo SaveMile, saya ingin berkonsultasi mengenai perusahaan Anda.',
+    },
+    {
       name: 'storyTitle',
       type: 'text',
       defaultValue: 'Kami bukan sekadar distributor ban',

@@ -11,25 +11,43 @@ const H = 405;
 
 const ORANGE = "#fc3d04";
 
-export function Coverage() {
+interface CoverageData {
+  title?: string;
+  accent?: string;
+  body?: string;
+  stats?: Array<{ value: string; label: string }>;
+  locations?: Array<{ city: string; types: string[] }>;
+  branches?: Array<{ city: string; x: number; y: number; types: string[] }>;
+}
+
+export function Coverage({ data }: { data?: CoverageData }) {
+  const content = {
+    title: data?.title ?? coverage.title,
+    accent: data?.accent ?? coverage.accent,
+    body: data?.body ?? coverage.body,
+    stats: data?.stats ?? coverage.stats,
+    locations: data?.locations ?? coverage.locations,
+    branches: data?.branches ?? coverage.branches,
+  };
+
   return (
     <section id="jaringan" className="scroll-mt-24 py-20 sm:py-24">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              {`${coverage.title} `}
-              <span className="text-orange">{coverage.accent}</span>
+              {`${content.title} `}
+              <span className="text-orange">{content.accent}</span>
             </h2>
           </Reveal>
           <Reveal delay={120}>
             <p className="mt-4 text-lg text-muted text-pretty">
-              {coverage.body}
+              {content.body}
             </p>
           </Reveal>
           <Reveal delay={160}>
             <div className="mx-auto mt-8 flex max-w-xs justify-center gap-10">
-              {coverage.stats.map((s) => (
+              {content.stats.map((s) => (
                 <div key={s.label}>
                   <div className="font-display text-3xl font-extrabold tracking-tight text-orange tabular-nums">
                     {s.value}
@@ -52,13 +70,13 @@ export function Coverage() {
             aria-label="Peta jaringan service point & gudang SaveMile di Indonesia"
           >
             <image href={MAP_SRC} x="0" y="0" width={W} height={H} />
-            {coverage.branches.map((b) => {
+            {content.branches.map((b) => {
               const { x, y } = b;
               const isWarehouse = b.types.includes("warehouse");
 
               return (
                 <g
-                  key={b.city}
+                  key={`${b.city}-${b.x}-${b.y}`}
                   className="group cursor-pointer transition-transform duration-200 hover:scale-125"
                   style={{ transformOrigin: `${x}px ${y}px` }}
                 >
@@ -138,7 +156,7 @@ export function Coverage() {
         {/* Daftar lengkap kota */}
         <Reveal delay={220}>
           <div className="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2">
-            {coverage.locations.map((loc) => (
+            {content.locations.map((loc) => (
               <span
                 key={loc.city}
                 className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-xs font-medium text-ink/70"

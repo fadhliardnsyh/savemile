@@ -5,8 +5,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SuccessStoryGrid } from "@/components/sections/SuccessStoryGrid";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { consultCta } from "@/lib/content";
-import { getSuccessStoriesServer } from "@/lib/payload";
+import { getCatalogPageServer, getSuccessStoriesServer } from "@/lib/payload";
 
 export const metadata: Metadata = {
   title: "Success Story",
@@ -15,7 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SuccessStoryPage() {
-  const stories = await getSuccessStoriesServer();
+  const [stories, catalogData] = await Promise.all([
+    getSuccessStoriesServer(),
+    getCatalogPageServer(),
+  ]);
 
   return (
     <>
@@ -35,7 +37,7 @@ export default async function SuccessStoryPage() {
           </Container>
         </section>
 
-        <CtaSection content={consultCta} />
+        <CtaSection content={catalogData.consultCta} />
       </main>
       <Footer />
     </>

@@ -23,5 +23,11 @@ export const CatalogPage: GlobalConfig = {
       relationTo: 'media',
       label: 'Hero Media (Image or Video)',
     },
+    {
+      name: 'whatsappMessage',
+      type: 'textarea',
+      label: 'WhatsApp CTA Message Template',
+      defaultValue: 'Halo SaveMile, saya ingin bertanya mengenai katalog ban.',
+    },
   ],
 };

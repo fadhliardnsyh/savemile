@@ -28,13 +28,15 @@ import {
   tms,
   tmsCta,
   whyChoose,
+  type CtaContent,
   type Story,
 } from "./content";
+import { getWaUrl } from "./whatsapp";
 
 function extractMediaUrl(media: unknown): string | undefined {
   if (typeof media === "object" && media !== null) {
     const obj = media as { filename?: string; url?: string };
-    const rawUrl = (obj.filename ? `/uploads/${obj.filename}` : undefined) || obj.url;
+    const rawUrl = obj.url || (obj.filename ? `/api/media/file/${obj.filename}` : undefined);
     if (rawUrl) {
       return rawUrl.startsWith("http") || rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
     }
@@ -47,7 +49,7 @@ function extractMediaUrl(media: unknown): string | undefined {
 function extractMediaInfo(media: unknown): { url?: string; isVideo: boolean } {
   if (typeof media === "object" && media !== null) {
     const obj = media as { filename?: string; url?: string; mimeType?: string };
-    const rawUrl = (obj.filename ? `/uploads/${obj.filename}` : undefined) || obj.url;
+    const rawUrl = obj.url || (obj.filename ? `/api/media/file/${obj.filename}` : undefined);
     const url = rawUrl
       ? rawUrl.startsWith("http") || rawUrl.startsWith("/")
         ? rawUrl
@@ -75,6 +77,10 @@ export async function getSiteConfigServer() {
       .findGlobal({ slug: "site-config" })
       .catch(() => null);
     if (siteConfig) {
+      const waNumber = siteConfig.whatsapp || site.whatsapp;
+      const waMsg =
+        (siteConfig.whatsappMessage as string) ||
+        "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.";
       return {
         ...site,
         name: siteConfig.name || site.name,
@@ -83,14 +89,20 @@ export async function getSiteConfigServer() {
         email: siteConfig.email || site.email,
         hrEmail: siteConfig.hrEmail || site.hrEmail,
         phone: siteConfig.phone || site.phone,
-        whatsapp: siteConfig.whatsapp || site.whatsapp,
+        whatsapp: waNumber,
+        whatsappMessage: waMsg,
+        whatsappUrl: getWaUrl(waNumber, waMsg),
         address: siteConfig.address || site.address,
       };
     }
   } catch {
     // Fallback to static site object
   }
-  return site;
+  return {
+    ...site,
+    whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
+    whatsappUrl: getWaUrl(site.whatsapp, "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada."),
+  };
 }
 
 export async function getHomePageServer() {
@@ -149,6 +161,63 @@ export async function getHomePageServer() {
             .filter((item): item is Story => item !== null && Boolean(item.title))
         : [];
 
+      const siteConfig = await getSiteConfigServer();
+      const pageWaMsg =
+        (homePage.whatsappMessage as string) ||
+        "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.";
+      const finalCtaContent: CtaContent = {
+        ...finalCta,
+        whatsappMessage: pageWaMsg,
+        whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+      };
+
+      const coverageStats = Array.isArray(homePage.coverageStats)
+        ? homePage.coverageStats
+            .map((item: Record<string, unknown>) => ({
+              value: String(item.value || ""),
+              label: String(item.label || ""),
+            }))
+            .filter((s: { value: string; label: string }) => Boolean(s.value && s.label))
+        : undefined;
+
+      const coverageBranches = Array.isArray(homePage.coverageBranches)
+        ? homePage.coverageBranches
+            .map((item: Record<string, unknown>) => ({
+              city: String(item.city || ""),
+              x: typeof item.x === "number" ? item.x : Number(item.x) || 0,
+              y: typeof item.y === "number" ? item.y : Number(item.y) || 0,
+              types: Array.isArray(item.types)
+                ? (item.types as ("service" | "warehouse")[])
+                : ["service" as const],
+            }))
+            .filter((b: { city: string }) => Boolean(b.city))
+        : undefined;
+
+      const coverageLocations = coverageBranches
+        ? Array.from(
+            coverageBranches
+              .reduce((map, b) => {
+                const cleanCity = b.city.replace(/\s*-\s*(WH|S)$/i, "").trim();
+                const existing = map.get(cleanCity) || { city: cleanCity, types: new Set<"service" | "warehouse">() };
+                b.types.forEach((t) => {
+                  existing.types.add(t);
+                });
+                map.set(cleanCity, existing);
+                return map;
+              }, new Map<string, { city: string; types: Set<"service" | "warehouse"> }>())
+              .values(),
+          ).map((loc) => ({ city: loc.city, types: Array.from(loc.types) }))
+        : undefined;
+
+      const coverageData = {
+        title: (homePage.coverageTitle as string) || coverage.title,
+        accent: (homePage.coverageAccent as string) || coverage.accent,
+        body: (homePage.coverageBody as string) || coverage.body,
+        stats: coverageStats && coverageStats.length > 0 ? coverageStats : coverage.stats,
+        branches: coverageBranches && coverageBranches.length > 0 ? coverageBranches : coverage.branches,
+        locations: coverageLocations && coverageLocations.length > 0 ? coverageLocations : coverage.locations,
+      };
+
       return {
         title: homePage.title || undefined,
         heroEyebrow: homePage.heroEyebrow || undefined,
@@ -159,11 +228,15 @@ export async function getHomePageServer() {
         whyChooseBody: homePage.whyChooseBody || whyChoose.body,
         whyChooseItems: whyChooseItems && whyChooseItems.length > 0 ? whyChooseItems : undefined,
         successStories: successStories && successStories.length > 0 ? successStories : undefined,
+        coverage: coverageData,
+        finalCta: finalCtaContent,
       };
     }
   } catch {
     // Fallback to static defaults
   }
+  const siteConfig = await getSiteConfigServer();
+  const pageWaMsg = "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.";
   return {
     title: undefined,
     heroEyebrow: undefined,
@@ -174,6 +247,12 @@ export async function getHomePageServer() {
     whyChooseBody: whyChoose.body,
     whyChooseItems: undefined,
     successStories: undefined,
+    coverage: coverage,
+    finalCta: {
+      ...finalCta,
+      whatsappMessage: pageWaMsg,
+      whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+    },
   };
 }
 
@@ -200,23 +279,41 @@ export async function getCatalogPageServer() {
         heroImage = extractMediaUrl(catalogPage.heroImage);
       }
 
+      const siteConfig = await getSiteConfigServer();
+      const pageWaMsg =
+        (catalogPage.whatsappMessage as string) ||
+        "Halo SaveMile, saya ingin bertanya mengenai katalog ban.";
+      const consultCtaContent: CtaContent = {
+        ...consultCta,
+        whatsappMessage: pageWaMsg,
+        whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+      };
+
       return {
         eyebrow: catalogPage.eyebrow || catalogHero.eyebrow,
         title: catalogPage.title || catalogHero.title,
         description: catalogPage.description || catalogHero.description,
         heroImage: heroImage || (heroVideo ? undefined : catalogHero.image),
         heroVideo,
+        consultCta: consultCtaContent,
       };
     }
   } catch {
     // Fallback to static defaults
   }
+  const siteConfig = await getSiteConfigServer();
+  const pageWaMsg = "Halo SaveMile, saya ingin bertanya mengenai katalog ban.";
   return {
     eyebrow: catalogHero.eyebrow,
     title: catalogHero.title,
     description: catalogHero.description,
     heroImage: catalogHero.image,
     heroVideo: undefined,
+    consultCta: {
+      ...consultCta,
+      whatsappMessage: pageWaMsg,
+      whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+    },
   };
 }
 
@@ -286,23 +383,41 @@ export async function getTmsPageServer() {
         video: consultationVideo,
       };
 
+      const siteConfig = await getSiteConfigServer();
+      const pageWaMsg =
+        (tmsPage.whatsappMessage as string) ||
+        "Halo SaveMile, saya ingin tahu lebih lanjut mengenai Tire Management Solution (TMS).";
+      const tmsCtaContent: CtaContent = {
+        ...tmsCta,
+        whatsappMessage: pageWaMsg,
+        whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+      };
+
       return {
         title: tmsPage.title || "Tire Management Solution",
         heroImage: heroImage || (heroVideo ? undefined : "/assets/images/tms-banner.webp"),
         heroVideo,
         features,
         consultation,
+        tmsCta: tmsCtaContent,
       };
     }
   } catch {
     // Fallback to defaults
   }
+  const siteConfig = await getSiteConfigServer();
+  const pageWaMsg = "Halo SaveMile, saya ingin tahu lebih lanjut mengenai Tire Management Solution (TMS).";
   return {
     title: "Tire Management Solution",
     heroImage: "/assets/images/tms-banner.webp",
     heroVideo: undefined,
     features: undefined,
     consultation: undefined,
+    tmsCta: {
+      ...tmsCta,
+      whatsappMessage: pageWaMsg,
+      whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+    },
   };
 }
 
@@ -423,6 +538,108 @@ export async function getCareerPageServer() {
   };
 }
 
+export async function getContactPageServer() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const contactPage = await payload
+      .findGlobal({ slug: "contact-page", depth: 2 })
+      .catch(() => null);
+    if (contactPage) {
+      const mediaInfo = extractMediaInfo(contactPage.heroMedia);
+      let heroImage: string | undefined;
+      let heroVideo: string | undefined;
+
+      if (mediaInfo.url) {
+        if (mediaInfo.isVideo) {
+          heroVideo = mediaInfo.url;
+        } else {
+          heroImage = mediaInfo.url;
+        }
+      }
+
+      const siteConfig = await getSiteConfigServer();
+      const pageWaMsg =
+        (contactPage.whatsappMessage as string) ||
+        "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.";
+
+      const helpOptions = Array.isArray(contactPage.helpOptions)
+        ? contactPage.helpOptions.map((item: Record<string, unknown>) => {
+            const rawIcon = String(item.icon || "whatsapp");
+            const rawHref = String(item.href || "");
+            const isWa = rawIcon === "whatsapp" || rawHref.includes("wa.me");
+            const itemWaMsg = (item.whatsappMessage as string) || pageWaMsg;
+            const href = isWa
+              ? getWaUrl(rawHref || siteConfig.whatsapp, itemWaMsg)
+              : rawHref;
+
+            return {
+              title: String(item.title || ""),
+              tag: String(item.tag || ""),
+              desc: String(item.desc || ""),
+              icon: rawIcon,
+              actionLabel: String(item.actionLabel || ""),
+              href,
+              external: Boolean(item.external),
+            };
+          })
+        : undefined;
+
+      const infoItems = Array.isArray(contactPage.infoItems)
+        ? contactPage.infoItems.map((item: Record<string, unknown>) => ({
+            label: String(item.label || ""),
+            value: String(item.value || ""),
+            icon: String(item.icon || "pin"),
+            href: item.href ? String(item.href) : undefined,
+          }))
+        : undefined;
+
+      const fallbackHelpOptions = contact.help.options.map((o) => {
+        if (o.icon === "whatsapp" || o.href.includes("wa.me")) {
+          return {
+            ...o,
+            href: getWaUrl(siteConfig.whatsapp, pageWaMsg),
+          };
+        }
+        return o;
+      });
+
+      return {
+        title: contactPage.title || contact.hero.eyebrow,
+        heroTitle: contactPage.heroTitle || `${contact.hero.titleLead}${contact.hero.titleAccent}`,
+        heroDescription: contactPage.heroDescription || contact.hero.description,
+        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/contact-banner.webp"),
+        heroVideo,
+        helpTitle: contactPage.helpTitle || contact.help.title,
+        helpBody: contactPage.helpBody || contact.help.body,
+        helpOptions: helpOptions && helpOptions.length > 0 ? helpOptions : fallbackHelpOptions,
+        infoItems: infoItems && infoItems.length > 0 ? infoItems : contact.info,
+      };
+    }
+  } catch {
+    // Fallback to static defaults
+  }
+
+  const defaultWaUrl = getWaUrl(site.whatsapp, "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.");
+  const fallbackHelpOptions = contact.help.options.map((o) => {
+    if (o.icon === "whatsapp" || o.href.includes("wa.me")) {
+      return { ...o, href: defaultWaUrl };
+    }
+    return o;
+  });
+
+  return {
+    title: contact.hero.eyebrow,
+    heroTitle: `${contact.hero.titleLead}${contact.hero.titleAccent}`,
+    heroDescription: contact.hero.description,
+    heroImage: "/assets/images/contact-banner.webp",
+    heroVideo: undefined,
+    helpTitle: contact.help.title,
+    helpBody: contact.help.body,
+    helpOptions: fallbackHelpOptions,
+    infoItems: contact.info,
+  };
+}
+
 export interface JobListing {
   id: string;
   title: string;
@@ -487,8 +704,8 @@ export async function getClientsServer() {
 
         if (doc.logo && typeof doc.logo === "object" && doc.logo !== null) {
           const rawUrl =
-            (doc.logo.filename ? `/uploads/${doc.logo.filename}` : undefined) ||
-            doc.logo.url;
+            doc.logo.url ||
+            (doc.logo.filename ? `/api/media/file/${doc.logo.filename}` : undefined);
           if (rawUrl) {
             imageUrl =
               rawUrl.startsWith("http") || rawUrl.startsWith("/")
@@ -558,9 +775,10 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
 
         if (doc.image && typeof doc.image === "object" && doc.image !== null) {
           const rawUrl =
+            doc.image.url ||
             (doc.image.filename
-              ? `/uploads/${doc.image.filename}`
-              : undefined) || doc.image.url;
+              ? `/api/media/file/${doc.image.filename}`
+              : undefined);
           if (rawUrl) {
             imageUrl =
               rawUrl.startsWith("http") || rawUrl.startsWith("/")
@@ -727,9 +945,10 @@ export async function getCatalogProductsServer(): Promise<Product[]> {
         let imageUrl: string | undefined;
         if (typeof doc.image === "object" && doc.image !== null) {
           const rawUrl =
+            doc.image.url ||
             (doc.image.filename
-              ? `/uploads/${doc.image.filename}`
-              : undefined) || doc.image.url;
+              ? `/api/media/file/${doc.image.filename}`
+              : undefined);
           if (rawUrl) {
             imageUrl =
               rawUrl.startsWith("http") || rawUrl.startsWith("/")
@@ -740,7 +959,7 @@ export async function getCatalogProductsServer(): Promise<Product[]> {
           if (doc.image.startsWith("/") || doc.image.startsWith("http")) {
             imageUrl = doc.image;
           } else if (doc.image.includes(".")) {
-            imageUrl = `/uploads/${doc.image}`;
+            imageUrl = `/api/media/file/${doc.image}`;
           }
         }
 
