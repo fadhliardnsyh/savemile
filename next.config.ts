@@ -6,12 +6,24 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "**",
+        protocol: "https",
+        hostname: "storage.googleapis.com",
       },
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "*.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "*.vercel.app",
       },
     ],
   },
