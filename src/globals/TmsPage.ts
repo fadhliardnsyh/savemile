@@ -31,6 +31,12 @@ export const TmsPage: GlobalConfig = {
       defaultValue: 'Kendali penuh atas ban armada, berbasis data',
     },
     {
+      name: 'featuresHighlight',
+      type: 'text',
+      label: 'Features Highlight Phrases (comma separated)',
+      defaultValue: 'berbasis data',
+    },
+    {
       name: 'featureItems',
       type: 'array',
       label: 'Feature Deep Dive Items',

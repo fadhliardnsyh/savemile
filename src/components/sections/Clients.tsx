@@ -5,12 +5,32 @@ import { clients } from "@/lib/content";
 
 export type ClientLogoProp = string | { name: string; src: string };
 
+function renderHighlighted(title: string, highlight?: string[]) {
+  if (!highlight || highlight.length === 0) return title;
+  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
+  let offset = 0;
+  return parts.map((part) => {
+    const key = `${part}-${offset}`;
+    offset += part.length;
+    return highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={key} className="text-orange">
+        {part}
+      </span>
+    ) : (
+      part
+    );
+  });
+}
+
 export function Clients({
   title,
+  highlight,
   body,
   logos,
 }: {
   title?: string;
+  highlight?: string[];
   body?: string;
   logos?: ClientLogoProp[];
 } = {}) {
@@ -31,13 +51,9 @@ export function Clients({
       <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-ink text-balance sm:text-4xl">
-            {title ?? (
-              <>
-                {clients.titleLead}
-                <span className="text-orange">{clients.titleAccent}</span>
-                {clients.titleMid}
-                <span className="text-orange">{clients.titleAccent2}</span>
-              </>
+            {renderHighlighted(
+              title ?? clients.title,
+              highlight ?? clients.highlight,
             )}
           </h2>
           <p className="mt-3 text-muted text-pretty">{body ?? clients.body}</p>

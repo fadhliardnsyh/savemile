@@ -36,12 +36,17 @@ import { getWaUrl } from "./whatsapp";
 function extractMediaUrl(media: unknown): string | undefined {
   if (typeof media === "object" && media !== null) {
     const obj = media as { filename?: string; url?: string };
-    const rawUrl = obj.url || (obj.filename ? `/api/media/file/${obj.filename}` : undefined);
+    const rawUrl =
+      obj.url || (obj.filename ? `/api/media/file/${obj.filename}` : undefined);
     if (rawUrl) {
-      return rawUrl.startsWith("http") || rawUrl.startsWith("/") ? rawUrl : `/${rawUrl}`;
+      return rawUrl.startsWith("http") || rawUrl.startsWith("/")
+        ? rawUrl
+        : `/${rawUrl}`;
     }
   } else if (typeof media === "string" && media) {
-    return media.startsWith("http") || media.startsWith("/") ? media : `/${media}`;
+    return media.startsWith("http") || media.startsWith("/")
+      ? media
+      : `/${media}`;
   }
   return undefined;
 }
@@ -49,7 +54,8 @@ function extractMediaUrl(media: unknown): string | undefined {
 function extractMediaInfo(media: unknown): { url?: string; isVideo: boolean } {
   if (typeof media === "object" && media !== null) {
     const obj = media as { filename?: string; url?: string; mimeType?: string };
-    const rawUrl = obj.url || (obj.filename ? `/api/media/file/${obj.filename}` : undefined);
+    const rawUrl =
+      obj.url || (obj.filename ? `/api/media/file/${obj.filename}` : undefined);
     const url = rawUrl
       ? rawUrl.startsWith("http") || rawUrl.startsWith("/")
         ? rawUrl
@@ -63,7 +69,8 @@ function extractMediaInfo(media: unknown): { url?: string; isVideo: boolean } {
 
     return { url, isVideo };
   } else if (typeof media === "string" && media) {
-    const url = media.startsWith("http") || media.startsWith("/") ? media : `/${media}`;
+    const url =
+      media.startsWith("http") || media.startsWith("/") ? media : `/${media}`;
     const isVideo = Boolean(/\.(mp4|webm|ogg|mov|m4v)$/i.test(media));
     return { url, isVideo };
   }
@@ -100,8 +107,12 @@ export async function getSiteConfigServer() {
   }
   return {
     ...site,
-    whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
-    whatsappUrl: getWaUrl(site.whatsapp, "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada."),
+    whatsappMessage:
+      "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
+    whatsappUrl: getWaUrl(
+      site.whatsapp,
+      "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
+    ),
   };
 }
 
@@ -133,13 +144,19 @@ export async function getHomePageServer() {
         ? homePage.whyChooseItems.map((item: Record<string, unknown>) => ({
             tag: (item.tag as string) || undefined,
             title: (item.title as string) || undefined,
-            highlight: typeof item.highlight === "string"
-              ? item.highlight.split(",").map((s: string) => s.trim()).filter(Boolean)
-              : Array.isArray(item.highlight)
-              ? (item.highlight as string[])
-              : undefined,
+            highlight:
+              typeof item.highlight === "string"
+                ? item.highlight
+                    .split(",")
+                    .map((s: string) => s.trim())
+                    .filter(Boolean)
+                : Array.isArray(item.highlight)
+                  ? (item.highlight as string[])
+                  : undefined,
             body: (item.body as string) || undefined,
-            icon: (item.icon as "consult" | "laser" | "bell" | "shield") || undefined,
+            icon:
+              (item.icon as "consult" | "laser" | "bell" | "shield") ||
+              undefined,
             image: extractMediaUrl(item.image),
           }))
         : undefined;
@@ -149,16 +166,31 @@ export async function getHomePageServer() {
             .map((item: Record<string, unknown>): Story | null => {
               if (typeof item !== "object" || !item) return null;
               const imageUrl = extractMediaUrl(item.image);
+              const itemTitle = (item.title as string) || "";
+              const computedSlug =
+                (item.slug as string) ||
+                itemTitle
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/(^-|-$)/g, "");
+
               return {
+                slug: computedSlug || "success-story",
                 tag: (item.tag as string) || "",
-                title: (item.title as string) || "",
+                title: itemTitle,
                 units: (item.units as string) || "",
                 description: (item.description as string) || "",
-                href: (item.href as string) || "/insight/success-story",
+                href:
+                  (item.href as string) &&
+                  (item.href as string) !== "/insight/success-story"
+                    ? (item.href as string)
+                    : `/insight/success-story/${computedSlug}`,
                 ...(imageUrl ? { image: imageUrl } : {}),
               };
             })
-            .filter((item): item is Story => item !== null && Boolean(item.title))
+            .filter(
+              (item): item is Story => item !== null && Boolean(item.title),
+            )
         : [];
 
       const siteConfig = await getSiteConfigServer();
@@ -177,7 +209,9 @@ export async function getHomePageServer() {
               value: String(item.value || ""),
               label: String(item.label || ""),
             }))
-            .filter((s: { value: string; label: string }) => Boolean(s.value && s.label))
+            .filter((s: { value: string; label: string }) =>
+              Boolean(s.value && s.label),
+            )
         : undefined;
 
       const coverageBranches = Array.isArray(homePage.coverageBranches)
@@ -198,7 +232,10 @@ export async function getHomePageServer() {
             coverageBranches
               .reduce((map, b) => {
                 const cleanCity = b.city.replace(/\s*-\s*(WH|S)$/i, "").trim();
-                const existing = map.get(cleanCity) || { city: cleanCity, types: new Set<"service" | "warehouse">() };
+                const existing = map.get(cleanCity) || {
+                  city: cleanCity,
+                  types: new Set<"service" | "warehouse">(),
+                };
                 b.types.forEach((t) => {
                   existing.types.add(t);
                 });
@@ -213,10 +250,28 @@ export async function getHomePageServer() {
         title: (homePage.coverageTitle as string) || coverage.title,
         accent: (homePage.coverageAccent as string) || coverage.accent,
         body: (homePage.coverageBody as string) || coverage.body,
-        stats: coverageStats && coverageStats.length > 0 ? coverageStats : coverage.stats,
-        branches: coverageBranches && coverageBranches.length > 0 ? coverageBranches : coverage.branches,
-        locations: coverageLocations && coverageLocations.length > 0 ? coverageLocations : coverage.locations,
+        stats:
+          coverageStats && coverageStats.length > 0
+            ? coverageStats
+            : coverage.stats,
+        branches:
+          coverageBranches && coverageBranches.length > 0
+            ? coverageBranches
+            : coverage.branches,
+        locations:
+          coverageLocations && coverageLocations.length > 0
+            ? coverageLocations
+            : coverage.locations,
       };
+
+      const whyChooseTitleHighlightRaw = homePage.whyChooseTitleHighlight;
+      const whyChooseTitleHighlight =
+        typeof whyChooseTitleHighlightRaw === "string"
+          ? whyChooseTitleHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
 
       return {
         title: homePage.title || undefined,
@@ -225,9 +280,19 @@ export async function getHomePageServer() {
         heroImage: heroImage || (heroVideo ? undefined : hero.image),
         heroVideo: heroVideo || undefined,
         whyChooseTitle: homePage.whyChooseTitle || undefined,
+        whyChooseTitleHighlight:
+          whyChooseTitleHighlight && whyChooseTitleHighlight.length > 0
+            ? whyChooseTitleHighlight
+            : whyChoose.highlight,
         whyChooseBody: homePage.whyChooseBody || whyChoose.body,
-        whyChooseItems: whyChooseItems && whyChooseItems.length > 0 ? whyChooseItems : undefined,
-        successStories: successStories && successStories.length > 0 ? successStories : undefined,
+        whyChooseItems:
+          whyChooseItems && whyChooseItems.length > 0
+            ? whyChooseItems
+            : undefined,
+        successStories:
+          successStories && successStories.length > 0
+            ? successStories
+            : undefined,
         coverage: coverageData,
         finalCta: finalCtaContent,
       };
@@ -236,7 +301,8 @@ export async function getHomePageServer() {
     // Fallback to static defaults
   }
   const siteConfig = await getSiteConfigServer();
-  const pageWaMsg = "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.";
+  const pageWaMsg =
+    "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.";
   return {
     title: undefined,
     heroEyebrow: undefined,
@@ -244,6 +310,7 @@ export async function getHomePageServer() {
     heroImage: hero.image,
     heroVideo: undefined,
     whyChooseTitle: undefined,
+    whyChooseTitleHighlight: whyChoose.highlight,
     whyChooseBody: whyChoose.body,
     whyChooseItems: undefined,
     successStories: undefined,
@@ -290,9 +357,7 @@ export async function getCatalogPageServer() {
       };
 
       return {
-        eyebrow: catalogPage.eyebrow || catalogHero.eyebrow,
         title: catalogPage.title || catalogHero.title,
-        description: catalogPage.description || catalogHero.description,
         heroImage: heroImage || (heroVideo ? undefined : catalogHero.image),
         heroVideo,
         consultCta: consultCtaContent,
@@ -304,9 +369,7 @@ export async function getCatalogPageServer() {
   const siteConfig = await getSiteConfigServer();
   const pageWaMsg = "Halo SaveMile, saya ingin bertanya mengenai katalog ban.";
   return {
-    eyebrow: catalogHero.eyebrow,
     title: catalogHero.title,
-    description: catalogHero.description,
     heroImage: catalogHero.image,
     heroVideo: undefined,
     consultCta: {
@@ -348,12 +411,26 @@ export async function getTmsPageServer() {
           })
         : undefined;
 
-      const features = featureItems && featureItems.length > 0
-        ? {
-            titleLead: tmsPage.featuresTitle || tms.features.titleLead + tms.features.titleAccent,
-            items: featureItems,
-          }
-        : undefined;
+      const featuresHighlightRaw = tmsPage.featuresHighlight;
+      const featuresHighlight =
+        typeof featuresHighlightRaw === "string"
+          ? featuresHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
+      const features = {
+        title: (tmsPage.featuresTitle as string) || tms.features.title,
+        highlight:
+          featuresHighlight && featuresHighlight.length > 0
+            ? featuresHighlight
+            : tms.features.highlight,
+        items:
+          featureItems && featureItems.length > 0
+            ? featureItems
+            : tms.features.items,
+      };
 
       const consultMediaInfo = extractMediaInfo(tmsPage.consultationMedia);
       let consultationImage: string | undefined;
@@ -377,7 +454,10 @@ export async function getTmsPageServer() {
 
       const consultation = {
         title: tmsPage.consultationTitle || undefined,
-        highlight: consultationHighlight && consultationHighlight.length > 0 ? consultationHighlight : undefined,
+        highlight:
+          consultationHighlight && consultationHighlight.length > 0
+            ? consultationHighlight
+            : undefined,
         description: tmsPage.consultationDescription || undefined,
         image: consultationImage,
         video: consultationVideo,
@@ -395,7 +475,9 @@ export async function getTmsPageServer() {
 
       return {
         title: tmsPage.title || "Tire Management Solution",
-        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/tms-banner.webp"),
+        heroImage:
+          heroImage ||
+          (heroVideo ? undefined : "/assets/images/tms-banner.webp"),
         heroVideo,
         features,
         consultation,
@@ -406,7 +488,8 @@ export async function getTmsPageServer() {
     // Fallback to defaults
   }
   const siteConfig = await getSiteConfigServer();
-  const pageWaMsg = "Halo SaveMile, saya ingin tahu lebih lanjut mengenai Tire Management Solution (TMS).";
+  const pageWaMsg =
+    "Halo SaveMile, saya ingin tahu lebih lanjut mengenai Tire Management Solution (TMS).";
   return {
     title: "Tire Management Solution",
     heroImage: "/assets/images/tms-banner.webp",
@@ -443,18 +526,56 @@ export async function getAboutPageServer() {
       const storyBodyItems = Array.isArray(aboutPage.storyBody)
         ? aboutPage.storyBody
             .map((item: Record<string, unknown>) =>
-              typeof item === "object" && item ? String(item.paragraph || "") : String(item),
+              typeof item === "object" && item
+                ? String(item.paragraph || "")
+                : String(item),
             )
             .filter(Boolean)
         : undefined;
 
+      const storyTitleHighlightRaw = aboutPage.storyTitleHighlight;
+      const storyTitleHighlight =
+        typeof storyTitleHighlightRaw === "string"
+          ? storyTitleHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
+      const storyImage =
+        extractMediaUrl(aboutPage.storyImage) || about.story.image;
+
+      const trustTitleHighlightRaw = aboutPage.trustTitleHighlight;
+      const trustTitleHighlight =
+        typeof trustTitleHighlightRaw === "string"
+          ? trustTitleHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
       return {
-        title: aboutPage.title || `${about.hero.titleLead}${about.hero.titleAccent}`,
-        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/about-banner.webp"),
+        title:
+          aboutPage.title || `${about.hero.titleLead}${about.hero.titleAccent}`,
+        heroImage:
+          heroImage ||
+          (heroVideo ? undefined : "/assets/images/about-banner.webp"),
         heroVideo,
         storyTitle: aboutPage.storyTitle || about.story.title,
-        storyBody: storyBodyItems && storyBodyItems.length > 0 ? storyBodyItems : about.story.body,
+        storyTitleHighlight:
+          storyTitleHighlight && storyTitleHighlight.length > 0
+            ? storyTitleHighlight
+            : about.story.highlight,
+        storyImage,
+        storyBody:
+          storyBodyItems && storyBodyItems.length > 0
+            ? storyBodyItems
+            : about.story.body,
         trustTitle: aboutPage.trustTitle || about.trust.title,
+        trustTitleHighlight:
+          trustTitleHighlight && trustTitleHighlight.length > 0
+            ? trustTitleHighlight
+            : about.trust.highlight,
         trustBody: aboutPage.trustBody || about.trust.body,
       };
     }
@@ -466,8 +587,11 @@ export async function getAboutPageServer() {
     heroImage: "/assets/images/about-banner.webp",
     heroVideo: undefined,
     storyTitle: about.story.title,
+    storyTitleHighlight: about.story.highlight,
+    storyImage: about.story.image,
     storyBody: about.story.body,
     trustTitle: about.trust.title,
+    trustTitleHighlight: about.trust.highlight,
     trustBody: about.trust.body,
   };
 }
@@ -501,16 +625,27 @@ export async function getCareerPageServer() {
 
       return {
         title: careerPage.title || career.hero.eyebrow,
-        heroTitle: careerPage.heroTitle || `${career.hero.titleLead}${career.hero.titleAccent}`,
+        heroTitle:
+          careerPage.heroTitle ||
+          `${career.hero.titleLead}${career.hero.titleAccent}`,
         heroDescription: careerPage.heroDescription || career.hero.description,
-        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/career-banner.webp"),
+        heroImage:
+          heroImage ||
+          (heroVideo ? undefined : "/assets/images/career-banner.webp"),
         heroVideo,
         valuesTitle: careerPage.valuesTitle || career.values.title,
-        valuesTitleHighlight: careerPage.valuesTitleHighlight || career.values.titleAccent,
+        valuesTitleHighlight:
+          careerPage.valuesTitleHighlight || career.values.titleAccent,
         valuesBody: careerPage.valuesBody || career.values.body,
-        valuesItems: valuesItems && valuesItems.length > 0 ? valuesItems : career.values.items,
-        ctaTitle: careerPage.ctaTitle || `${career.join.titleLead}${career.join.titleAccent}`,
-        ctaTitleHighlight: careerPage.ctaTitleHighlight || career.join.titleAccent,
+        valuesItems:
+          valuesItems && valuesItems.length > 0
+            ? valuesItems
+            : career.values.items,
+        ctaTitle:
+          careerPage.ctaTitle ||
+          `${career.join.titleLead}${career.join.titleAccent}`,
+        ctaTitleHighlight:
+          careerPage.ctaTitleHighlight || career.join.titleAccent,
         ctaDescription: careerPage.ctaDescription || career.join.description,
         ctaActionText: careerPage.ctaActionText || career.join.action.label,
         ctaActionUrl: careerPage.ctaActionUrl || career.join.action.href,
@@ -593,6 +728,15 @@ export async function getContactPageServer() {
           }))
         : undefined;
 
+      const helpHighlightRaw = contactPage.helpHighlight;
+      const helpHighlight =
+        typeof helpHighlightRaw === "string"
+          ? helpHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
       const fallbackHelpOptions = contact.help.options.map((o) => {
         if (o.icon === "whatsapp" || o.href.includes("wa.me")) {
           return {
@@ -605,13 +749,25 @@ export async function getContactPageServer() {
 
       return {
         title: contactPage.title || contact.hero.eyebrow,
-        heroTitle: contactPage.heroTitle || `${contact.hero.titleLead}${contact.hero.titleAccent}`,
-        heroDescription: contactPage.heroDescription || contact.hero.description,
-        heroImage: heroImage || (heroVideo ? undefined : "/assets/images/contact-banner.webp"),
+        heroTitle:
+          contactPage.heroTitle ||
+          `${contact.hero.titleLead}${contact.hero.titleAccent}`,
+        heroDescription:
+          contactPage.heroDescription || contact.hero.description,
+        heroImage:
+          heroImage ||
+          (heroVideo ? undefined : "/assets/images/contact-banner.webp"),
         heroVideo,
         helpTitle: contactPage.helpTitle || contact.help.title,
+        helpHighlight:
+          helpHighlight && helpHighlight.length > 0
+            ? helpHighlight
+            : contact.help.highlight,
         helpBody: contactPage.helpBody || contact.help.body,
-        helpOptions: helpOptions && helpOptions.length > 0 ? helpOptions : fallbackHelpOptions,
+        helpOptions:
+          helpOptions && helpOptions.length > 0
+            ? helpOptions
+            : fallbackHelpOptions,
         infoItems: infoItems && infoItems.length > 0 ? infoItems : contact.info,
       };
     }
@@ -619,7 +775,10 @@ export async function getContactPageServer() {
     // Fallback to static defaults
   }
 
-  const defaultWaUrl = getWaUrl(site.whatsapp, "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.");
+  const defaultWaUrl = getWaUrl(
+    site.whatsapp,
+    "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.",
+  );
   const fallbackHelpOptions = contact.help.options.map((o) => {
     if (o.icon === "whatsapp" || o.href.includes("wa.me")) {
       return { ...o, href: defaultWaUrl };
@@ -634,6 +793,7 @@ export async function getContactPageServer() {
     heroImage: "/assets/images/contact-banner.webp",
     heroVideo: undefined,
     helpTitle: contact.help.title,
+    helpHighlight: contact.help.highlight,
     helpBody: contact.help.body,
     helpOptions: fallbackHelpOptions,
     infoItems: contact.info,
@@ -705,7 +865,9 @@ export async function getClientsServer() {
         if (doc.logo && typeof doc.logo === "object" && doc.logo !== null) {
           const rawUrl =
             doc.logo.url ||
-            (doc.logo.filename ? `/api/media/file/${doc.logo.filename}` : undefined);
+            (doc.logo.filename
+              ? `/api/media/file/${doc.logo.filename}`
+              : undefined);
           if (rawUrl) {
             imageUrl =
               rawUrl.startsWith("http") || rawUrl.startsWith("/")
@@ -752,10 +914,15 @@ export async function getClientsServer() {
 
 interface PayloadStoryDoc {
   id: string | number;
+  slug?: string;
   tag?: string;
   title?: string;
   units?: string;
   description?: string;
+  challenge?: string;
+  solution?: string;
+  body?: Array<{ paragraph?: string } | string>;
+  metrics?: Array<{ label?: string; value?: string }>;
   href?: string;
   image?: { filename?: string; url?: string } | string | number | null;
 }
@@ -792,22 +959,58 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
               : `/${doc.image}`;
         }
 
-        if (!imageUrl) {
-          const staticMatch = successStory.items.find(
-            (s) =>
-              doc.title && s.title.toLowerCase() === doc.title.toLowerCase(),
-          );
-          if (staticMatch) {
-            imageUrl = staticMatch.image;
-          }
+        const computedSlug =
+          doc.slug ||
+          (doc.title
+            ? doc.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)/g, "")
+            : String(doc.id));
+
+        const staticMatch = successStory.items.find(
+          (s) =>
+            s.slug === computedSlug ||
+            (doc.title && s.title.toLowerCase() === doc.title.toLowerCase()),
+        );
+
+        if (!imageUrl && staticMatch) {
+          imageUrl = staticMatch.image;
         }
 
+        const bodyArray = Array.isArray(doc.body)
+          ? doc.body
+              .map((b) =>
+                typeof b === "object" && b ? b.paragraph || "" : String(b),
+              )
+              .filter(Boolean)
+          : staticMatch?.body;
+
+        const metricsArray = Array.isArray(doc.metrics)
+          ? doc.metrics
+              .map((m) => ({
+                label: m.label || "",
+                value: m.value || "",
+              }))
+              .filter((m) => Boolean(m.label && m.value))
+          : staticMatch?.metrics;
+
+        const href =
+          doc.href && doc.href !== "/insight/success-story"
+            ? doc.href
+            : `/insight/success-story/${computedSlug}`;
+
         return {
-          tag: doc.tag || "",
-          title: doc.title || "",
-          units: doc.units || "",
-          description: doc.description || "",
-          href: doc.href || "/insight/success-story",
+          slug: computedSlug,
+          tag: doc.tag || staticMatch?.tag || "",
+          title: doc.title || staticMatch?.title || "",
+          units: doc.units || staticMatch?.units || "",
+          description: doc.description || staticMatch?.description || "",
+          challenge: doc.challenge || staticMatch?.challenge,
+          solution: doc.solution || staticMatch?.solution,
+          body: bodyArray,
+          metrics: metricsArray,
+          href,
           image: imageUrl,
         };
       });
@@ -821,6 +1024,13 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
   }
 
   return successStory.items;
+}
+
+export async function getSuccessStoryBySlugServer(
+  slug: string,
+): Promise<Story | undefined> {
+  const stories = await getSuccessStoriesServer();
+  return stories.find((s) => s.slug === slug || s.href.endsWith(`/${slug}`));
 }
 
 export async function getContentDataServer() {

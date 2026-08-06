@@ -1,11 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Icon } from "@/components/ui/Icon";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import {
   compatibleLabels,
   fiturLabels,
+  medanIcons,
   medanLabels,
   tipeLabels,
+  type Medan,
   type Product,
 } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
@@ -71,7 +73,10 @@ export function ProductCard({ product }: { product: Product }) {
         {product.medan.length > 0 && (
           <ChipRow
             title="Medan"
-            items={product.medan.map((m) => medanLabels[m] || m)}
+            items={product.medan.map((m) => ({
+              label: medanLabels[m] || m,
+              icon: medanIcons[m as Medan],
+            }))}
           />
         )}
         {product.fitur.length > 0 && (
@@ -107,21 +112,34 @@ export function ProductCard({ product }: { product: Product }) {
   );
 }
 
-function ChipRow({ title, items }: { title: string; items: string[] }) {
+function ChipRow({
+  title,
+  items,
+}: {
+  title: string;
+  items: (string | { label: string; icon?: IconName })[];
+}) {
   return (
     <div className="mt-4">
       <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink/45">
         {title}
       </p>
       <div className="flex flex-wrap gap-1.5">
-        {items.map((t) => (
-          <span
-            key={t}
-            className="rounded-full border border-line bg-paper-2/60 px-2.5 py-1 text-[10px] font-medium text-muted"
-          >
-            {t}
-          </span>
-        ))}
+        {items.map((item) => {
+          const label = typeof item === "string" ? item : item.label;
+          const icon = typeof item === "string" ? undefined : item.icon;
+          return (
+            <span
+              key={label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-paper-2/60 px-2.5 py-1 text-[10px] font-medium text-muted"
+            >
+              {icon && (
+                <Icon name={icon} className="h-3 w-3 shrink-0 text-orange" />
+              )}
+              {label}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

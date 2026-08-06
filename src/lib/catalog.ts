@@ -65,6 +65,15 @@ export const fiturOptions: { key: Fitur; label: string }[] = [
   { key: "jarakTempuh", label: "Jarak Tempuh Tinggi" },
 ];
 
+import type { IconName } from "@/components/ui/Icon";
+
+export const medanIcons: Record<Medan, IconName> = {
+  perjalananPanjang: "highway",
+  jalanPerkotaan: "city",
+  standar: "road",
+  offRoad: "mountain",
+};
+
 export const tipeLabels: Record<string, string> = Object.fromEntries(
   tipeOptions.map((o) => [o.key, o.label])
 );
@@ -93,11 +102,8 @@ export const brands: Record<Brand, { name: string; tagline: string; note: string
 
 export const catalogHero = {
   breadcrumb: ["Beranda", "Produk", "Ban", "Truk"],
-  eyebrow: "Katalog Produk",
   title: "Ban Truk & Kendaraan Niaga",
   accent: "Truk",
-  description:
-    "Pilihan ban truk terbaik dari Tiron & Doublestar, dirancang untuk ketahanan maksimal di berbagai medan.",
   image: "/assets/images/banner-ban-tread.webp",
 };
 

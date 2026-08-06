@@ -17,8 +17,8 @@ export function revalidatePathSafely(path: string, type?: 'layout' | 'page'): vo
   if (isBuildOrScript()) return;
   try {
     revalidatePath(path, type);
-  } catch (err) {
-    console.error(`Failed to revalidate path "${path}":`, err);
+  } catch {
+    // Ignore error when revalidatePath is called outside Next.js request context (e.g., CLI scripts)
   }
 }
 

@@ -36,6 +36,7 @@ export interface WhyChooseItemData {
 interface WhyChooseProps {
   data?: {
     whyChooseTitle?: string;
+    whyChooseTitleHighlight?: string[];
     whyChooseBody?: string;
     whyChooseItems?: WhyChooseItemData[];
   };
@@ -63,14 +64,9 @@ export function WhyChoose({ data }: WhyChooseProps) {
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              {data?.whyChooseTitle ? (
-                data.whyChooseTitle
-              ) : (
-                <>
-                  {whyChoose.titleLead}
-                  <span className="text-orange">{whyChoose.titleAccent}</span>
-                  {whyChoose.titleTail}
-                </>
+              {renderHighlighted(
+                data?.whyChooseTitle || whyChoose.title,
+                data?.whyChooseTitleHighlight || whyChoose.highlight,
               )}
             </h2>
           </Reveal>

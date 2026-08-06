@@ -29,26 +29,43 @@ const sizes: Record<Size, string> = {
 
 export function Button({
   href,
+  onClick,
+  type = "button",
   variant = "primary",
   size = "md",
   className,
   children,
   external,
 }: {
-  href: string;
+  href?: string;
+  onClick?: (e: React.MouseEvent) => void;
+  type?: "button" | "submit" | "reset";
   variant?: Variant;
   size?: Size;
   className?: string;
   children: React.ReactNode;
   external?: boolean;
 }) {
+  if (href) {
+    return (
+      <Link
+        href={href}
+        onClick={onClick}
+        className={cn(base, variants[variant], sizes[size], className)}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
+        {children}
+      </Link>
+    );
+  }
+
   return (
-    <Link
-      href={href}
+    <button
+      type={type}
+      onClick={onClick}
       className={cn(base, variants[variant], sizes[size], className)}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
       {children}
-    </Link>
+    </button>
   );
 }

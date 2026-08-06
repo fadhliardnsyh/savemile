@@ -14,6 +14,11 @@ export const SuccessStories: CollectionConfig = {
   },
   fields: [
     {
+      name: 'slug',
+      type: 'text',
+      index: true,
+    },
+    {
       name: 'tag',
       type: 'text',
       required: true,
@@ -32,9 +37,40 @@ export const SuccessStories: CollectionConfig = {
       type: 'textarea',
     },
     {
+      name: 'challenge',
+      type: 'textarea',
+    },
+    {
+      name: 'solution',
+      type: 'textarea',
+    },
+    {
+      name: 'body',
+      type: 'array',
+      fields: [
+        {
+          name: 'paragraph',
+          type: 'textarea',
+        },
+      ],
+    },
+    {
+      name: 'metrics',
+      type: 'array',
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+        },
+        {
+          name: 'value',
+          type: 'text',
+        },
+      ],
+    },
+    {
       name: 'href',
       type: 'text',
-      defaultValue: '/insight/success-story',
     },
     {
       name: 'image',

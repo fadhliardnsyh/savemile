@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Container } from "@/components/ui/Container";
-import { Icon } from "@/components/ui/Icon";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductActions } from "@/components/catalog/ProductActions";
 import { CtaSection } from "@/components/sections/CtaSection";
@@ -13,8 +13,10 @@ import {
   relatedProducts,
   tipeLabels,
   compatibleLabels,
+  medanIcons,
   medanLabels,
   fiturLabels,
+  type Medan,
 } from "@/lib/catalog";
 import { consultCta, site } from "@/lib/content";
 import { cn } from "@/lib/cn";
@@ -143,7 +145,10 @@ export default async function ProductDetailPage({
               {product.medan.length > 0 && (
                 <ChipBlock
                   title="Medan"
-                  items={product.medan.map((m) => medanLabels[m])}
+                  items={product.medan.map((m) => ({
+                    label: medanLabels[m] || m,
+                    icon: medanIcons[m as Medan],
+                  }))}
                 />
               )}
 
@@ -199,21 +204,32 @@ export default async function ProductDetailPage({
   );
 }
 
-function ChipBlock({ title, items }: { title: string; items: string[] }) {
+function ChipBlock({
+  title,
+  items,
+}: {
+  title: string;
+  items: (string | { label: string; icon?: IconName })[];
+}) {
   return (
     <div className="mt-7">
       <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
         {title}
       </h2>
       <div className="mt-3 flex flex-wrap gap-2.5">
-        {items.map((t) => (
-          <span
-            key={t}
-            className="inline-flex items-center rounded-xl bg-orange/8 px-3.5 py-2 text-xs font-medium text-ink ring-1 ring-inset ring-orange/25"
-          >
-            {t}
-          </span>
-        ))}
+        {items.map((item) => {
+          const label = typeof item === "string" ? item : item.label;
+          const icon = typeof item === "string" ? undefined : item.icon;
+          return (
+            <span
+              key={label}
+              className="inline-flex items-center gap-2 rounded-xl bg-orange/8 px-3.5 py-2 text-xs font-medium text-ink ring-1 ring-inset ring-orange/25"
+            >
+              {icon && <Icon name={icon} className="h-3.5 w-3.5 text-orange" />}
+              {label}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

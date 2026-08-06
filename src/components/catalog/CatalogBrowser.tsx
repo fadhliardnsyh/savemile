@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProductCard } from "@/components/catalog/ProductCard";
-import { Icon } from "@/components/ui/Icon";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { Select } from "@/components/ui/Select";
 import {
   brandOptions,
@@ -10,6 +10,7 @@ import {
   compatibleOptions,
   fiturLabels,
   fiturOptions,
+  medanIcons,
   medanLabels,
   medanOptions,
   products,
@@ -303,6 +304,7 @@ export function CatalogBrowser({
           <CheckRow
             key={o.key}
             label={o.label}
+            icon={medanIcons[o.key as Medan]}
             count={count((p) => p.medan, o.key)}
             checked={medan.includes(o.key)}
             onChange={() => toggle(setMedan, o.key)}
@@ -662,12 +664,14 @@ function CheckRow({
   checked,
   onChange,
   mono,
+  icon,
 }: {
   label: string;
   count: number;
   checked: boolean;
   onChange: () => void;
   mono?: boolean;
+  icon?: IconName;
 }) {
   return (
     <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-ink/3">
@@ -702,6 +706,9 @@ function CheckRow({
           </svg>
         )}
       </span>
+      {icon && (
+        <Icon name={icon} className="h-3.5 w-3.5 shrink-0 text-muted" />
+      )}
       <span
         className={cn(
           "flex-1 text-[13px] text-ink-soft",

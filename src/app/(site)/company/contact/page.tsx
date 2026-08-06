@@ -9,6 +9,24 @@ import { Button } from "@/components/ui/Button";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { getContactPageServer } from "@/lib/payload";
 
+function renderHighlighted(title: string, highlight?: string[]) {
+  if (!highlight || highlight.length === 0) return title;
+  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
+  let offset = 0;
+  return parts.map((part) => {
+    const key = `${part}-${offset}`;
+    offset += part.length;
+    return highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={key} className="text-orange">
+        {part}
+      </span>
+    ) : (
+      part
+    );
+  });
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const contactData = await getContactPageServer();
   return {
@@ -37,7 +55,7 @@ export default async function ContactPage() {
             <div className="mx-auto max-w-2xl text-center">
               <Reveal delay={60}>
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-                  {contactData.helpTitle}
+                  {renderHighlighted(contactData.helpTitle, contactData.helpHighlight)}
                 </h2>
               </Reveal>
               <Reveal delay={120}>
@@ -47,33 +65,33 @@ export default async function ContactPage() {
               </Reveal>
             </div>
 
-            <div className="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
+            <div className="mx-auto mt-12 max-w-4xl">
               {contactData.helpOptions.map((o, i) => (
                 <Reveal key={o.title} delay={i * 90} className="h-full">
-                  <div className="beam group relative flex h-full flex-col rounded-2xl bg-card p-7 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)">
+                  <div className="beam group relative flex h-full flex-col items-center text-center rounded-2xl bg-card p-8 sm:p-10 shadow-(--shadow-soft) ring-1 ring-inset ring-line/70 transition-all duration-300 hover:-translate-y-1 hover:shadow-(--shadow-lift)">
                     <span className="beam-line" aria-hidden />
-                    <span className="grid h-12 w-12 place-items-center rounded-xl bg-linear-to-br from-orange to-orange-deep text-white shadow-(--shadow-orange)">
-                      <Icon name={o.icon as IconName} className="h-6 w-6" />
+                    <span className="grid h-14 w-14 place-items-center rounded-xl bg-linear-to-br from-orange to-orange-deep text-white shadow-(--shadow-orange)">
+                      <Icon name={o.icon as IconName} className="h-7 w-7" />
                     </span>
-                    <div className="mt-5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-orange">
+                    <div className="mt-6 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-orange">
                       {o.tag}
                     </div>
-                    <h3 className="mt-2 font-display text-xl font-bold text-ink">
+                    <h3 className="mt-2 font-display text-2xl font-bold text-ink">
                       {o.title}
                     </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-muted text-pretty">
+                    <p className="mt-3 text-base leading-relaxed text-muted text-pretty">
                       {o.desc}
                     </p>
-                    <div className="mt-6">
+                    <div className="mt-8 flex justify-center w-full">
                       <Button
                         href={o.href}
                         variant={o.icon === "whatsapp" ? "wa" : "primary"}
-                        size="md"
+                        size="lg"
                         external={o.external}
                       >
                         <Icon
-                          name={o.icon === "whatsapp" ? "whatsapp" : "mail"}
-                          className="h-4 w-4"
+                          name={o.icon === "whatsapp" ? "whatsapp" : (o.icon as IconName) || "mail"}
+                          className="h-5 w-5"
                         />
                         {o.actionLabel}
                       </Button>
@@ -103,11 +121,7 @@ export default async function ContactPage() {
                 );
                 return (
                   <Reveal key={info.label} delay={i * 70}>
-                    {info.href ? (
-                      <Link href={info.href}>{inner}</Link>
-                    ) : (
-                      inner
-                    )}
+                    {info.href ? <Link href={info.href}>{inner}</Link> : inner}
                   </Reveal>
                 );
               })}
