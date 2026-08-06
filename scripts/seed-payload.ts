@@ -19,6 +19,8 @@ modProto.require = function (this: unknown, ...args: unknown[]) {
 import fs from "node:fs";
 import path from "node:path";
 
+process.env.IS_SEEDING = "true";
+
 // Load .env file for CLI execution
 try {
   const envPath = path.resolve(process.cwd(), ".env");
@@ -40,7 +42,18 @@ try {
 } catch (e) {}
 
 import { catalogHero, products } from "../src/lib/catalog";
-import { about, career, clients, contact, coverage, hero, site, successStory, tms, whyChoose } from "../src/lib/content";
+import {
+  about,
+  career,
+  clients,
+  contact,
+  coverage,
+  hero,
+  site,
+  successStory,
+  tms,
+  whyChoose,
+} from "../src/lib/content";
 
 async function seed() {
   console.log("Seeding Payload CMS with initial data...");
@@ -59,7 +72,8 @@ async function seed() {
       hrEmail: site.hrEmail,
       phone: site.phone,
       whatsapp: site.whatsapp,
-      whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
+      whatsappMessage:
+        "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
       address: site.address,
     },
   });
@@ -67,7 +81,9 @@ async function seed() {
 
   async function uploadMediaIfExist(relativePath?: string, alt?: string) {
     if (!relativePath) return undefined;
-    const cleanPath = relativePath.startsWith("/") ? relativePath.slice(1) : relativePath;
+    const cleanPath = relativePath.startsWith("/")
+      ? relativePath.slice(1)
+      : relativePath;
     const fullPath = path.resolve(process.cwd(), "public", cleanPath);
     if (fs.existsSync(fullPath)) {
       try {
@@ -100,7 +116,10 @@ async function seed() {
   }
 
   // 1b. Seed HomePage Global
-  const homeHeroMediaId = await uploadMediaIfExist(hero.image, "Home Hero Media");
+  const homeHeroMediaId = await uploadMediaIfExist(
+    hero.image,
+    "Home Hero Media",
+  );
   await payload.updateGlobal({
     slug: "home-page",
     data: {
@@ -109,6 +128,7 @@ async function seed() {
       heroDescription: hero.description,
       heroMedia: homeHeroMediaId,
       whyChooseTitle: `${whyChoose.titleLead}${whyChoose.titleAccent}${whyChoose.titleTail}`,
+      whyChooseTitleHighlight: "pengguna",
       whyChooseBody: whyChoose.body,
       whyChooseItems: seededWhyChooseItems,
       coverageTitle: coverage.title,
@@ -121,20 +141,24 @@ async function seed() {
   console.log("✅ HomePage seeded");
 
   // 1c. Seed CatalogPage Global
-  const catalogHeroMediaId = await uploadMediaIfExist(catalogHero.image, "Catalog Hero Media");
+  const catalogHeroMediaId = await uploadMediaIfExist(
+    catalogHero.image,
+    "Catalog Hero Media",
+  );
   await payload.updateGlobal({
     slug: "catalog-page",
     data: {
-      eyebrow: catalogHero.eyebrow,
       title: catalogHero.title,
-      description: catalogHero.description,
       heroMedia: catalogHeroMediaId,
     },
   });
   console.log("✅ CatalogPage seeded");
 
   // 1d. Seed TmsPage Global
-  const tmsHeroMediaId = await uploadMediaIfExist("/assets/images/tms-banner.webp", "TMS Hero Media");
+  const tmsHeroMediaId = await uploadMediaIfExist(
+    "/assets/images/tms-banner.webp",
+    "TMS Hero Media",
+  );
   const seededTmsFeatureItems = [];
   for (const item of tms.features.items) {
     const mediaId = await uploadMediaIfExist(item.image, `${item.title} Media`);
@@ -150,22 +174,28 @@ async function seed() {
     data: {
       title: "Tire Management Solution",
       heroMedia: tmsHeroMediaId,
-      featuresTitle: `${tms.features.titleLead}${tms.features.titleAccent}`,
+      featuresTitle: tms.features.title,
+      featuresHighlight: "berbasis data",
       featureItems: seededTmsFeatureItems,
     },
   });
   console.log("✅ TmsPage seeded");
 
   // 1e. Seed AboutPage Global
-  const aboutHeroMediaId = await uploadMediaIfExist("/assets/images/about-banner.webp", "About Hero Media");
+  const aboutHeroMediaId = await uploadMediaIfExist(
+    "/assets/images/about-banner.webp",
+    "About Hero Media",
+  );
   await payload.updateGlobal({
     slug: "about-page",
     data: {
       title: `${about.hero.titleLead}${about.hero.titleAccent}`,
       heroMedia: aboutHeroMediaId,
       storyTitle: about.story.title,
+      storyTitleHighlight: "distributor ban",
       storyBody: about.story.body.map((p) => ({ paragraph: p })),
       trustTitle: about.trust.title,
+      trustTitleHighlight: "BUMN, perusahaan swasta terkemuka",
       trustBody: about.trust.body,
     },
   });
@@ -208,7 +238,10 @@ async function seed() {
   console.log("✅ Brands seeded");
 
   // 3. Seed Products
-  const existingProducts = await payload.find({ collection: "products", limit: 100 });
+  const existingProducts = await payload.find({
+    collection: "products",
+    limit: 100,
+  });
   const existingNames = new Set(existingProducts.docs.map((p) => p.name));
 
   let seededCount = 0;
@@ -240,16 +273,25 @@ async function seed() {
     seededCount++;
   }
 
-  console.log(`✅ Seeded ${seededCount} new products (Total catalogue items: ${products.length})`);
+  console.log(
+    `✅ Seeded ${seededCount} new products (Total catalogue items: ${products.length})`,
+  );
 
   // 4. Seed Clients
-  const existingClients = await payload.find({ collection: "clients", limit: 100, depth: 1 });
-  const existingClientMap = new Map(existingClients.docs.map((c) => [c.name, c]));
+  const existingClients = await payload.find({
+    collection: "clients",
+    limit: 100,
+    depth: 1,
+  });
+  const existingClientMap = new Map(
+    existingClients.docs.map((c) => [c.name, c]),
+  );
 
   let seededClientsCount = 0;
   for (let i = 0; i < clients.logos.length; i++) {
     const clientItem = clients.logos[i];
-    const clientName = typeof clientItem === "string" ? clientItem : clientItem.name;
+    const clientName =
+      typeof clientItem === "string" ? clientItem : clientItem.name;
     const clientSrc = typeof clientItem === "string" ? "" : clientItem.src;
     const existing = existingClientMap.get(clientName);
 
@@ -271,32 +313,54 @@ async function seed() {
         collection: "clients",
         id: existing.id,
         data: {
-          logo: mediaId || (typeof existing.logo === "object" && existing.logo !== null ? (existing.logo as { id: string | number }).id : existing.logo as string | number | undefined),
+          logo:
+            mediaId ||
+            (typeof existing.logo === "object" && existing.logo !== null
+              ? (existing.logo as { id: string | number }).id
+              : (existing.logo as string | number | undefined)),
           logoUrl: clientSrc || (existing as { logoUrl?: string }).logoUrl,
           order: i + 1,
         },
       });
     }
   }
-  console.log(`✅ Seeded ${seededClientsCount} new clients (Total clients: ${clients.logos.length})`);
+  console.log(
+    `✅ Seeded ${seededClientsCount} new clients (Total clients: ${clients.logos.length})`,
+  );
 
   // 5. Seed Success Stories
-  const existingStories = await payload.find({ collection: "success-stories", limit: 100, depth: 1 });
-  const existingStoryMap = new Map(existingStories.docs.map((s) => [s.title, s]));
+  const existingStories = await payload.find({
+    collection: "success-stories",
+    limit: 100,
+    depth: 1,
+  });
+  const existingStoryMap = new Map(
+    existingStories.docs.map((s) => [s.title, s]),
+  );
 
   let seededStoriesCount = 0;
   for (const storyItem of successStory.items) {
     const existing = existingStoryMap.get(storyItem.title);
-    const mediaId = await uploadMediaIfExist(storyItem.image, `${storyItem.title} Image`);
+    const mediaId = await uploadMediaIfExist(
+      storyItem.image,
+      `${storyItem.title} Image`,
+    );
 
     if (!existing) {
       await payload.create({
         collection: "success-stories",
         data: {
+          slug: storyItem.slug,
           tag: storyItem.tag,
           title: storyItem.title,
           units: storyItem.units,
           description: storyItem.description,
+          challenge: storyItem.challenge,
+          solution: storyItem.solution,
+          body: storyItem.body
+            ? storyItem.body.map((p) => ({ paragraph: p }))
+            : undefined,
+          metrics: storyItem.metrics,
           href: storyItem.href,
           image: mediaId,
         },
@@ -307,15 +371,35 @@ async function seed() {
         collection: "success-stories",
         id: existing.id,
         data: {
-          image: mediaId || (typeof existing.image === "object" && existing.image !== null ? (existing.image as { id: string | number }).id : existing.image as string | number | undefined),
+          slug: storyItem.slug,
+          tag: storyItem.tag,
+          units: storyItem.units,
+          description: storyItem.description,
+          challenge: storyItem.challenge,
+          solution: storyItem.solution,
+          body: storyItem.body
+            ? storyItem.body.map((p) => ({ paragraph: p }))
+            : undefined,
+          metrics: storyItem.metrics,
+          href: storyItem.href,
+          image:
+            mediaId ||
+            (typeof existing.image === "object" && existing.image !== null
+              ? (existing.image as { id: string | number }).id
+              : (existing.image as string | number | undefined)),
         },
       });
     }
   }
-  console.log(`✅ Seeded ${seededStoriesCount} new success stories (Total items: ${successStory.items.length})`);
+  console.log(
+    `✅ Seeded ${seededStoriesCount} new success stories (Total items: ${successStory.items.length})`,
+  );
 
   // Link success stories to HomePage global
-  const allStories = await payload.find({ collection: "success-stories", limit: 100 });
+  const allStories = await payload.find({
+    collection: "success-stories",
+    limit: 100,
+  });
   if (allStories.docs.length > 0) {
     const storyIds = allStories.docs.map((doc) => doc.id);
     await payload.updateGlobal({
@@ -324,16 +408,23 @@ async function seed() {
         successStories: storyIds,
       },
     });
-    console.log(`✅ Linked ${storyIds.length} success stories to HomePage global`);
+    console.log(
+      `✅ Linked ${storyIds.length} success stories to HomePage global`,
+    );
   }
 
   // Seed TmsPage global default consultation values
-  const tmsPageDoc = await payload.findGlobal({ slug: "tms-page" }).catch(() => null);
+  const tmsPageDoc = await payload
+    .findGlobal({ slug: "tms-page" })
+    .catch(() => null);
   if (tmsPageDoc && !tmsPageDoc.consultationTitle) {
     await payload.updateGlobal({
       slug: "tms-page",
       data: {
-        consultationTitle: "Konsultasi berkualitas secara berkala, berbasis data",
+        featuresTitle: tms.features.title,
+        featuresHighlight: "berbasis data",
+        consultationTitle:
+          "Konsultasi berkualitas secara berkala, berbasis data",
         consultationHighlight: "berbasis data",
         consultationDescription:
           "Kami selalu memberikan konsultasi laporan CPK ban untuk memastikan setiap ban yang Anda gunakan konsisten sesuai standar kualitas dan performa terbaik.",
@@ -343,7 +434,10 @@ async function seed() {
   }
 
   // Seed CareerPage global and Jobs collection
-  const careerHeroMediaId = await uploadMediaIfExist("/assets/images/career-banner.webp", "Career Hero Media");
+  const careerHeroMediaId = await uploadMediaIfExist(
+    "/assets/images/career-banner.webp",
+    "Career Hero Media",
+  );
   await payload.updateGlobal({
     slug: "career-page",
     data: {
@@ -369,7 +463,10 @@ async function seed() {
   console.log("✅ CareerPage seeded");
 
   // Seed ContactPage global
-  const contactHeroMediaId = await uploadMediaIfExist("/assets/images/contact-banner.webp", "Contact Hero Media");
+  const contactHeroMediaId = await uploadMediaIfExist(
+    "/assets/images/contact-banner.webp",
+    "Contact Hero Media",
+  );
   await payload.updateGlobal({
     slug: "contact-page",
     data: {
@@ -377,8 +474,10 @@ async function seed() {
       heroTitle: `${contact.hero.titleLead}${contact.hero.titleAccent}`,
       heroDescription: contact.hero.description,
       heroMedia: contactHeroMediaId,
-      whatsappMessage: "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.",
+      whatsappMessage:
+        "Halo SaveMile, saya ingin berkonsultasi mengenai layanan dan produk ban.",
       helpTitle: contact.help.title,
+      helpHighlight: "membantu Anda?",
       helpBody: contact.help.body,
       helpOptions: contact.help.options.map((item) => ({
         title: item.title,
@@ -407,4 +506,3 @@ seed().catch((err) => {
   console.error("Seeding failed:", err);
   process.exit(1);
 });
-

@@ -40,6 +40,12 @@ export const HomePage: GlobalConfig = {
       type: 'text',
     },
     {
+      name: 'whyChooseTitleHighlight',
+      type: 'text',
+      label: 'Why Choose Title Highlight Phrases (comma separated)',
+      defaultValue: 'pengguna',
+    },
+    {
       name: 'whyChooseBody',
       type: 'textarea',
     },

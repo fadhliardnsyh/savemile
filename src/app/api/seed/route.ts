@@ -69,9 +69,7 @@ export async function GET() {
     await payload.updateGlobal({
       slug: 'catalog-page',
       data: {
-        eyebrow: catalogHero.eyebrow,
         title: catalogHero.title,
-        description: catalogHero.description,
         heroMedia: catalogHeroMediaId,
       },
     });
@@ -93,7 +91,8 @@ export async function GET() {
       data: {
         title: 'Tire Management Solution',
         heroMedia: tmsHeroMediaId,
-        featuresTitle: `${tms.features.titleLead}${tms.features.titleAccent}`,
+        featuresTitle: tms.features.title,
+        featuresHighlight: 'berbasis data',
         featureItems: seededTmsFeatureItems,
       },
     });

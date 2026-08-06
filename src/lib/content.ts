@@ -101,10 +101,7 @@ export const hero = {
 
 export const clients = {
   title: "Dipercaya oleh klien dan mitra industri",
-  titleLead: "Dipercaya oleh ",
-  titleAccent: "klien",
-  titleMid: " dan ",
-  titleAccent2: "mitra industri",
+  highlight: ["klien", "mitra industri"],
   body: "Dari BUMN hingga perusahaan swasta terbaik di Indonesia memilih SaveMile.",
   logos: [
     { name: "Shell", src: "/assets/logos/Logo Shell.svg" },
@@ -151,6 +148,7 @@ export const whyChoose = {
   titleLead: "Kenapa ribuan ",
   titleAccent: "pengguna",
   titleTail: " memilih SaveMile",
+  highlight: ["pengguna"],
   body: "Kami tidak hanya menyediakan ban berkualitas, kami membantu mengelola aset ban Anda dengan lebih efektif, efisien, dan berbasis data.",
   items: [
     {
@@ -247,11 +245,21 @@ export const coverage = {
 
 /* ---------- Section 3: Success Story ---------- */
 
+export type StoryMetric = {
+  label: string;
+  value: string;
+};
+
 export type Story = {
+  slug: string;
   tag: string;
   title: string;
   units: string;
   description: string;
+  challenge?: string;
+  solution?: string;
+  body?: string[];
+  metrics?: StoryMetric[];
   href: string;
   image?: string;
 };
@@ -263,31 +271,76 @@ export const successStory = {
   viewAll: { label: "Lihat semua", href: "/insight/success-story" },
   items: [
     {
+      slug: "pt-trimitra-trans-persada",
       tag: "Logistik",
       title: "PT Trimitra Trans Persada: 20% penghematan biaya CPK ban",
       units: "3.000 unit armada",
       description:
         "Mengelola ban armada berbasis data menekan cost-per-kilometer dan downtime secara signifikan dalam 6 bulan pertama.",
-      href: "/insight/success-story",
+      challenge:
+        "PT Trimitra Trans Persada mengoperasikan lebih dari 3.000 unit armada logistik lintas pulau. Sebelum bekerja sama dengan SaveMile, tantangan utama mereka adalah kesulitan melacak kondisi ban secara konsisten di setiap wilayah operasional, tingginya angka kanibalisasi ban tanpa pencatatan resmi, dan biaya CPK (Cost Per Kilometer) ban yang membengkak akibat pemilihan tipe ban yang kurang presisi.",
+      solution:
+        "SaveMile melakukan implementasi sistem Laser Tire Marking pada seluruh ban baru dan terpasang untuk memberikan identitas unik permanen. Tim konsultasi SaveMile menganalisis rute muatan tinggi serta merekomendasikan kombinasi pola telapak ban (steer vs drive) yang paling optimal. Notifikasi otomatis diaktifkan untuk penguliran dan perputaran ban (rotation schedule).",
+      body: [
+        "Dalam skala operasional 3.000 armada, transparansi data adalah segalanya. Tanpa sistem penandaan dan sistem analitik ban, kebocoran biaya halus seperti rotasi terlambat atau keausan tidak rata sering tidak terdeteksi hingga ban rusak secara prematur.",
+        "Melalui integrasi platform SaveMile Tire Monitoring System, setiap unit kendaraan mendapatkan jadwal perawatan ban yang terukur. Teknisi di lapangan dapat melakukan inspeksi cepat dan memverifikasi identitas fisik ban secara langsung.",
+        "Hasilnya, penghematan langsung terlihat pada kuartal kedua penerapan. Umur pakai rata-rata ban meningkat hingga 18%, efisiensi pemakaian ban bekas meningkat, dan angka kehilangan ban berkurang hingga hampir 0%.",
+      ],
+      metrics: [
+        { label: "Penghematan CPK Ban", value: "20%" },
+        { label: "Total Armada Terintegrasi", value: "3.000+ Unit" },
+        { label: "Risiko Kehilangan Ban", value: "< 1%" },
+      ],
+      href: "/insight/success-story/pt-trimitra-trans-persada",
       image: "/assets/images/cases/logistik.webp",
     },
     {
+      slug: "pt-yosua-berhasil-beruntung",
       tag: "Distribusi",
       title: "PT Yosua Berhasil Beruntung: nol insiden ban aus sepanjang tahun",
       units: "200 unit",
       description:
         "Notifikasi penggantian tepat waktu menjaga armada tetap produktif tanpa insiden ban aus.",
-      href: "/insight/success-story",
+      challenge:
+        "Sebagai perusahaan distribusi bahan pokok dengan jadwal pengiriman harian yang ketat, insiden ban aus di tengah perjalanan menyebabkan keterlambatan armada dan biaya penanganan darurat yang tinggi.",
+      solution:
+        "Penerapan modul Auto Notification & Tire Health Report dari SaveMile. Setiap mendekati batas kedalaman alur aman, tim operasional menerima peringatan dini untuk melakukan penggantian terjadwal di depo terdekat.",
+      body: [
+        "Kecepatan dan ketepatan waktu pengiriman barang consumable tidak menoleransi downtime akibat gangguan teknis ban.",
+        "Dengan pemantauan rutin dan peringatan otomatis sebelum kondisi kritis, penggantian ban kini dilakukan saat armada sedang dalam masa perawatan berkala di pool.",
+        "Langkah preventif ini menghindarkan perusahaan dari risiko kecelakaan, kerusakan muatan, dan pengeluaran mendadak untuk penggantian ban darurat di jalan.",
+      ],
+      metrics: [
+        { label: "Insiden Ban Aus di Jalan", value: "0 Cases" },
+        { label: "On-Time Delivery Rate", value: "99.4%" },
+        { label: "Total Armada", value: "200 Unit" },
+      ],
+      href: "/insight/success-story/pt-yosua-berhasil-beruntung",
       image: "/assets/images/cases/distribusi.webp",
     },
     {
+      slug: "pt-selaras-cipta-bersatu",
       tag: "Konstruksi",
       title:
         "PT Selaras Cipta Bersatu: umur ban lebih panjang, biaya turun drastis",
       units: "300 unit",
       description:
         "Rekomendasi ban yang tepat untuk medan berat memperpanjang umur ban dan memangkas biaya penggantian.",
-      href: "/insight/success-story",
+      challenge:
+        "Operasional kendaraan di sektor konstruksi dan medan jalan berbatu tajam menyebabkan ban sering mengalami chipping, scaling, dan pecah dinding sebelum mencapai usia pakai standar.",
+      solution:
+        "SaveMile merekomendasikan seri ban off-road/mixed-service khusus berbahan kompon ekstra tahan benturan, dipadukan dengan pemantauan tekanan angin berkala.",
+      body: [
+        "Medan berat memerlukan perlakuan dan formulasi kompon ban yang berbeda dibanding kendaraan jalan tol.",
+        "Setelah beralih ke spesifikasi ban yang direkomendasikan SaveMile, ketahanan telapak ban terhadap batuan tajam meningkat signifikan.",
+        "Total pengeluaran tahunan untuk pembelian ban baru di divisi proyek mengalami penurunan dramatis karena umur ban meningkat lebih dari 35%.",
+      ],
+      metrics: [
+        { label: "Peningkatan Umur Ban", value: "+35%" },
+        { label: "Penurunan Biaya Penggantian", value: "28%" },
+        { label: "Armada Proyek", value: "300 Unit" },
+      ],
+      href: "/insight/success-story/pt-selaras-cipta-bersatu",
       image: "/assets/images/cases/konstruksi.webp",
     },
   ] as Story[],
@@ -393,8 +446,8 @@ export const tms = {
   },
   features: {
     eyebrow: "Yang Anda dapatkan",
-    titleLead: "Kendali penuh atas ban armada, ",
-    titleAccent: "berbasis data",
+    title: "Kendali penuh atas ban armada, berbasis data",
+    highlight: ["berbasis data"],
     items: [
       {
         icon: "laser" as TmsIcon,
@@ -454,6 +507,8 @@ export const about = {
   story: {
     eyebrow: "Misi Kami",
     title: "Kami bukan sekadar distributor ban",
+    highlight: ["distributor ban"],
+    image: "/assets/images/why-consulting.webp",
     body: [
       "Kami hadir untuk memastikan setiap kendaraan Anda menggunakan ban yang tepat sehingga biaya operasional lebih efisien tanpa mengorbankan kualitas.",
       "Sejak pertama kali berdiri, SaveMile telah mendistribusikan ribuan ban untuk perusahaan di seluruh Indonesia dengan satu tujuan: menekan biaya operasional kendaraan secara signifikan berbasis data.",
@@ -478,6 +533,7 @@ export const about = {
   },
   trust: {
     title: "Dari BUMN hingga perusahaan swasta terkemuka di Indonesia",
+    highlight: ["BUMN", "perusahaan swasta terkemuka"],
     body: "Mereka mempercayakan kebutuhan ban kendaraan mereka kepada SaveMile.",
   },
 };
@@ -559,6 +615,7 @@ export const contact = {
   help: {
     eyebrow: "Hubungi Kami",
     title: "Bagaimana kami dapat membantu Anda?",
+    highlight: ["membantu Anda?"],
     body: "Pilih kontak yang sesuai dengan kebutuhan Anda, dan kami akan dengan senang hati menghubungi Anda.",
     options: [
       {
@@ -569,15 +626,6 @@ export const contact = {
         actionLabel: "Chat WhatsApp",
         href: site.whatsapp,
         external: true,
-      },
-      {
-        icon: "users",
-        tag: "Karier",
-        title: "Gabung dengan tim kami",
-        desc: "Kirim CV Anda dan mulai perjalanan bersama SaveMile.",
-        actionLabel: `Kirim CV ke ${site.hrEmail}`,
-        href: `mailto:${site.hrEmail}`,
-        external: false,
       },
     ],
   },

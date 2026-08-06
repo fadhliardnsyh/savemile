@@ -8,18 +8,9 @@ export const CatalogPage: GlobalConfig = {
   },
   fields: [
     {
-      name: 'eyebrow',
-      type: 'text',
-      defaultValue: 'Katalog Produk',
-    },
-    {
       name: 'title',
       type: 'text',
       defaultValue: 'Ban Truk & Kendaraan Niaga',
-    },
-    {
-      name: 'description',
-      type: 'textarea',
     },
     {
       name: 'heroMedia',

@@ -30,6 +30,18 @@ export const AboutPage: GlobalConfig = {
       defaultValue: 'Kami bukan sekadar distributor ban',
     },
     {
+      name: 'storyTitleHighlight',
+      type: 'text',
+      label: 'Story Title Highlight Phrases (comma separated)',
+      defaultValue: 'distributor ban',
+    },
+    {
+      name: 'storyImage',
+      type: 'relationship',
+      relationTo: 'media',
+      label: 'Story Image / Media',
+    },
+    {
       name: 'storyBody',
       type: 'array',
       fields: [
@@ -44,6 +56,12 @@ export const AboutPage: GlobalConfig = {
       name: 'trustTitle',
       type: 'text',
       defaultValue: 'Dari BUMN hingga perusahaan swasta terkemuka di Indonesia',
+    },
+    {
+      name: 'trustTitleHighlight',
+      type: 'text',
+      label: 'Trust Title Highlight Phrases (comma separated)',
+      defaultValue: 'BUMN, perusahaan swasta terkemuka',
     },
     {
       name: 'trustBody',

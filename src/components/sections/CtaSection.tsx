@@ -28,13 +28,14 @@ export function CtaSection({
   showPhone?: boolean;
   action?: CtaAction;
 }) {
-  const waHref = content.whatsappUrl || getWaUrl(site.whatsapp, content.whatsappMessage);
+  const waHref =
+    content.whatsappUrl || getWaUrl(site.whatsapp, content.whatsappMessage);
 
   return (
     <section className="relative z-10 py-16 sm:py-20">
       <Container>
         <Reveal delay={60}>
-          <div className="rounded-4xl bg-paper-2 px-6 py-14 text-center sm:px-12 sm:py-20">
+          <div className="rounded-4xl bg-[#FC532C]/8 px-6 py-14 text-center sm:px-12 sm:py-20">
             <Logo className="mx-auto h-6" />
 
             <h2 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-extrabold tracking-tight text-ink text-balance sm:text-5xl">

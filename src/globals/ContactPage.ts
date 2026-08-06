@@ -46,6 +46,12 @@ export const ContactPage: GlobalConfig = {
       defaultValue: "Bagaimana kami dapat membantu Anda?",
     },
     {
+      name: "helpHighlight",
+      type: "text",
+      label: "Help Section Highlight Phrases (comma separated)",
+      defaultValue: "membantu Anda?",
+    },
+    {
       name: "helpBody",
       type: "textarea",
       label: "Help Section Description",
@@ -55,7 +61,9 @@ export const ContactPage: GlobalConfig = {
     {
       name: "helpOptions",
       type: "array",
-      label: "Help Option Cards",
+      label: "Help Option Card",
+      minRows: 1,
+      maxRows: 1,
       fields: [
         {
           name: "title",

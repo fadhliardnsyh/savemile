@@ -21,9 +21,38 @@ export type IconName =
   | "phone"
   | "wrench"
   | "leaf"
-  | "warehouse";
+  | "warehouse"
+  | "highway"
+  | "city"
+  | "road"
+  | "mountain";
 
 const paths: Record<IconName, React.ReactNode> = {
+  highway: (
+    <>
+      <path d="M4 21L8 3h8l4 18" />
+      <path d="M12 7v3M12 14v3" />
+    </>
+  ),
+  city: (
+    <>
+      <path d="M3 21h18" />
+      <path d="M5 21V9l6-3v15" />
+      <path d="M11 12h4M11 16h4" />
+      <path d="M15 21V10l5-2v13" />
+    </>
+  ),
+  road: (
+    <>
+      <path d="M6 3v18M18 3v18" />
+      <path d="M12 6v3M12 12v3M12 18v1" />
+    </>
+  ),
+  mountain: (
+    <>
+      <path d="m3 20 7-12 4 6 3-3 4 9H3z" />
+    </>
+  ),
   consult: (
     <>
       <path d="M4 4v16h16" />

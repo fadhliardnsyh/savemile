@@ -14,17 +14,37 @@ interface FeatureItem {
   video?: string;
 }
 
+function renderHighlighted(title: string, highlight?: string[]) {
+  if (!highlight || highlight.length === 0) return title;
+  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
+  let offset = 0;
+  return parts.map((part) => {
+    const key = `${part}-${offset}`;
+    offset += part.length;
+    return highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={key} className="text-orange">
+        {part}
+      </span>
+    ) : (
+      part
+    );
+  });
+}
+
 interface FeatureDeepDiveProps {
   features?: {
     eyebrow?: string;
-    titleLead?: string;
-    titleAccent?: string;
+    title?: string;
+    highlight?: string[];
     items?: FeatureItem[];
   };
 }
 
 export function FeatureDeepDive({ features }: FeatureDeepDiveProps = {}) {
   const f = features || tms.features;
+  const title = f.title || tms.features.title;
+  const highlight = f.highlight || tms.features.highlight;
   const items: FeatureItem[] = f.items || [];
   const [activeTab, setActiveTab] = useState(0);
 
@@ -34,8 +54,7 @@ export function FeatureDeepDive({ features }: FeatureDeepDiveProps = {}) {
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              {f.titleLead}
-              <span className="text-orange">{f.titleAccent}</span>
+              {renderHighlighted(title, highlight)}
             </h2>
           </Reveal>
         </div>
