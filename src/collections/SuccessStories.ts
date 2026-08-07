@@ -1,7 +1,28 @@
 import type { CollectionConfig } from 'payload';
 import { revalidateCollection } from '../hooks/revalidate';
 
-const revalidateSuccessStories = revalidateCollection(['/', '/insight/success-story']);
+const revalidateSuccessStories = revalidateCollection((doc: any) => {
+  const computedSlug =
+    doc?.slug ||
+    (doc?.title
+      ? doc.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')
+      : String(doc?.id || ''));
+
+  const paths = ['/', '/insight/success-story'];
+
+  if (computedSlug) {
+    paths.push(`/insight/success-story/${computedSlug}`);
+  }
+
+  if (doc?.href && doc.href !== '/insight/success-story') {
+    paths.push(doc.href);
+  }
+
+  return paths;
+});
 
 export const SuccessStories: CollectionConfig = {
   slug: 'success-stories',
