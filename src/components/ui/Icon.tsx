@@ -190,9 +190,10 @@ export function Icon({
   name,
   className,
 }: {
-  name: IconName;
+  name?: string;
   className?: string;
 }) {
+  const iconPath = (name && name in paths) ? paths[name as IconName] : paths.consult;
   return (
     <svg
       viewBox="0 0 24 24"
@@ -204,7 +205,7 @@ export function Icon({
       className={className}
       aria-hidden="true"
     >
-      {paths[name]}
+      {iconPath}
     </svg>
   );
 }

@@ -6,7 +6,7 @@ import { HowItWorks } from "@/components/tms/HowItWorks";
 import { FeatureDeepDive } from "@/components/tms/FeatureDeepDive";
 import { Consultation } from "@/components/tms/Consultation";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { getTmsPageServer } from "@/lib/payload";
+import { getSiteConfigServer, getTmsPageServer } from "@/lib/payload";
 
 export const metadata: Metadata = {
   title: "Tire Management Solution",
@@ -15,11 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function TmsPage() {
-  const tmsData = await getTmsPageServer();
+  const [tmsData, siteData] = await Promise.all([
+    getTmsPageServer(),
+    getSiteConfigServer(),
+  ]);
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
         <PageHero
           title={tmsData.title}
@@ -31,7 +34,7 @@ export default async function TmsPage() {
         <Consultation consultation={tmsData.consultation} />
         <CtaSection content={tmsData.tmsCta} />
       </main>
-      <Footer />
+      <Footer siteData={siteData} />
     </>
   );
 }

@@ -7,7 +7,12 @@
 export type Brand = "tiron" | "doublestar" | (string & {});
 export type Tipe = "radial" | "bias" | (string & {});
 export type Compatible = "bus" | "trukBerat" | "trukRingan" | (string & {});
-export type Medan = "perjalananPanjang" | "jalanPerkotaan" | "standar" | "offRoad" | (string & {});
+export type Medan =
+  | "perjalananPanjang"
+  | "jalanPerkotaan"
+  | "standar"
+  | "offRoad"
+  | (string & {});
 export type Fitur =
   | "jarakTempuh"
   | "handling"
@@ -75,19 +80,22 @@ export const medanIcons: Record<Medan, IconName> = {
 };
 
 export const tipeLabels: Record<string, string> = Object.fromEntries(
-  tipeOptions.map((o) => [o.key, o.label])
+  tipeOptions.map((o) => [o.key, o.label]),
 );
 export const compatibleLabels: Record<string, string> = Object.fromEntries(
-  compatibleOptions.map((o) => [o.key, o.label])
+  compatibleOptions.map((o) => [o.key, o.label]),
 );
 export const medanLabels: Record<string, string> = Object.fromEntries(
-  medanOptions.map((o) => [o.key, o.label])
+  medanOptions.map((o) => [o.key, o.label]),
 );
 export const fiturLabels: Record<string, string> = Object.fromEntries(
-  fiturOptions.map((o) => [o.key, o.label])
+  fiturOptions.map((o) => [o.key, o.label]),
 );
 
-export const brands: Record<Brand, { name: string; tagline: string; note: string }> = {
+export const brands: Record<
+  Brand,
+  { name: string; tagline: string; note: string }
+> = {
   tiron: {
     name: "Tiron",
     tagline: "Korea Technology Since 1951 · Indonesia Global Factory",
@@ -107,15 +115,38 @@ export const catalogHero = {
   image: "/assets/images/banner-ban-tread.webp",
 };
 
-export const infoStrip: {
+export type InfoStripItem = {
   icon: "certificate" | "delivery" | "guarantee" | "headset";
   title: string;
   sub: string;
-}[] = [
-  { icon: "certificate", title: "SNI Certified", sub: "Seluruh produk tersertifikasi standar nasional" },
-  { icon: "delivery", title: "Pengiriman Seluruh Indonesia", sub: "Stok tersedia di gudang Jakarta & Surabaya" },
-  { icon: "guarantee", title: "Garansi Produk", sub: "Garansi resmi dari distributor resmi SaveMile" },
-  { icon: "headset", title: "Konsultasi Teknis", sub: "Tim ahli siap bantu pilih ban yang tepat" },
+};
+
+export const infoStripDefaults = {
+  title: "Belanja ban dengan tenang",
+  highlight: ["tenang"],
+};
+
+export const infoStrip: InfoStripItem[] = [
+  {
+    icon: "certificate",
+    title: "SNI Certified",
+    sub: "Seluruh produk tersertifikasi standar nasional",
+  },
+  {
+    icon: "delivery",
+    title: "Pengiriman Seluruh Indonesia",
+    sub: "Stok tersedia di gudang Jakarta & Surabaya",
+  },
+  {
+    icon: "guarantee",
+    title: "Garansi Produk",
+    sub: "Garansi resmi dari distributor resmi SaveMile",
+  },
+  {
+    icon: "headset",
+    title: "Konsultasi Teknis",
+    sub: "Tim ahli siap bantu pilih ban yang tepat",
+  },
 ];
 
 export function getProduct(id: string): Product | undefined {
@@ -129,7 +160,7 @@ export function relatedProducts(p: Product, n = 3): Product[] {
         q.id !== p.id &&
         (q.brand === p.brand ||
           q.medan.some((m) => p.medan.includes(m)) ||
-          q.fitur.some((f) => p.fitur.includes(f)))
+          q.fitur.some((f) => p.fitur.includes(f))),
     )
     .sort((a, b) => Number(b.brand === p.brand) - Number(a.brand === p.brand))
     .slice(0, n);
@@ -159,7 +190,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["jarakTempuh", "handling"],
     sizes: ["7.50-16", "7.50-16"],
-    description: "1. Sesuai untuk jalanan perkotaan dan juga jalan tol 2. Cocok untuk digunakan pada jalanan berkelok",
+    description:
+      "1. Sesuai untuk jalanan perkotaan dan juga jalan tol 2. Cocok untuk digunakan pada jalanan berkelok",
     image: "/assets/images/produk/hs308-t.webp",
   },
   {
@@ -172,7 +204,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["jarakTempuh", "handling"],
     sizes: ["7.50-16", "8.25-16"],
-    description: "1. Sesuai untuk jalanan perkotaan dan juga jalan tol 2. Cocok untuk jalan perdesaan dengan permukaan tanah/kerikil keras (bukan lumpur yang dalam)",
+    description:
+      "1. Sesuai untuk jalanan perkotaan dan juga jalan tol 2. Cocok untuk jalan perdesaan dengan permukaan tanah/kerikil keras (bukan lumpur yang dalam)",
     image: "/assets/images/produk/hf1-t.webp",
   },
   {
@@ -185,7 +218,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["handling"],
     sizes: ["9.00-20"],
-    description: "1. Sangat optimal untuk yang sering masuk ke area lanskap tanah, proyek konstruksi, atau jalan perkebunan kelapa sawit/karet 2. Bisa digunakan di jalan raya untuk pengiriman hasil alam",
+    description:
+      "1. Sangat optimal untuk yang sering masuk ke area lanskap tanah, proyek konstruksi, atau jalan perkebunan kelapa sawit/karet 2. Bisa digunakan di jalan raya untuk pengiriman hasil alam",
     image: "/assets/images/produk/hf5-t.webp",
   },
   {
@@ -198,7 +232,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["jarakTempuh", "fuelEfficiency"],
     sizes: ["10.00-20"],
-    description: "1. Didesain khusus untuk truk yang beroperasi di jalan tol atau jalan aspal halus antarkota dengan jarak tempuh yang jauh 2. Keawetan tapak, dan efisiensi bahan bakar maksimal",
+    description:
+      "1. Didesain khusus untuk truk yang beroperasi di jalan tol atau jalan aspal halus antarkota dengan jarak tempuh yang jauh 2. Keawetan tapak, dan efisiensi bahan bakar maksimal",
     image: "/assets/images/produk/hs315-t.webp",
   },
   {
@@ -211,7 +246,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["antiTear"],
     sizes: ["10.00-20", "11.00-20"],
-    description: "1. Desain alur (rib) yang lebih lebar dan dalam. Pola ini mengombinasikan kelancaran ban jalan raya dengan ketangguhan ban medan kasar 2. Sangat tahan terhadap sayatan benda tajam, gesekan trotoar, dan gejala gompal (chipping) akibat medan jalan yang buruk",
+    description:
+      "1. Desain alur (rib) yang lebih lebar dan dalam. Pola ini mengombinasikan kelancaran ban jalan raya dengan ketangguhan ban medan kasar 2. Sangat tahan terhadap sayatan benda tajam, gesekan trotoar, dan gejala gompal (chipping) akibat medan jalan yang buruk",
     image: "/assets/images/produk/hs500-t.webp",
   },
   {
@@ -224,7 +260,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["handling", "antiAus"],
     sizes: ["10.00-20", "11.00-20"],
-    description: "1. Spesialis rute regional/jalan tol yang mengutamakan ketahanan terhadap keausan tidak merata dan traksi jalan basah yang superior di posisi kemudi 2. Dirancang secara akustik untuk meredam gemuruh ban saat bergesekan dengan aspal, memberikan kenyamanan lebih bagi pengemudi selama perjalanan panjang",
+    description:
+      "1. Spesialis rute regional/jalan tol yang mengutamakan ketahanan terhadap keausan tidak merata dan traksi jalan basah yang superior di posisi kemudi 2. Dirancang secara akustik untuk meredam gemuruh ban saat bergesekan dengan aspal, memberikan kenyamanan lebih bagi pengemudi selama perjalanan panjang",
     image: "/assets/images/produk/hs311-t.webp",
   },
   {
@@ -237,7 +274,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["handling"],
     sizes: ["12.00-20"],
-    description: "1. Ban ini memberikan cengkeraman mekanis yang sangat kuat agar truk tidak mudah selip (spin), terutama saat membawa muatan berat di tanjakan 2. Sangat ideal untuk truk logistik, truk jungkit (dump truck), atau truk kargo yang rutenya mengombinasikan jalan aspal kasar, jalanan proyek konstruksi, area pertambangan ringan, hingga jalan perkebunan",
+    description:
+      "1. Ban ini memberikan cengkeraman mekanis yang sangat kuat agar truk tidak mudah selip (spin), terutama saat membawa muatan berat di tanjakan 2. Sangat ideal untuk truk logistik, truk jungkit (dump truck), atau truk kargo yang rutenya mengombinasikan jalan aspal kasar, jalanan proyek konstruksi, area pertambangan ringan, hingga jalan perkebunan",
     image: "/assets/images/produk/hs366-t.webp",
   },
   {
@@ -250,7 +288,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["fuelEfficiency", "antiAus"],
     sizes: ["7.00-16", "7.50-16", "7.50-16"],
-    description: "1. Kemampuannya menahan keausan tidak merata (seperti botak sebelah atau bergelombang) yang sering terjadi pada roda depan truk. Bahu ban dirancang kaku (rigid shoulder) agar tekanan beban tersebar merata 2. Dirancang untuk meminimalkan energi yang hilang akibat gesekan, menjadikannya pilihan ekonomis bagi perusahaan logistik yang ingin memangkas biaya operasional bahan bakar",
+    description:
+      "1. Kemampuannya menahan keausan tidak merata (seperti botak sebelah atau bergelombang) yang sering terjadi pada roda depan truk. Bahu ban dirancang kaku (rigid shoulder) agar tekanan beban tersebar merata 2. Dirancang untuk meminimalkan energi yang hilang akibat gesekan, menjadikannya pilihan ekonomis bagi perusahaan logistik yang ingin memangkas biaya operasional bahan bakar",
     image: "/assets/images/produk/hs307-t.webp",
   },
   {
@@ -263,7 +302,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["handling"],
     sizes: ["7.50-16"],
-    description: "1. Memberikan cengkeraman mekanis maksimal pada permukaan yang sangat tidak stabil, seperti lumpur dalam, tanah gembur, dan tumpukan batu pecah 2. Dibuat sangat renggang agar ban memiliki kemampuan self-cleaning (membersihkan diri) yang luar biasa. Lumpur pekat atau tanah liat tidak akan menyumbat ban, sehingga traksi tetap terjaga",
+    description:
+      "1. Memberikan cengkeraman mekanis maksimal pada permukaan yang sangat tidak stabil, seperti lumpur dalam, tanah gembur, dan tumpukan batu pecah 2. Dibuat sangat renggang agar ban memiliki kemampuan self-cleaning (membersihkan diri) yang luar biasa. Lumpur pekat atau tanah liat tidak akan menyumbat ban, sehingga traksi tetap terjaga",
     image: "/assets/images/produk/hs600-t.webp",
   },
   {
@@ -276,7 +316,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["handling"],
     sizes: ["7.50-16", "8.25-16", "10.00-20", "11.00-20"],
-    description: "1. Ban ini sering diaplikasikan pada truk yang sesekali harus masuk ke area light off-road, seperti jalan tanah kering yang padat, jalan berbatu sirtu (pasir batu), atau area proyek/konstruksi yang permukaannya sudah diratakan",
+    description:
+      "1. Ban ini sering diaplikasikan pada truk yang sesekali harus masuk ke area light off-road, seperti jalan tanah kering yang padat, jalan berbatu sirtu (pasir batu), atau area proyek/konstruksi yang permukaannya sudah diratakan",
     image: "/assets/images/produk/hs314-t.webp",
   },
   {
@@ -289,7 +330,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["handling"],
     sizes: ["7.00-16", "9.00-20"],
-    description: "1. HT5 terkenal sangat kokoh, tebal, dan punya daya tahan benturan yang tinggi 2. mengatasi medan off-road yang sangat ringan, seperti jalanan tanah kering yang rata, jalan berbatu halus/kerikil di area pedesaan, atau rumput basah",
+    description:
+      "1. HT5 terkenal sangat kokoh, tebal, dan punya daya tahan benturan yang tinggi 2. mengatasi medan off-road yang sangat ringan, seperti jalanan tanah kering yang rata, jalan berbatu halus/kerikil di area pedesaan, atau rumput basah",
     image: "/assets/images/produk/ht5-t.webp",
   },
   {
@@ -302,7 +344,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["handling"],
     sizes: ["10.00-20", "11.00-20"],
-    description: "1. Sangat ideal untuk dump truck (indeks tronton/engkel) yang bekerja di dalam area pertambangan batubara/mineral, proyek pembangunan bendungan, pembukaan lahan hutan (logging), serta area lanskap perkebunan kelapa sawit yang jalannya masih didominasi tanah merah dan batuan keras",
+    description:
+      "1. Sangat ideal untuk dump truck (indeks tronton/engkel) yang bekerja di dalam area pertambangan batubara/mineral, proyek pembangunan bendungan, pembukaan lahan hutan (logging), serta area lanskap perkebunan kelapa sawit yang jalannya masih didominasi tanah merah dan batuan keras",
     image: "/assets/images/produk/431-t.webp",
   },
   {
@@ -315,7 +358,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear"],
     sizes: ["11.00-20"],
-    description: "1. Dibuat khusus agar tapak ban tidak mudah robek, teriris (cut), atau gempil (chipping/gompal) saat harus melindas bebatuan tajam sisa blasting (peledakan tambang) atau sisa puing proyek konstruksi",
+    description:
+      "1. Dibuat khusus agar tapak ban tidak mudah robek, teriris (cut), atau gempil (chipping/gompal) saat harus melindas bebatuan tajam sisa blasting (peledakan tambang) atau sisa puing proyek konstruksi",
     image: "/assets/images/produk/hs700-t.webp",
   },
   {
@@ -328,7 +372,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["handling", "bebanBerat"],
     sizes: ["12.00-20"],
-    description: "1. Memberikan kendali yang presisi, namun struktur internalnya juga sangat siap dipasang di posisi roda penggerak belakang (Drive) atau roda gandengan (Trailer) untuk kapasitas muatan yang masif",
+    description:
+      "1. Memberikan kendali yang presisi, namun struktur internalnya juga sangat siap dipasang di posisi roda penggerak belakang (Drive) atau roda gandengan (Trailer) untuk kapasitas muatan yang masif",
     image: "/assets/images/produk/hs389-t.webp",
   },
   {
@@ -341,7 +386,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["handling", "fuelEfficiency", "antiAus"],
     sizes: ["7.50-16", "10.00-20"],
-    description: "1. Fokus pada kenyamanan kemudi, efisiensi solar, dan ketahanan terhadap aus tidak merata di jalan raya beraspal/jalan tol 2. ban ini juga sangat fleksibel untuk dipasang di roda trailer (gandengan) atau roda belakang pada truk kargo dengan muatan standar yang rutenya murni jalan aspal",
+    description:
+      "1. Fokus pada kenyamanan kemudi, efisiensi solar, dan ketahanan terhadap aus tidak merata di jalan raya beraspal/jalan tol 2. ban ini juga sangat fleksibel untuk dipasang di roda trailer (gandengan) atau roda belakang pada truk kargo dengan muatan standar yang rutenya murni jalan aspal",
     image: "/assets/images/produk/hs309-t.webp",
   },
   {
@@ -354,7 +400,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["jarakTempuh", "fuelEfficiency", "bebanBerat"],
     sizes: ["7.50-16", "8.25-16", "10.00-20", "11.00-20"],
-    description: "1. Fokus pada umur tapak yang panjang (high mileage), stabilitas kemudi, dan efisiensi bahan bakar di jalan aspal mulus antarkota (steer/trailer) 2. Sangat tangguh dalam menahan beban berat, tahan terhadap suhu panas akibat gesekan konstan di jalan tol, serta mempertahankan integritas kerangka ban (casing) agar tetap prima untuk kebutuhan vulkanisir (retreading) di masa depan",
+    description:
+      "1. Fokus pada umur tapak yang panjang (high mileage), stabilitas kemudi, dan efisiensi bahan bakar di jalan aspal mulus antarkota (steer/trailer) 2. Sangat tangguh dalam menahan beban berat, tahan terhadap suhu panas akibat gesekan konstan di jalan tol, serta mempertahankan integritas kerangka ban (casing) agar tetap prima untuk kebutuhan vulkanisir (retreading) di masa depan",
     image: "/assets/images/produk/hs320-t.webp",
   },
   {
@@ -367,7 +414,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: [],
     sizes: ["6.00-0", "6.50-10", "7.00-12", "8.25-15", "28x9-15"],
-    description: "1. Ban pneumatic lebih toleran terhadap panas akibat gesekan, sehingga alat berat dapat berjalan sedikit lebih cepat dibanding jika menggunakan ban solid 2. Di permukaan tanah yang agak gembur, ban isi angin cenderung tidak mudah amblas dibandingkan ban solid",
+    description:
+      "1. Ban pneumatic lebih toleran terhadap panas akibat gesekan, sehingga alat berat dapat berjalan sedikit lebih cepat dibanding jika menggunakan ban solid 2. Di permukaan tanah yang agak gembur, ban isi angin cenderung tidak mudah amblas dibandingkan ban solid",
     image: "/assets/images/produk/hs800-pneumatic-t.webp",
   },
   {
@@ -392,7 +440,18 @@ export const products: Product[] = [
     compatible: ["trukRingan", "trukBerat"],
     medan: [],
     fitur: [],
-    sizes: ["7.00-15", "7.00-16", "7.50-16", "8.25-16", "8-25-20", "9.00-20", "10.00-20", "11.00-20", "12.00-20", "12.00-24"],
+    sizes: [
+      "7.00-15",
+      "7.00-16",
+      "7.50-16",
+      "8.25-16",
+      "8-25-20",
+      "9.00-20",
+      "10.00-20",
+      "11.00-20",
+      "12.00-20",
+      "12.00-24",
+    ],
     description: "Ukuran harus sama dengan ukuran ban luar",
     image: "/assets/images/produk/tube-flap-t.webp",
   },
@@ -419,7 +478,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan", "standar"],
     fitur: ["handling", "antiAus"],
     sizes: ["295/80R22.5", "11R22.5"],
-    description: "1. Grip dan traksi telapak yang maksimal di jalan asphalt / toll 2. Sangat cocok untuk perkotaan dan jarak tempuh panjang (toll)",
+    description:
+      "1. Grip dan traksi telapak yang maksimal di jalan asphalt / toll 2. Sangat cocok untuk perkotaan dan jarak tempuh panjang (toll)",
     image: "/assets/images/produk/hua95-t.webp",
   },
   {
@@ -432,7 +492,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear", "bebanBerat"],
     sizes: ["10.00R20", "11.00R20"],
-    description: "1. Untuk beban maksimal pada truck heavy duty on/off 2. Telapak tahan benturan / tusukan di jalan off road berbatu",
+    description:
+      "1. Untuk beban maksimal pada truck heavy duty on/off 2. Telapak tahan benturan / tusukan di jalan off road berbatu",
   },
   {
     id: "hfd73",
@@ -444,7 +505,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear", "bebanBerat"],
     sizes: ["7.50R16(HD)", "10.00R20", "11.00R20", "12.00R20", "12.00R24"],
-    description: "1. Untuk beban maksimal di pertambangan dan jalan berbatu 2. Tahan terhadap kerusakan di jalan off road dan berbatu",
+    description:
+      "1. Untuk beban maksimal di pertambangan dan jalan berbatu 2. Tahan terhadap kerusakan di jalan off road dan berbatu",
     image: "/assets/images/produk/hfd73-t.webp",
   },
   {
@@ -457,7 +519,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear"],
     sizes: ["11.00R20", "12.00R20"],
-    description: "1. Traksi Maksimal untuk jalan pertambangan dan berbatu 2. Tahan terhadap kerusakan di jalan off road dan berbatu",
+    description:
+      "1. Traksi Maksimal untuk jalan pertambangan dan berbatu 2. Tahan terhadap kerusakan di jalan off road dan berbatu",
     image: "/assets/images/produk/hfd74-t.webp",
   },
   {
@@ -470,7 +533,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["bebanBerat"],
     sizes: ["7.50R16(HD)", "10.00R20", "11.00R20"],
-    description: "1. Super Steel Belt untuk ketahanan benturan dan tusukan 2. Sesuai untuk Light truck / Truck heavy Duty",
+    description:
+      "1. Super Steel Belt untuk ketahanan benturan dan tusukan 2. Sesuai untuk Light truck / Truck heavy Duty",
     image: "/assets/images/produk/hma51-t.webp",
   },
   {
@@ -483,7 +547,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan"],
     fitur: ["bebanBerat"],
     sizes: ["7.50R16(HD)", "10.00R20", "11.00R20"],
-    description: "1. Super Steel Belt untuk ketahanan beban maksimum 2. Sesuai untuk jalan Asphalt perkotaan dan Toll",
+    description:
+      "1. Super Steel Belt untuk ketahanan beban maksimum 2. Sesuai untuk jalan Asphalt perkotaan dan Toll",
     image: "/assets/images/produk/hma52-t.webp",
   },
   {
@@ -496,7 +561,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["bebanBerat"],
     sizes: ["7.50R16(HD)"],
-    description: "1. Kapasitas Beban Maksimal untuk Light Truck Heavy Duty 2. Ketahanan Pada kerusakan di Off Road",
+    description:
+      "1. Kapasitas Beban Maksimal untuk Light Truck Heavy Duty 2. Ketahanan Pada kerusakan di Off Road",
     image: "/assets/images/produk/hmd53-t.webp",
   },
   {
@@ -509,7 +575,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear", "antiAus", "bebanBerat"],
     sizes: ["11.00R20", "12.00R20", "12.00R24"],
-    description: "1. Anti Tear, kuat untuk berbagai medan berat 2. Kinerja pemuatan yang lebih kuat dan anti aus yang baik",
+    description:
+      "1. Anti Tear, kuat untuk berbagai medan berat 2. Kinerja pemuatan yang lebih kuat dan anti aus yang baik",
     image: "/assets/images/produk/dfa100-t.webp",
   },
   {
@@ -522,7 +589,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear", "bebanBerat"],
     sizes: ["12.00R24"],
-    description: "1. Anti Tear, kuat untuk berbagai medan berat 2. Kinerja pemuatan yang lebih kuat",
+    description:
+      "1. Anti Tear, kuat untuk berbagai medan berat 2. Kinerja pemuatan yang lebih kuat",
     image: "/assets/images/produk/dsr688-t.webp",
   },
   {
@@ -535,7 +603,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiAus", "bebanBerat"],
     sizes: ["16.00R25-E4"],
-    description: "1. Kinerja pemuatan yang lebih kuat 2. Kinerja anti-aus yang baik",
+    description:
+      "1. Kinerja pemuatan yang lebih kuat 2. Kinerja anti-aus yang baik",
     image: "/assets/images/produk/dfa602s-t.webp",
   },
   {
@@ -548,7 +617,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan", "standar"],
     fitur: ["jarakTempuh", "handling"],
     sizes: ["11R22.5"],
-    description: "1. Kemampuan cengkraman dan stabilitas yang baik 2. Jarak tempuh yang panjang dan lebih hemat bahan bakar 3. Anti Aus, jarak tempuh lebih panjang",
+    description:
+      "1. Kemampuan cengkraman dan stabilitas yang baik 2. Jarak tempuh yang panjang dan lebih hemat bahan bakar 3. Anti Aus, jarak tempuh lebih panjang",
     image: "/assets/images/produk/d902-t.webp",
   },
   {
@@ -561,7 +631,8 @@ export const products: Product[] = [
     medan: ["offRoad"],
     fitur: ["antiTear"],
     sizes: ["10.00RR20"],
-    description: "1. Anti Tear, kuat untuk berbagai medan berat 2. Anti Gores, jauh lebih aman dan performa berkendara yang baik",
+    description:
+      "1. Anti Tear, kuat untuk berbagai medan berat 2. Anti Gores, jauh lebih aman dan performa berkendara yang baik",
     image: "/assets/images/produk/f10628pro-t.webp",
   },
   {
@@ -574,7 +645,8 @@ export const products: Product[] = [
     medan: ["jalanPerkotaan", "standar"],
     fitur: ["jarakTempuh", "handling", "antiAus"],
     sizes: ["7.50R16-14PR"],
-    description: "1. Anti Aus, jarak tempuh lebih panjang 2. Anti Gores, jauh lebih aman dan performa berkendara yang baik 3. Kemampuan cengkraman dan stabilitas yang baik",
+    description:
+      "1. Anti Aus, jarak tempuh lebih panjang 2. Anti Gores, jauh lebih aman dan performa berkendara yang baik 3. Kemampuan cengkraman dan stabilitas yang baik",
     image: "/assets/images/produk/dua100-max-t.webp",
   },
   {
@@ -587,7 +659,8 @@ export const products: Product[] = [
     medan: ["jalanPerkotaan", "standar"],
     fitur: ["handling", "antiAus", "bebanBerat"],
     sizes: ["10.00R20", "11.00R20"],
-    description: "1. Kinerja anti aus yang baik 2. Kinerja pemuatan yang lebih kuat 3. Kemampuan cengkraman dan stabilitas yang baik",
+    description:
+      "1. Kinerja anti aus yang baik 2. Kinerja pemuatan yang lebih kuat 3. Kemampuan cengkraman dan stabilitas yang baik",
     image: "/assets/images/produk/dma105pro-t.webp",
   },
   {
@@ -600,7 +673,8 @@ export const products: Product[] = [
     medan: ["jalanPerkotaan", "standar"],
     fitur: ["fuelEfficiency", "antiAus", "bebanBerat"],
     sizes: ["7.50R16", "10.00R20"],
-    description: "1. Anti Aus, jarak tempuh lebih panjang 2. Kinerja pemuatan yang lebih kuat 3. Performa berkendara yang baik dan lebih hemat bahan bakar",
+    description:
+      "1. Anti Aus, jarak tempuh lebih panjang 2. Kinerja pemuatan yang lebih kuat 3. Performa berkendara yang baik dan lebih hemat bahan bakar",
     image: "/assets/images/produk/dma108pro-t.webp",
   },
   {
@@ -613,7 +687,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan", "offRoad"],
     fitur: ["fuelEfficiency", "antiAus", "bebanBerat"],
     sizes: ["7.50R16-14PR"],
-    description: "1. Anti Aus, jarak tmpuh lebih panjang 2. Performa berkendara yang baik dan lebih hemat bahan bakar 3. Kinerja pemuatan yang lebih kuat",
+    description:
+      "1. Anti Aus, jarak tmpuh lebih panjang 2. Performa berkendara yang baik dan lebih hemat bahan bakar 3. Kinerja pemuatan yang lebih kuat",
     image: "/assets/images/produk/dsr758-t.webp",
   },
   {
@@ -626,7 +701,8 @@ export const products: Product[] = [
     medan: ["standar", "offRoad"],
     fitur: ["handling", "bebanBerat"],
     sizes: ["11.00R20"],
-    description: "1. Kemampuan cengkraman yang sangat baik dan stabilitas penanganan yang baik 2. Kinerja pemuatan yang lebih kuat",
+    description:
+      "1. Kemampuan cengkraman yang sangat baik dan stabilitas penanganan yang baik 2. Kinerja pemuatan yang lebih kuat",
     image: "/assets/images/produk/dma106pro-t.webp",
   },
   {
@@ -639,7 +715,8 @@ export const products: Product[] = [
     medan: ["jalanPerkotaan", "standar"],
     fitur: ["jarakTempuh", "antiAus", "bebanBerat"],
     sizes: ["7.50R16-14PR"],
-    description: "1. Anti Aus, jarak tempuh lebih panjang 2. Kinerja pemuatan yang lebih kuat 3. Performa berkendara yang baik dan lebih hemat bahan bakar",
+    description:
+      "1. Anti Aus, jarak tempuh lebih panjang 2. Kinerja pemuatan yang lebih kuat 3. Performa berkendara yang baik dan lebih hemat bahan bakar",
     image: "/assets/images/produk/dma107pro-t.webp",
   },
   {
@@ -652,9 +729,8 @@ export const products: Product[] = [
     medan: ["perjalananPanjang", "jalanPerkotaan", "offRoad"],
     fitur: ["fuelEfficiency", "antiAus", "bebanBerat"],
     sizes: ["7.50R16-14PR"],
-    description: "1. Anti Aus, jarak tmpuh lebih panjang 2. Performa berkendara yang baik dan lebih hemat bahan bakar 3. Kinerja pemuatan yang lebih kuat",
+    description:
+      "1. Anti Aus, jarak tmpuh lebih panjang 2. Performa berkendara yang baik dan lebih hemat bahan bakar 3. Kinerja pemuatan yang lebih kuat",
     image: "/assets/images/produk/dsr188pro-t.webp",
   },
 ];
-
-

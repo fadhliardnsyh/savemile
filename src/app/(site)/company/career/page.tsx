@@ -26,7 +26,7 @@ export default async function CareerPage() {
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteConfig.nav} overHero />
       <main className="relative z-10 flex-1">
         <PageHero
           title={careerData.heroTitle}

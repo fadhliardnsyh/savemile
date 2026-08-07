@@ -21,6 +21,7 @@ import { CatalogPage } from "./src/globals/CatalogPage";
 import { ContactPage } from "./src/globals/ContactPage";
 import { HomePage } from "./src/globals/HomePage";
 import { SiteConfig } from "./src/globals/SiteConfig";
+import { SuccessStoryPage } from "./src/globals/SuccessStoryPage";
 import { TmsPage } from "./src/globals/TmsPage";
 
 const filename = fileURLToPath(import.meta.url);
@@ -39,6 +40,7 @@ export default buildConfig({
     AboutPage,
     CareerPage,
     ContactPage,
+    SuccessStoryPage,
   ],
   editor: lexicalEditor({}),
   plugins: [
@@ -57,7 +59,10 @@ export default buildConfig({
                   ? {
                       credentials: {
                         client_email: process.env.GCS_CLIENT_EMAIL,
-                        private_key: process.env.GCS_PRIVATE_KEY.replace(/\\n/g, "\n"),
+                        private_key: process.env.GCS_PRIVATE_KEY.replace(
+                          /\\n/g,
+                          "\n",
+                        ),
                       },
                     }
                   : {}),

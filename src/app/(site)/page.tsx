@@ -33,7 +33,7 @@ export default async function Home() {
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
         <Hero data={homeData} />
         {/* Social proof: klien + statistik mengalir menyatu tanpa pemisah */}
