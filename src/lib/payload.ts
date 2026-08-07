@@ -1065,16 +1065,6 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
                 .replace(/(^-|-$)/g, "")
             : String(doc.id));
 
-        const staticMatch = successStory.items.find(
-          (s) =>
-            s.slug === computedSlug ||
-            (doc.title && s.title.toLowerCase() === doc.title.toLowerCase()),
-        );
-
-        if (!imageUrl && staticMatch) {
-          imageUrl = staticMatch.image;
-        }
-
         const bodyArray =
           Array.isArray(doc.body) && doc.body.length > 0
             ? doc.body
@@ -1082,7 +1072,7 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
                   typeof b === "object" && b ? b.paragraph || "" : String(b),
                 )
                 .filter(Boolean)
-            : staticMatch?.body;
+            : undefined;
 
         const metricsArray =
           Array.isArray(doc.metrics) && doc.metrics.length > 0
@@ -1092,7 +1082,7 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
                   value: m.value || "",
                 }))
                 .filter((m) => Boolean(m.label && m.value))
-            : staticMatch?.metrics;
+            : undefined;
 
         const href =
           doc.href && doc.href !== "/insight/success-story"
@@ -1101,18 +1091,14 @@ export async function getSuccessStoriesServer(): Promise<Story[]> {
 
         return {
           slug: computedSlug,
-          tag: doc.tag || staticMatch?.tag || "",
-          title: doc.title || staticMatch?.title || "",
-          units: doc.units || staticMatch?.units || "",
-          description: doc.description || staticMatch?.description || "",
-          challenge: doc.challenge || staticMatch?.challenge,
-          solution: doc.solution || staticMatch?.solution,
-          body:
-            bodyArray && bodyArray.length > 0 ? bodyArray : staticMatch?.body,
-          metrics:
-            metricsArray && metricsArray.length > 0
-              ? metricsArray
-              : staticMatch?.metrics,
+          tag: doc.tag || "",
+          title: doc.title || "",
+          units: doc.units || "",
+          description: doc.description || "",
+          challenge: doc.challenge || undefined,
+          solution: doc.solution || undefined,
+          body: bodyArray && bodyArray.length > 0 ? bodyArray : undefined,
+          metrics: metricsArray && metricsArray.length > 0 ? metricsArray : undefined,
           href,
           image: imageUrl,
         };
