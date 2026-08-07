@@ -26,11 +26,15 @@ export default async function SolusiBanPage() {
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
         <CatalogHero data={catalogPageData} />
         <CatalogBrowser initialProducts={products} />
-        <InfoStrip />
+        <InfoStrip
+          title={catalogPageData.infoStripTitle}
+          highlight={catalogPageData.infoStripTitleHighlight}
+          items={catalogPageData.infoStripItems}
+        />
       </main>
       <Footer siteData={siteData} />
     </>

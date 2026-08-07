@@ -5,11 +5,13 @@ import Image from "next/image";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { Icon } from "@/components/ui/Icon";
 import { tms } from "@/lib/content";
 
 interface FeatureItem {
   title: string;
   desc: string;
+  icon?: string;
   image?: string;
   video?: string;
 }
@@ -64,6 +66,8 @@ export function FeatureDeepDive({ features }: FeatureDeepDiveProps = {}) {
           <div className="lg:col-span-6 flex flex-col justify-between gap-3.5">
             {items.map((item, i) => {
               const isActive = activeTab === i;
+              const iconName = item.icon || tms.features.items[i]?.icon || "consult";
+
               return (
                 <Reveal key={item.title} delay={i * 50}>
                   <button
@@ -75,35 +79,49 @@ export function FeatureDeepDive({ features }: FeatureDeepDiveProps = {}) {
                         : "bg-white/80 border border-line/80 hover:border-line hover:bg-white shadow-xs cursor-pointer group"
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <h3
-                        className={`font-display text-lg font-bold leading-snug transition-colors ${
+                    <div className="flex items-start gap-4">
+                      <div
+                        className={`mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-all duration-300 ${
                           isActive
-                            ? "text-orange"
-                            : "text-ink group-hover:text-orange"
+                            ? "bg-orange text-white shadow-sm shadow-orange/20"
+                            : "bg-paper text-ink-soft group-hover:bg-orange-soft group-hover:text-orange"
                         }`}
                       >
-                        {item.title}
-                      </h3>
-                      <div className="shrink-0">
-                        {isActive ? (
-                          <ChevronDown className="h-5 w-5 text-orange transition-transform duration-300" />
-                        ) : (
-                          <ChevronRight className="h-5 w-5 text-muted/60 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-ink" />
-                        )}
+                        <Icon name={iconName} className="h-5 w-5" />
                       </div>
-                    </div>
 
-                    <div className="mt-2.5">
-                      <p
-                        className={`text-sm sm:text-base leading-relaxed font-normal transition-all duration-300 ${
-                          isActive
-                            ? "text-ink-soft opacity-100"
-                            : "text-muted line-clamp-1 opacity-80"
-                        }`}
-                      >
-                        {item.desc}
-                      </p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-3">
+                          <h3
+                            className={`font-display text-lg font-bold leading-snug transition-colors ${
+                              isActive
+                                ? "text-orange"
+                                : "text-ink group-hover:text-orange"
+                            }`}
+                          >
+                            {item.title}
+                          </h3>
+                          <div className="shrink-0">
+                            {isActive ? (
+                              <ChevronDown className="h-5 w-5 text-orange transition-transform duration-300" />
+                            ) : (
+                              <ChevronRight className="h-5 w-5 text-muted/60 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-ink" />
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-2">
+                          <p
+                            className={`text-sm sm:text-base leading-relaxed font-normal transition-all duration-300 ${
+                              isActive
+                                ? "text-ink-soft opacity-100"
+                                : "text-muted line-clamp-1 opacity-80"
+                            }`}
+                          >
+                            {item.desc}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </button>
                 </Reveal>

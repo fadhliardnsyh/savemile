@@ -5,10 +5,17 @@ import { useEffect, useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/layout/Logo";
-import { nav } from "@/lib/content";
+import { nav, type NavItem } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
-export function Navbar({ overHero = false }: { overHero?: boolean }) {
+export function Navbar({
+  overHero = false,
+  items,
+}: {
+  overHero?: boolean;
+  items?: NavItem[];
+}) {
+  const navItems = items && items.length > 0 ? items : nav;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -41,7 +48,7 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex">
-            {nav.map((group, i) => (
+            {navItems.map((group, i) => (
               <div key={group.label} className="group relative">
                 <button
                   type="button"
@@ -74,7 +81,7 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
                 <div
                   className={cn(
                     "invisible absolute top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100",
-                    i === nav.length - 1 ? "right-0" : "left-0",
+                    i === navItems.length - 1 ? "right-0" : "left-0",
                   )}
                 >
                   <div className="w-72 rounded-2xl border border-line bg-card p-2 shadow-(--shadow-lift)">
@@ -162,7 +169,7 @@ export function Navbar({ overHero = false }: { overHero?: boolean }) {
         )}
       >
         <Container className="flex flex-col gap-1 py-4">
-          {nav.map((group) => {
+          {navItems.map((group) => {
             const expanded = openGroup === group.label;
             return (
               <div

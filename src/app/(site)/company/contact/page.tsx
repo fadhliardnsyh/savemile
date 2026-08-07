@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { getContactPageServer } from "@/lib/payload";
+import { getContactPageServer, getSiteConfigServer } from "@/lib/payload";
 
 function renderHighlighted(title: string, highlight?: string[]) {
   if (!highlight || highlight.length === 0) return title;
@@ -36,11 +36,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  const contactData = await getContactPageServer();
+  const [contactData, siteData] = await Promise.all([
+    getContactPageServer(),
+    getSiteConfigServer(),
+  ]);
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
         <PageHero
           title={contactData.heroTitle}
@@ -129,7 +132,7 @@ export default async function ContactPage() {
           </Container>
         </section>
       </main>
-      <Footer />
+      <Footer siteData={siteData} />
     </>
   );
 }

@@ -47,5 +47,50 @@ export const SiteConfig: GlobalConfig = {
       name: 'address',
       type: 'textarea',
     },
+    {
+      name: 'navItems',
+      type: 'array',
+      label: 'Navigation Menu Groups',
+      labels: {
+        singular: 'Menu Group',
+        plural: 'Menu Groups',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+          label: 'Group Label (e.g. Solution, Insight, Company)',
+        },
+        {
+          name: 'children',
+          type: 'array',
+          label: 'Submenu Items',
+          labels: {
+            singular: 'Submenu Item',
+            plural: 'Submenu Items',
+          },
+          fields: [
+            {
+              name: 'label',
+              type: 'text',
+              required: true,
+              label: 'Menu Title',
+            },
+            {
+              name: 'href',
+              type: 'text',
+              required: true,
+              label: 'Link URL (e.g. /solusi/ban)',
+            },
+            {
+              name: 'desc',
+              type: 'textarea',
+              label: 'Description / Subtext',
+            },
+          ],
+        },
+      ],
+    },
   ],
 };

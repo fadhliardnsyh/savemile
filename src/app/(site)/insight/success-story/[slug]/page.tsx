@@ -52,7 +52,7 @@ export default async function SuccessStoryDetailPage({ params }: Props) {
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteConfig.nav} overHero />
       <main className="relative z-10 flex-1 bg-background">
         <SuccessStoryDetail
           story={story}

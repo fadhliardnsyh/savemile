@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getClientsServer, getAboutPageServer } from "@/lib/payload";
+import { getClientsServer, getAboutPageServer, getSiteConfigServer } from "@/lib/payload";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
@@ -33,14 +33,15 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const [clientsData, aboutData] = await Promise.all([
+  const [clientsData, aboutData, siteData] = await Promise.all([
     getClientsServer(),
     getAboutPageServer(),
+    getSiteConfigServer(),
   ]);
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
         <PageHero
           title={aboutData.title}
@@ -91,7 +92,7 @@ export default async function AboutPage() {
           logos={clientsData.logos}
         />
       </main>
-      <Footer />
+      <Footer siteData={siteData} />
     </>
   );
 }

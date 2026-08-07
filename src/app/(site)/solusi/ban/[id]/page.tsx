@@ -21,7 +21,7 @@ import {
 import { consultCta, site } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
-import { getCatalogProductsServer, getProductByIdServer } from "@/lib/payload";
+import { getCatalogProductsServer, getProductByIdServer, getSiteConfigServer } from "@/lib/payload";
 
 export async function generateStaticParams() {
   const products = await getCatalogProductsServer();
@@ -50,17 +50,21 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await getProductByIdServer(id);
+  const [product, allProducts, siteData] = await Promise.all([
+    getProductByIdServer(id),
+    getCatalogProductsServer(),
+    getSiteConfigServer(),
+  ]);
+
   if (!product) notFound();
 
-  const allProducts = await getCatalogProductsServer();
   const related = relatedProducts(product, 3).map(
     (rp) => allProducts.find((ap) => ap.id === rp.id) || rp,
   );
 
   return (
     <>
-      <Navbar />
+      <Navbar items={siteData.nav} />
       <main className="relative z-10 flex-1 pt-24 pb-8 sm:pt-28">
         <Container>
           {/* Breadcrumb */}
@@ -166,7 +170,7 @@ export default async function ProductDetailPage({
                 name={product.name}
                 tipe={tipeLabels[product.tipe]}
                 sizes={product.sizes}
-                whatsapp={site.whatsapp}
+                whatsapp={siteData.whatsapp || site.whatsapp}
               />
             </div>
           </div>
@@ -199,7 +203,7 @@ export default async function ProductDetailPage({
         </Container>
       </main>
       <CtaSection content={consultCta} />
-      <Footer />
+      <Footer siteData={siteData} />
     </>
   );
 }

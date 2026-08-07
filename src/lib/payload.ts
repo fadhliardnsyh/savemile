@@ -7,8 +7,11 @@ import {
   type Fitur,
   type Medan,
   type Product,
+  type InfoStripItem,
   type Tipe,
   catalogHero,
+  infoStrip,
+  infoStripDefaults,
   products,
 } from "./catalog";
 import {
@@ -88,6 +91,24 @@ export async function getSiteConfigServer() {
       const waMsg =
         (siteConfig.whatsappMessage as string) ||
         "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.";
+
+      const cmsNav = Array.isArray(siteConfig.navItems)
+        ? (siteConfig.navItems as Record<string, unknown>[])
+            .map((group) => ({
+              label: (group.label as string) || "",
+              children: Array.isArray(group.children)
+                ? (group.children as Record<string, unknown>[]).map(
+                    (child) => ({
+                      label: (child.label as string) || "",
+                      href: (child.href as string) || "",
+                      desc: (child.desc as string) || undefined,
+                    }),
+                  )
+                : [],
+            }))
+            .filter((g) => g.label && g.children.length > 0)
+        : undefined;
+
       return {
         ...site,
         name: siteConfig.name || site.name,
@@ -100,6 +121,7 @@ export async function getSiteConfigServer() {
         whatsappMessage: waMsg,
         whatsappUrl: getWaUrl(waNumber, waMsg),
         address: siteConfig.address || site.address,
+        nav: cmsNav && cmsNav.length > 0 ? cmsNav : nav,
       };
     }
   } catch {
@@ -113,6 +135,7 @@ export async function getSiteConfigServer() {
       site.whatsapp,
       "Halo SaveMile, saya ingin berkonsultasi mengenai ban armada.",
     ),
+    nav,
   };
 }
 
@@ -346,6 +369,14 @@ export async function getCatalogPageServer() {
         heroImage = extractMediaUrl(catalogPage.heroImage);
       }
 
+      const infoStripItems = Array.isArray(catalogPage.infoStripItems)
+        ? catalogPage.infoStripItems.map((item: Record<string, unknown>) => ({
+            title: String(item.title || ""),
+            sub: String(item.sub || ""),
+            icon: String(item.icon || "certificate") as InfoStripItem["icon"],
+          }))
+        : undefined;
+
       const siteConfig = await getSiteConfigServer();
       const pageWaMsg =
         (catalogPage.whatsappMessage as string) ||
@@ -361,6 +392,19 @@ export async function getCatalogPageServer() {
         heroImage: heroImage || (heroVideo ? undefined : catalogHero.image),
         heroVideo,
         consultCta: consultCtaContent,
+        infoStripTitle:
+          (catalogPage.infoStripTitle as string) || infoStripDefaults.title,
+        infoStripTitleHighlight:
+          typeof catalogPage.infoStripTitleHighlight === "string"
+            ? catalogPage.infoStripTitleHighlight
+                .split(",")
+                .map((s: string) => s.trim())
+                .filter(Boolean)
+            : infoStripDefaults.highlight,
+        infoStripItems:
+          infoStripItems && infoStripItems.length > 0
+            ? infoStripItems
+            : infoStrip,
       };
     }
   } catch {
@@ -377,6 +421,9 @@ export async function getCatalogPageServer() {
       whatsappMessage: pageWaMsg,
       whatsappUrl: getWaUrl(siteConfig.whatsapp, pageWaMsg),
     },
+    infoStripTitle: infoStripDefaults.title,
+    infoStripTitleHighlight: infoStripDefaults.highlight,
+    infoStripItems: infoStrip,
   };
 }
 
@@ -405,6 +452,7 @@ export async function getTmsPageServer() {
             return {
               title: (item.title as string) || "",
               desc: (item.desc as string) || "",
+              icon: (item.icon as string) || undefined,
               image: !mInfo.isVideo ? mInfo.url : undefined,
               video: mInfo.isVideo ? mInfo.url : undefined,
             };
@@ -925,6 +973,55 @@ interface PayloadStoryDoc {
   metrics?: Array<{ label?: string; value?: string }>;
   href?: string;
   image?: { filename?: string; url?: string } | string | number | null;
+}
+
+export async function getSuccessStoryPageServer() {
+  const fallback = {
+    title: "Success Story",
+    seoDescription:
+      "Cerita nyata armada yang berhenti menebak dan mulai mengelola ban berbasis data bersama SaveMile.",
+    heroEyebrow: successStory.eyebrow,
+    heroTitleLead: "Terbukti di ",
+    heroTitleAccent: successStory.accent,
+    heroDescription:
+      "Hasil nyata dari armada yang berhenti menebak dan mulai mengelola ban berbasis data.",
+    heroImage: "/assets/images/success-story-banner.webp" as string | undefined,
+    heroVideo: undefined as string | undefined,
+  };
+
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const page = await payload
+      .findGlobal({ slug: "success-story-page", depth: 2 })
+      .catch(() => null);
+
+    if (!page) return fallback;
+
+    const mediaInfo = extractMediaInfo(page.heroMedia);
+    let heroImage: string | undefined;
+    let heroVideo: string | undefined;
+    if (mediaInfo.url) {
+      if (mediaInfo.isVideo) {
+        heroVideo = mediaInfo.url;
+      } else {
+        heroImage = mediaInfo.url;
+      }
+    }
+
+    return {
+      title: page.title || fallback.title,
+      seoDescription: page.seoDescription || fallback.seoDescription,
+      heroEyebrow: page.heroEyebrow || fallback.heroEyebrow,
+      heroTitleLead: page.heroTitleLead || fallback.heroTitleLead,
+      heroTitleAccent: page.heroTitleAccent || fallback.heroTitleAccent,
+      heroDescription: page.heroDescription || fallback.heroDescription,
+      heroImage: heroImage || (heroVideo ? undefined : fallback.heroImage),
+      heroVideo,
+    };
+  } catch (error) {
+    console.error("Error fetching success story page:", error);
+    return fallback;
+  }
 }
 
 export async function getSuccessStoriesServer(): Promise<Story[]> {

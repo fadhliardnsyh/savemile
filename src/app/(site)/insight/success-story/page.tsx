@@ -5,30 +5,40 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SuccessStoryGrid } from "@/components/sections/SuccessStoryGrid";
 import { CtaSection } from "@/components/sections/CtaSection";
-import { getCatalogPageServer, getSuccessStoriesServer } from "@/lib/payload";
+import {
+  getCatalogPageServer,
+  getSiteConfigServer,
+  getSuccessStoriesServer,
+  getSuccessStoryPageServer,
+} from "@/lib/payload";
 
-export const metadata: Metadata = {
-  title: "Success Story",
-  description:
-    "Cerita nyata armada yang berhenti menebak dan mulai mengelola ban berbasis data bersama SaveMile.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await getSuccessStoryPageServer();
+  return {
+    title: pageData.title,
+    description: pageData.seoDescription,
+  };
+}
 
 export default async function SuccessStoryPage() {
-  const [stories, catalogData] = await Promise.all([
+  const [stories, catalogData, pageData, siteData] = await Promise.all([
     getSuccessStoriesServer(),
     getCatalogPageServer(),
+    getSuccessStoryPageServer(),
+    getSiteConfigServer(),
   ]);
 
   return (
     <>
-      <Navbar overHero />
+      <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
         <PageHero
-          eyebrow="Success Story"
-          titleLead="Terbukti di "
-          titleAccent="lapangan"
-          description="Hasil nyata dari armada yang berhenti menebak dan mulai mengelola ban berbasis data."
-          image="/assets/images/success-story-banner.webp"
+          eyebrow={pageData.heroEyebrow}
+          titleLead={pageData.heroTitleLead}
+          titleAccent={pageData.heroTitleAccent}
+          description={pageData.heroDescription}
+          image={pageData.heroImage}
+          video={pageData.heroVideo}
         />
 
         <section className="py-20 sm:py-28">
@@ -39,7 +49,7 @@ export default async function SuccessStoryPage() {
 
         <CtaSection content={catalogData.consultCta} />
       </main>
-      <Footer />
+      <Footer siteData={siteData} />
     </>
   );
 }
