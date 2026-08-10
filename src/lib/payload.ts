@@ -492,6 +492,35 @@ export async function getTmsPageServer() {
         }
       }
 
+      const howSteps = Array.isArray(tmsPage.howSteps)
+        ? tmsPage.howSteps.map((step: Record<string, unknown>) => ({
+            title: (step.title as string) || "",
+            desc: (step.desc as string) || "",
+            icon: (step.icon as string) || "laser",
+          }))
+        : undefined;
+
+      const howHighlightRaw = tmsPage.howHighlight;
+      const howHighlight =
+        typeof howHighlightRaw === "string"
+          ? howHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
+      const how = {
+        title:
+          (tmsPage.howTitle as string) ||
+          `${tms.how.titleLead}${tms.how.titleAccent}`,
+        highlight:
+          howHighlight && howHighlight.length > 0
+            ? howHighlight
+            : [tms.how.titleAccent],
+        description: (tmsPage.howDescription as string) || tms.how.description,
+        steps: howSteps && howSteps.length > 0 ? howSteps : tms.how.steps,
+      };
+
       const featureItems = Array.isArray(tmsPage.featureItems)
         ? tmsPage.featureItems.map((item: Record<string, unknown>) => {
             const mInfo = extractMediaInfo(item.media);
@@ -573,6 +602,7 @@ export async function getTmsPageServer() {
           heroImage ||
           (heroVideo ? undefined : "/assets/images/tms-banner.webp"),
         heroVideo,
+        how,
         features,
         consultation,
         tmsCta: tmsCtaContent,
@@ -588,6 +618,7 @@ export async function getTmsPageServer() {
     title: "Tire Management Solution",
     heroImage: "/assets/images/tms-banner.webp",
     heroVideo: undefined,
+    how: undefined,
     features: undefined,
     consultation: undefined,
     tmsCta: {

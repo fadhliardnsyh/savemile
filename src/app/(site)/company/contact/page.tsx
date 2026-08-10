@@ -11,7 +11,9 @@ import { getContactPageServer, getSiteConfigServer } from "@/lib/payload";
 
 function renderHighlighted(title: string, highlight?: string[]) {
   if (!highlight || highlight.length === 0) return title;
-  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const escaped = highlight.map((h) =>
+    h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  );
   const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
   let offset = 0;
   return parts.map((part) => {
@@ -58,7 +60,10 @@ export default async function ContactPage() {
             <div className="mx-auto max-w-2xl text-center">
               <Reveal delay={60}>
                 <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-                  {renderHighlighted(contactData.helpTitle, contactData.helpHighlight)}
+                  {renderHighlighted(
+                    contactData.helpTitle,
+                    contactData.helpHighlight,
+                  )}
                 </h2>
               </Reveal>
               <Reveal delay={120}>
@@ -93,7 +98,11 @@ export default async function ContactPage() {
                         external={o.external}
                       >
                         <Icon
-                          name={o.icon === "whatsapp" ? "whatsapp" : (o.icon as IconName) || "mail"}
+                          name={
+                            o.icon === "whatsapp"
+                              ? "whatsapp"
+                              : (o.icon as IconName) || "mail"
+                          }
                           className="h-5 w-5"
                         />
                         {o.actionLabel}
@@ -105,30 +114,65 @@ export default async function ContactPage() {
             </div>
 
             {/* Info kontak */}
-            <div className="mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-3">
-              {contactData.infoItems.map((info, i) => {
-                const inner = (
-                  <div className="flex items-center gap-3 rounded-2xl border border-line bg-paper-2/40 p-4 transition-colors hover:border-orange/40">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-orange/10 text-orange ring-1 ring-inset ring-orange/20">
-                      <Icon name={info.icon as IconName} className="h-5 w-5" />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
-                        {info.label}
+            {(() => {
+              const alamatItem = contactData.infoItems.find(
+                (info) =>
+                  info.icon === "pin" ||
+                  info.label.toLowerCase().includes("alamat") ||
+                  info.label.toLowerCase().includes("address"),
+              );
+              const otherItems = contactData.infoItems.filter(
+                (info) => info !== alamatItem,
+              );
+              const sortedItems = alamatItem
+                ? [...otherItems, alamatItem]
+                : contactData.infoItems;
+
+              return (
+                <div className="mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-2">
+                  {sortedItems.map((info, i) => {
+                    const isFullWidth =
+                      (alamatItem && info === alamatItem) ||
+                      (sortedItems.length % 2 !== 0 &&
+                        i === sortedItems.length - 1);
+
+                    const inner = (
+                      <div className="flex h-full items-center gap-3 rounded-2xl border border-line bg-paper-2/40 p-4 transition-colors hover:border-orange/40">
+                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-orange/10 text-orange ring-1 ring-inset ring-orange/20">
+                          <Icon
+                            name={info.icon as IconName}
+                            className="h-5 w-5"
+                          />
+                        </span>
+                        <div className="min-w-0">
+                          <div className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                            {info.label}
+                          </div>
+                          <div className="text-sm font-medium text-ink">
+                            {info.value}
+                          </div>
+                        </div>
                       </div>
-                      <div className="truncate text-sm font-medium text-ink">
-                        {info.value}
-                      </div>
-                    </div>
-                  </div>
-                );
-                return (
-                  <Reveal key={info.label} delay={i * 70}>
-                    {info.href ? <Link href={info.href}>{inner}</Link> : inner}
-                  </Reveal>
-                );
-              })}
-            </div>
+                    );
+                    return (
+                      <Reveal
+                        key={info.label}
+                        delay={i * 70}
+                        className={isFullWidth ? "sm:col-span-2" : ""}
+                      >
+                        {info.href ? (
+                          <Link href={info.href} className="block h-full">
+                            {inner}
+                          </Link>
+                        ) : (
+                          inner
+                        )}
+                      </Reveal>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </Container>
         </section>
       </main>

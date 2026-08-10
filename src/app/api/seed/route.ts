@@ -126,6 +126,7 @@ export async function GET() {
         seededTmsFeatureItems.push({
           title: item.title,
           desc: item.desc,
+          icon: item.icon,
           media: mediaId,
         });
       }
@@ -135,6 +136,14 @@ export async function GET() {
         data: {
           title: 'Tire Management Solution',
           heroMedia: tmsHeroMediaId,
+          howTitle: `${tms.how.titleLead}${tms.how.titleAccent}`,
+          howHighlight: tms.how.titleAccent,
+          howDescription: tms.how.description,
+          howSteps: tms.how.steps.map((step) => ({
+            title: step.title,
+            desc: step.desc,
+            icon: step.icon,
+          })),
           featuresTitle: tms.features.title,
           featuresHighlight: 'berbasis data',
           featureItems: seededTmsFeatureItems,
