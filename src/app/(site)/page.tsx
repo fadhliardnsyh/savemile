@@ -37,8 +37,13 @@ export default async function Home() {
       <main className="relative z-10 flex-1">
         <Hero data={homeData} />
         {/* Social proof: klien + statistik mengalir menyatu tanpa pemisah */}
-        <Clients logos={clientsData.logos} />
-        <Stats />
+        <Clients
+          title={homeData.clientsTitle}
+          highlight={homeData.clientsTitleHighlight}
+          body={homeData.clientsBody}
+          logos={clientsData.logos}
+        />
+        <Stats items={homeData.stats} />
         <WhyChoose data={homeData} />
         <Coverage data={homeData.coverage} />
         <SuccessStory items={homeData?.successStories ?? successStoriesData} />

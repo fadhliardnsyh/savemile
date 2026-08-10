@@ -269,8 +269,22 @@ export async function getHomePageServer() {
           ).map((loc) => ({ city: loc.city, types: Array.from(loc.types) }))
         : undefined;
 
+      const coverageTitleHighlightRaw =
+        homePage.coverageTitleHighlight ?? homePage.coverageAccent;
+      const coverageTitleHighlight =
+        typeof coverageTitleHighlightRaw === "string"
+          ? coverageTitleHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
       const coverageData = {
         title: (homePage.coverageTitle as string) || coverage.title,
+        highlight:
+          coverageTitleHighlight && coverageTitleHighlight.length > 0
+            ? coverageTitleHighlight
+            : coverage.highlight,
         accent: (homePage.coverageAccent as string) || coverage.accent,
         body: (homePage.coverageBody as string) || coverage.body,
         stats:
@@ -287,6 +301,15 @@ export async function getHomePageServer() {
             : coverage.locations,
       };
 
+      const clientsTitleHighlightRaw = homePage.clientsTitleHighlight;
+      const clientsTitleHighlight =
+        typeof clientsTitleHighlightRaw === "string"
+          ? clientsTitleHighlightRaw
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined;
+
       const whyChooseTitleHighlightRaw = homePage.whyChooseTitleHighlight;
       const whyChooseTitleHighlight =
         typeof whyChooseTitleHighlightRaw === "string"
@@ -296,12 +319,31 @@ export async function getHomePageServer() {
               .filter(Boolean)
           : undefined;
 
+      const statsItems = Array.isArray(homePage.stats)
+        ? homePage.stats
+            .map((item: Record<string, unknown>) => ({
+              value: String(item.value || ""),
+              label: String(item.label || ""),
+              icon: (item.icon as string) || "tire",
+            }))
+            .filter((s: { value: string; label: string }) =>
+              Boolean(s.value && s.label),
+            )
+        : undefined;
+
       return {
         title: homePage.title || undefined,
         heroEyebrow: homePage.heroEyebrow || undefined,
         heroDescription: homePage.heroDescription || hero.description,
         heroImage: heroImage || (heroVideo ? undefined : hero.image),
         heroVideo: heroVideo || undefined,
+        clientsTitle: (homePage.clientsTitle as string) || clients.title,
+        clientsTitleHighlight:
+          clientsTitleHighlight && clientsTitleHighlight.length > 0
+            ? clientsTitleHighlight
+            : clients.highlight,
+        clientsBody: (homePage.clientsBody as string) || clients.body,
+        stats: statsItems && statsItems.length > 0 ? statsItems : stats,
         whyChooseTitle: homePage.whyChooseTitle || undefined,
         whyChooseTitleHighlight:
           whyChooseTitleHighlight && whyChooseTitleHighlight.length > 0
@@ -332,6 +374,10 @@ export async function getHomePageServer() {
     heroDescription: hero.description,
     heroImage: hero.image,
     heroVideo: undefined,
+    clientsTitle: clients.title,
+    clientsTitleHighlight: clients.highlight,
+    clientsBody: clients.body,
+    stats: stats,
     whyChooseTitle: undefined,
     whyChooseTitleHighlight: whyChoose.highlight,
     whyChooseBody: whyChoose.body,

@@ -2,16 +2,25 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { CountUp } from "@/components/ui/CountUp";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { stats } from "@/lib/content";
+import { stats as defaultStats } from "@/lib/content";
 
-export function Stats() {
+export type StatItem = {
+  id?: string | null;
+  value: string;
+  label: string;
+  icon?: string;
+};
+
+export function Stats({ items }: { items?: readonly StatItem[] | StatItem[] } = {}) {
+  const activeStats = items && items.length > 0 ? items : defaultStats;
+
   return (
     <section className="relative z-10 pt-4 pb-20 text-ink sm:pt-6 sm:pb-24">
       <Container className="relative">
         <div className="grid grid-cols-2 gap-y-12 lg:grid-cols-4">
-          {stats.map((stat, i) => (
+          {activeStats.map((stat, i) => (
             <Reveal
-              key={stat.label}
+              key={"id" in stat && stat.id ? String(stat.id) : stat.label}
               delay={i * 90}
               className="group px-2 text-center"
             >

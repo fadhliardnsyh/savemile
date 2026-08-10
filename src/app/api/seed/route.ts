@@ -3,7 +3,7 @@ import path from 'path';
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
-import { site, hero, whyChoose, tms, clients, successStory, nav } from '@/lib/content';
+import { site, hero, whyChoose, tms, clients, stats, successStory, nav } from '@/lib/content';
 import { catalogHero, infoStrip, infoStripDefaults, products } from '@/lib/catalog';
 
 interface BrandDoc {
@@ -89,6 +89,10 @@ export async function GET() {
           heroEyebrow: 'Tire Consultant & Distributor',
           heroDescription: hero.description,
           heroMedia: homeHeroMediaId,
+          clientsTitle: clients.title,
+          clientsTitleHighlight: clients.highlight.join(', '),
+          clientsBody: clients.body,
+          stats: stats as unknown as Record<string, unknown>[],
           whyChooseTitle: `${whyChoose.titleLead}${whyChoose.titleAccent}${whyChoose.titleTail}`,
           whyChooseBody: whyChoose.body,
         },

@@ -11,8 +11,27 @@ const H = 405;
 
 const ORANGE = "#fc3d04";
 
+function renderHighlighted(title: string, highlight?: string[]) {
+  if (!highlight || highlight.length === 0) return title;
+  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
+  let offset = 0;
+  return parts.map((part) => {
+    const key = `${part}-${offset}`;
+    offset += part.length;
+    return highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={key} className="text-orange">
+        {part}
+      </span>
+    ) : (
+      part
+    );
+  });
+}
+
 interface CoverageData {
   title?: string;
+  highlight?: string[];
   accent?: string;
   body?: string;
   stats?: Array<{ value: string; label: string }>;
@@ -23,7 +42,9 @@ interface CoverageData {
 export function Coverage({ data }: { data?: CoverageData }) {
   const content = {
     title: data?.title ?? coverage.title,
-    accent: data?.accent ?? coverage.accent,
+    highlight:
+      data?.highlight ??
+      (data?.accent ? [data.accent] : (coverage.highlight ?? [coverage.accent])),
     body: data?.body ?? coverage.body,
     stats: data?.stats ?? coverage.stats,
     locations: data?.locations ?? coverage.locations,
@@ -36,8 +57,7 @@ export function Coverage({ data }: { data?: CoverageData }) {
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              {`${content.title} `}
-              <span className="text-orange">{content.accent}</span>
+              {renderHighlighted(content.title, content.highlight)}
             </h2>
           </Reveal>
           <Reveal delay={120}>
