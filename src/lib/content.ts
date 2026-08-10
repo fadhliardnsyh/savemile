@@ -201,6 +201,7 @@ export type Branch = {
 
 export const coverage = {
   title: "Jangkauan layanan kami sampai di seluruh Indonesia",
+  highlight: ["seluruh Indonesia"],
   accent: "seluruh Indonesia",
   body: "Team SaveMile siap mendukung operasional Anda dari Sabang sampai Merauke",
   stats: [

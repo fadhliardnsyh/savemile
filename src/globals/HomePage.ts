@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload';
-import { coverage } from '../lib/content';
+import { coverage, stats } from '../lib/content';
 import { revalidateGlobal } from '../hooks/revalidate';
 
 export const HomePage: GlobalConfig = {
@@ -34,6 +34,62 @@ export const HomePage: GlobalConfig = {
       type: 'textarea',
       label: 'WhatsApp CTA Message Template',
       defaultValue: 'Halo SaveMile, saya ingin berkonsultasi mengenai ban untuk armada saya.',
+    },
+    {
+      name: 'clientsTitle',
+      type: 'text',
+      label: 'Clients Section Title',
+      defaultValue: 'Dipercaya oleh klien dan mitra industri',
+    },
+    {
+      name: 'clientsTitleHighlight',
+      type: 'text',
+      label: 'Clients Title Highlight Phrases (comma separated)',
+      defaultValue: 'klien, mitra industri',
+    },
+    {
+      name: 'clientsBody',
+      type: 'textarea',
+      label: 'Clients Section Subtitle / Body',
+      defaultValue: 'Dari BUMN hingga perusahaan swasta terbaik di Indonesia memilih SaveMile.',
+    },
+    {
+      name: 'stats',
+      type: 'array',
+      label: 'Stats Section Items',
+      defaultValue: stats as unknown as Record<string, unknown>[],
+      fields: [
+        {
+          name: 'value',
+          type: 'text',
+          label: 'Value / Number (e.g. 10.000+, 99%)',
+          required: true,
+        },
+        {
+          name: 'label',
+          type: 'textarea',
+          label: 'Description / Label',
+          required: true,
+        },
+        {
+          name: 'icon',
+          type: 'select',
+          label: 'Icon',
+          defaultValue: 'tire',
+          options: [
+            { label: 'Tire', value: 'tire' },
+            { label: 'Shield', value: 'shield' },
+            { label: 'Pin / Location', value: 'pin' },
+            { label: 'Consult', value: 'consult' },
+            { label: 'Laser', value: 'laser' },
+            { label: 'Bell', value: 'bell' },
+            { label: 'Wrench', value: 'wrench' },
+            { label: 'Search', value: 'search' },
+            { label: 'Leaf', value: 'leaf' },
+            { label: 'Route', value: 'route' },
+          ],
+        },
+      ],
     },
     {
       name: 'whyChooseTitle',
@@ -103,9 +159,9 @@ export const HomePage: GlobalConfig = {
       defaultValue: 'Jangkauan layanan kami sampai di seluruh Indonesia',
     },
     {
-      name: 'coverageAccent',
+      name: 'coverageTitleHighlight',
       type: 'text',
-      label: 'Coverage Title Accent Text (highlighted in orange)',
+      label: 'Coverage Title Highlight Phrases (comma separated)',
       defaultValue: 'seluruh Indonesia',
     },
     {
