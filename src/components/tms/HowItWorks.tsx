@@ -3,21 +3,60 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { tms } from "@/lib/content";
 
-export function HowItWorks() {
+function renderHighlighted(title: string, highlight?: string[]) {
+  if (!highlight || highlight.length === 0) return title;
+  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
+  let offset = 0;
+  return parts.map((part) => {
+    const key = `${part}-${offset}`;
+    offset += part.length;
+    return highlight.some((h) => h.toLowerCase() === part.toLowerCase()) ? (
+      <span key={key} className="text-orange">
+        {part}
+      </span>
+    ) : (
+      part
+    );
+  });
+}
+
+export interface HowStepItem {
+  icon?: string;
+  title: string;
+  desc: string;
+}
+
+export interface HowItWorksData {
+  title?: string;
+  highlight?: string[];
+  description?: string;
+  steps?: HowStepItem[];
+}
+
+interface HowItWorksProps {
+  how?: HowItWorksData;
+}
+
+export function HowItWorks({ how }: HowItWorksProps = {}) {
   const h = tms.how;
+  const title = how?.title || `${h.titleLead}${h.titleAccent}`;
+  const highlight = how?.highlight || [h.titleAccent];
+  const description = how?.description || h.description;
+  const steps = how?.steps && how.steps.length > 0 ? how.steps : h.steps;
+
   return (
     <section className="py-20 sm:py-28">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <Reveal delay={60}>
             <h2 className="font-display text-4xl font-bold tracking-tight text-ink text-balance sm:text-5xl">
-              {h.titleLead}
-              <span className="text-orange">{h.titleAccent}</span>
+              {renderHighlighted(title, highlight)}
             </h2>
           </Reveal>
           <Reveal delay={120}>
             <p className="mt-4 text-lg text-muted text-pretty">
-              {h.description}
+              {description}
             </p>
           </Reveal>
         </div>
@@ -31,7 +70,7 @@ export function HowItWorks() {
           </div>
 
           <div className="grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-6">
-            {h.steps.map((step, i) => (
+            {steps.map((step, i) => (
               <Reveal
                 key={step.title}
                 delay={i * 80}

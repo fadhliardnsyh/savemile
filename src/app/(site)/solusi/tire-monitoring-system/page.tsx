@@ -29,7 +29,7 @@ export default async function TmsPage() {
           image={tmsData.heroImage}
           video={tmsData.heroVideo}
         />
-        <HowItWorks />
+        <HowItWorks how={tmsData.how} />
         <FeatureDeepDive features={tmsData.features} />
         <Consultation consultation={tmsData.consultation} />
         <CtaSection content={tmsData.tmsCta} />

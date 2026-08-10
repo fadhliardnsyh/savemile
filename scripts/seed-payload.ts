@@ -215,6 +215,7 @@ async function seed() {
       seededTmsFeatureItems.push({
         title: item.title,
         desc: item.desc,
+        icon: item.icon,
         media: mediaId,
       });
     }
@@ -224,6 +225,14 @@ async function seed() {
       data: {
         title: "Tire Management Solution",
         heroMedia: tmsHeroMediaId,
+        howTitle: `${tms.how.titleLead}${tms.how.titleAccent}`,
+        howHighlight: tms.how.titleAccent,
+        howDescription: tms.how.description,
+        howSteps: tms.how.steps.map((step) => ({
+          title: step.title,
+          desc: step.desc,
+          icon: step.icon,
+        })),
         featuresTitle: tms.features.title,
         featuresHighlight: "berbasis data",
         featureItems: seededTmsFeatureItems,

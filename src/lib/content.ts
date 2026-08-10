@@ -631,7 +631,6 @@ export const contact = {
     ],
   },
   info: [
-    { icon: "pin", label: "Alamat", value: site.address },
     {
       icon: "mail",
       label: "Email",
@@ -644,6 +643,7 @@ export const contact = {
       value: "+62 812-3456-7890",
       href: `tel:${site.phone}`,
     },
+    { icon: "pin", label: "Alamat", value: site.address },
   ],
 };
 
