@@ -9,6 +9,7 @@ import {
   getCatalogProductsServer,
   getSiteConfigServer,
 } from "@/lib/payload";
+import { CatalogHero } from "@/components/catalog/CatalogHero";
 
 export const metadata: Metadata = {
   title: "Ban Truk & Kendaraan Niaga",
@@ -27,6 +28,7 @@ export default async function SolusiBanPage() {
     <>
       <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
+        <CatalogHero data={catalogPageData} />
         <CatalogBrowser
           initialProducts={products}
           filterOptions={{
