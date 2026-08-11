@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CatalogHero } from "@/components/catalog/CatalogHero";
 import { InfoStrip } from "@/components/catalog/InfoStrip";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 
@@ -28,8 +27,20 @@ export default async function SolusiBanPage() {
     <>
       <Navbar items={siteData.nav} overHero />
       <main className="relative z-10 flex-1">
-        <CatalogHero data={catalogPageData} />
-        <CatalogBrowser initialProducts={products} />
+        <CatalogBrowser
+          initialProducts={products}
+          filterOptions={{
+            tipe: catalogPageData.tipeOptions,
+            compatible: catalogPageData.compatibleOptions,
+            medan: catalogPageData.medanOptions,
+            fitur: catalogPageData.fiturOptions,
+            tipeLabels: catalogPageData.tipeLabels,
+            compatibleLabels: catalogPageData.compatibleLabels,
+            medanLabels: catalogPageData.medanLabels,
+            medanIcons: catalogPageData.medanIcons,
+            fiturLabels: catalogPageData.fiturLabels,
+          }}
+        />
         <InfoStrip
           title={catalogPageData.infoStripTitle}
           highlight={catalogPageData.infoStripTitleHighlight}

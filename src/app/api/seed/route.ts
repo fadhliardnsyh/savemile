@@ -4,7 +4,18 @@ import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import configPromise from '@payload-config';
 import { site, hero, whyChoose, tms, clients, stats, successStory, nav } from '@/lib/content';
-import { catalogHero, infoStrip, infoStripDefaults, products } from '@/lib/catalog';
+import {
+  catalogHero,
+  infoStrip,
+  infoStripDefaults,
+  products,
+  tipeOptions,
+  compatibleOptions,
+  medanOptions,
+  fiturOptions,
+  medanIcons,
+  type Medan,
+} from '@/lib/catalog';
 
 interface BrandDoc {
   id: string | number;
@@ -99,19 +110,48 @@ export async function GET() {
       });
     }
 
-    // 1c. Seed CatalogPage Global (only if unpopulated)
+    // 1c. Seed CatalogPage Global (only if unpopulated or filter options missing)
     const existingCatalogPage = await payload.findGlobal({ slug: 'catalog-page' }).catch(() => null);
-    if (!existingCatalogPage || !existingCatalogPage.title) {
+    if (
+      !existingCatalogPage ||
+      !existingCatalogPage.title ||
+      !existingCatalogPage.filterTipeOptions ||
+      (Array.isArray(existingCatalogPage.filterTipeOptions) &&
+        existingCatalogPage.filterTipeOptions.length === 0)
+    ) {
       const catalogHeroMediaId = await uploadMediaIfExist(catalogHero.image, 'Catalog Hero Media');
       await payload.updateGlobal({
         slug: 'catalog-page',
         data: {
-          title: catalogHero.title,
-          heroMedia: catalogHeroMediaId,
-          whatsappMessage: 'Halo SaveMile, saya ingin bertanya mengenai katalog ban.',
-          infoStripTitle: infoStripDefaults.title,
-          infoStripTitleHighlight: infoStripDefaults.highlight.join(', '),
-          infoStripItems: infoStrip,
+          title: existingCatalogPage?.title || catalogHero.title,
+          heroMedia: (existingCatalogPage?.heroMedia as any)?.id || catalogHeroMediaId,
+          whatsappMessage:
+            existingCatalogPage?.whatsappMessage ||
+            'Halo SaveMile, saya ingin bertanya mengenai katalog ban.',
+          infoStripTitle:
+            existingCatalogPage?.infoStripTitle || infoStripDefaults.title,
+          infoStripTitleHighlight:
+            existingCatalogPage?.infoStripTitleHighlight ||
+            infoStripDefaults.highlight.join(', '),
+          infoStripItems:
+            (existingCatalogPage?.infoStripItems as any) || infoStrip,
+          filterTipeOptions: tipeOptions.map((o) => ({
+            key: o.key,
+            label: o.label,
+          })),
+          filterCompatibleOptions: compatibleOptions.map((o) => ({
+            key: o.key,
+            label: o.label,
+          })),
+          filterMedanOptions: medanOptions.map((o) => ({
+            key: o.key,
+            label: o.label,
+            icon: medanIcons[o.key as Medan] || 'road',
+          })),
+          filterFiturOptions: fiturOptions.map((o) => ({
+            key: o.key,
+            label: o.label,
+          })),
         },
       });
     }
@@ -188,6 +228,91 @@ export async function GET() {
       brandDocs.doublestar = doublestar;
     }
 
+    // 2b. Seed TireTypes
+    const tireDocs: Record<string, BrandDoc> = {};
+    const existingTires = await payload.find({ collection: 'tire-types' as any });
+    for (const t of existingTires.docs) {
+      tireDocs[(t as any).slug] = t as any;
+    }
+    for (let i = 0; i < tipeOptions.length; i++) {
+      const opt = tipeOptions[i];
+      if (!tireDocs[opt.key]) {
+        const doc = await payload.create({
+          collection: 'tire-types' as any,
+          data: {
+            name: opt.label,
+            slug: opt.key,
+            order: i,
+          },
+        });
+        tireDocs[opt.key] = doc as any;
+      }
+    }
+
+    // 2c. Seed VehicleTypes
+    const vehicleDocs: Record<string, BrandDoc> = {};
+    const existingVehicles = await payload.find({ collection: 'vehicle-types' as any });
+    for (const v of existingVehicles.docs) {
+      vehicleDocs[(v as any).slug] = v as any;
+    }
+    for (let i = 0; i < compatibleOptions.length; i++) {
+      const opt = compatibleOptions[i];
+      if (!vehicleDocs[opt.key]) {
+        const doc = await payload.create({
+          collection: 'vehicle-types' as any,
+          data: {
+            name: opt.label,
+            slug: opt.key,
+            order: i,
+          },
+        });
+        vehicleDocs[opt.key] = doc as any;
+      }
+    }
+
+    // 2d. Seed TerrainTypes
+    const terrainDocs: Record<string, BrandDoc> = {};
+    const existingTerrains = await payload.find({ collection: 'terrain-types' as any });
+    for (const t of existingTerrains.docs) {
+      terrainDocs[(t as any).slug] = t as any;
+    }
+    for (let i = 0; i < medanOptions.length; i++) {
+      const opt = medanOptions[i];
+      if (!terrainDocs[opt.key]) {
+        const doc = await payload.create({
+          collection: 'terrain-types' as any,
+          data: {
+            name: opt.label,
+            slug: opt.key,
+            icon: medanIcons[opt.key as Medan] || 'road',
+            order: i,
+          },
+        });
+        terrainDocs[opt.key] = doc as any;
+      }
+    }
+
+    // 2e. Seed FeatureTypes
+    const featureDocs: Record<string, BrandDoc> = {};
+    const existingFeatures = await payload.find({ collection: 'feature-types' as any });
+    for (const f of existingFeatures.docs) {
+      featureDocs[(f as any).slug] = f as any;
+    }
+    for (let i = 0; i < fiturOptions.length; i++) {
+      const opt = fiturOptions[i];
+      if (!featureDocs[opt.key]) {
+        const doc = await payload.create({
+          collection: 'feature-types' as any,
+          data: {
+            name: opt.label,
+            slug: opt.key,
+            order: i,
+          },
+        });
+        featureDocs[opt.key] = doc as any;
+      }
+    }
+
     // 3. Seed Products (ONLY missing products created)
     const existingProducts = await payload.find({ collection: 'products', limit: 500 });
     const existingProductNames = new Set(
@@ -207,16 +332,27 @@ export async function GET() {
 
       const mediaId = await uploadMediaIfExist(prod.image, `${prod.name} Image`);
 
+      const tipeId = tireDocs[prod.tipe]?.id;
+      const compatibleIds = prod.compatible
+        .map((c) => vehicleDocs[c]?.id)
+        .filter(Boolean);
+      const medanIds = prod.medan
+        .map((m) => terrainDocs[m]?.id)
+        .filter(Boolean);
+      const fiturIds = prod.fitur
+        .map((f) => featureDocs[f]?.id)
+        .filter(Boolean);
+
       await payload.create({
         collection: 'products',
         data: {
           name: prod.name,
           brand: brandDoc.id,
           brandChip: prod.brandChip,
-          tipe: prod.tipe,
-          compatible: prod.compatible,
-          medan: prod.medan,
-          fitur: prod.fitur,
+          tipe: tipeId || prod.tipe,
+          compatible: compatibleIds.length > 0 ? compatibleIds : prod.compatible,
+          medan: medanIds.length > 0 ? medanIds : prod.medan,
+          fitur: fiturIds.length > 0 ? fiturIds : prod.fitur,
           sizes: prod.sizes.map((s) => ({ size: s })),
           description: prod.description,
           image: mediaId,

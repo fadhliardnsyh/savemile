@@ -37,7 +37,7 @@ export function revalidateCollection<T extends TypeWithID = TypeWithID>(
   resolver: PathResolver<T>,
   type?: 'layout' | 'page'
 ): CollectionAfterChangeHook<T> & CollectionAfterDeleteHook<T> {
-  return ({ doc }) => {
+  return ({ doc, previousDoc }: any) => {
     if (typeof resolver === 'function') {
       const paths = resolver(doc);
       if (Array.isArray(paths)) {
@@ -46,6 +46,17 @@ export function revalidateCollection<T extends TypeWithID = TypeWithID>(
         });
       } else if (paths) {
         revalidatePathSafely(paths, type);
+      }
+
+      if (previousDoc) {
+        const prevPaths = resolver(previousDoc);
+        if (Array.isArray(prevPaths)) {
+          prevPaths.forEach((p) => {
+            revalidatePathSafely(p, type);
+          });
+        } else if (prevPaths) {
+          revalidatePathSafely(prevPaths, type);
+        }
       }
     } else if (Array.isArray(resolver)) {
       resolver.forEach((p) => {

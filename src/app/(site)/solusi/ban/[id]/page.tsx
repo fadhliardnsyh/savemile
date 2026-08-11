@@ -21,7 +21,12 @@ import {
 import { consultCta, site } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
-import { getCatalogProductsServer, getProductByIdServer, getSiteConfigServer } from "@/lib/payload";
+import {
+  getCatalogPageServer,
+  getCatalogProductsServer,
+  getProductByIdServer,
+  getSiteConfigServer,
+} from "@/lib/payload";
 
 export async function generateStaticParams() {
   const products = await getCatalogProductsServer();
@@ -34,13 +39,18 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const p = await getProductByIdServer(id);
+  const [p, catalogPageData] = await Promise.all([
+    getProductByIdServer(id),
+    getCatalogPageServer(),
+  ]);
   if (!p) return { title: "Produk tidak ditemukan" };
+  const tipeName =
+    catalogPageData.tipeLabels[p.tipe] || tipeLabels[p.tipe] || p.tipe;
   return {
     title: `${p.name} · Ban ${p.brandChip}`,
     description:
       p.description ||
-      `Ban ${tipeLabels[p.tipe]} ${p.brandChip} ${p.name} dari SaveMile.`,
+      `Ban ${tipeName} ${p.brandChip} ${p.name} dari SaveMile.`,
   };
 }
 
@@ -50,10 +60,11 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [product, allProducts, siteData] = await Promise.all([
+  const [product, allProducts, siteData, catalogPageData] = await Promise.all([
     getProductByIdServer(id),
     getCatalogProductsServer(),
     getSiteConfigServer(),
+    getCatalogPageServer(),
   ]);
 
   if (!product) notFound();
@@ -107,7 +118,7 @@ export default async function ProductDetailPage({
                   <Icon name="tire" className="h-48 w-48 text-ink/12" />
                 )}
                 <span className="absolute right-5 top-5 rounded-full bg-orange/10 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
-                  {tipeLabels[product.tipe] || product.tipe}
+                  {catalogPageData.tipeLabels[product.tipe] || tipeLabels[product.tipe] || product.tipe}
                 </span>
                 <span
                   className={cn(
@@ -125,7 +136,7 @@ export default async function ProductDetailPage({
             {/* ── Info ── */}
             <div>
               <div className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-orange">
-                Ban {tipeLabels[product.tipe]} · {product.brandChip}
+                Ban {catalogPageData.tipeLabels[product.tipe] || tipeLabels[product.tipe] || product.tipe} · {product.brandChip}
               </div>
               <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">
                 {product.name}
@@ -141,7 +152,9 @@ export default async function ProductDetailPage({
               {product.compatible.length > 0 && (
                 <ChipBlock
                   title="Cocok untuk"
-                  items={product.compatible.map((c) => compatibleLabels[c])}
+                  items={product.compatible.map(
+                    (c) => catalogPageData.compatibleLabels[c] || compatibleLabels[c] || c,
+                  )}
                 />
               )}
 
@@ -150,8 +163,8 @@ export default async function ProductDetailPage({
                 <ChipBlock
                   title="Medan"
                   items={product.medan.map((m) => ({
-                    label: medanLabels[m] || m,
-                    icon: medanIcons[m as Medan],
+                    label: catalogPageData.medanLabels[m] || medanLabels[m] || m,
+                    icon: (catalogPageData.medanIcons[m] || medanIcons[m as Medan] || "road") as IconName,
                   }))}
                 />
               )}
@@ -160,7 +173,9 @@ export default async function ProductDetailPage({
               {product.fitur.length > 0 && (
                 <ChipBlock
                   title="Fitur"
-                  items={product.fitur.map((f) => fiturLabels[f])}
+                  items={product.fitur.map(
+                    (f) => catalogPageData.fiturLabels[f] || fiturLabels[f] || f,
+                  )}
                 />
               )}
 
@@ -168,7 +183,7 @@ export default async function ProductDetailPage({
               <ProductActions
                 brandChip={product.brandChip}
                 name={product.name}
-                tipe={tipeLabels[product.tipe]}
+                tipe={catalogPageData.tipeLabels[product.tipe] || tipeLabels[product.tipe] || product.tipe}
                 sizes={product.sizes}
                 whatsapp={siteData.whatsapp || site.whatsapp}
               />
@@ -195,7 +210,17 @@ export default async function ProductDetailPage({
               </div>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {related.map((p) => (
-                  <ProductCard key={p.id} product={p} />
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    labels={{
+                      tipeLabels: catalogPageData.tipeLabels,
+                      compatibleLabels: catalogPageData.compatibleLabels,
+                      medanLabels: catalogPageData.medanLabels,
+                      medanIcons: catalogPageData.medanIcons,
+                      fiturLabels: catalogPageData.fiturLabels,
+                    }}
+                  />
                 ))}
               </div>
             </div>

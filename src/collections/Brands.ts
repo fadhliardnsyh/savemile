@@ -11,6 +11,8 @@ export const Brands: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
+    group: 'Katalog Ban',
+    defaultColumns: ['name', 'slug', 'tagline'],
   },
   fields: [
     {
