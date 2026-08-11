@@ -9,11 +9,15 @@ import { gcsStorage } from "@payloadcms/storage-gcs";
 
 import { Brands } from "./src/collections/Brands";
 import { Clients } from "./src/collections/Clients";
+import { FeatureTypes } from "./src/collections/FeatureTypes";
 import { Jobs } from "./src/collections/Jobs";
 import { Media } from "./src/collections/Media";
 import { Products } from "./src/collections/Products";
 import { SuccessStories } from "./src/collections/SuccessStories";
+import { TerrainTypes } from "./src/collections/TerrainTypes";
+import { TireTypes } from "./src/collections/TireTypes";
 import { Users } from "./src/collections/Users";
+import { VehicleTypes } from "./src/collections/VehicleTypes";
 
 import { AboutPage } from "./src/globals/AboutPage";
 import { CareerPage } from "./src/globals/CareerPage";
@@ -31,7 +35,19 @@ export default buildConfig({
   admin: {
     user: Users.slug,
   },
-  collections: [Users, Media, Brands, Products, Clients, SuccessStories, Jobs],
+  collections: [
+    Users,
+    Media,
+    Brands,
+    TireTypes,
+    VehicleTypes,
+    TerrainTypes,
+    FeatureTypes,
+    Products,
+    Clients,
+    SuccessStories,
+    Jobs,
+  ],
   globals: [
     SiteConfig,
     HomePage,

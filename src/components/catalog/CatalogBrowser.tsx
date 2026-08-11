@@ -28,9 +28,25 @@ import { lenisRef } from "@/lib/lenisRef";
 
 type Sort = "unggulan" | "az" | "za";
 
+export interface CatalogFilterOptions {
+  tipe?: { key: string; label: string }[];
+  compatible?: { key: string; label: string }[];
+  medan?: { key: string; label: string; icon?: IconName }[];
+  fitur?: { key: string; label: string }[];
+  tipeLabels?: Record<string, string>;
+  compatibleLabels?: Record<string, string>;
+  medanLabels?: Record<string, string>;
+  medanIcons?: Record<string, IconName>;
+  fiturLabels?: Record<string, string>;
+}
+
 export function CatalogBrowser({
   initialProducts,
-}: { initialProducts?: Product[] } = {}) {
+  filterOptions,
+}: {
+  initialProducts?: Product[];
+  filterOptions?: CatalogFilterOptions;
+} = {}) {
   const productList = useMemo(
     () =>
       initialProducts && initialProducts.length > 0
@@ -56,66 +72,118 @@ export function CatalogBrowser({
   }, [productList]);
 
   const dynamicTipeOptions = useMemo(() => {
+    const list =
+      filterOptions?.tipe && filterOptions.tipe.length > 0
+        ? filterOptions.tipe
+        : tipeOptions;
+    const labels = filterOptions?.tipeLabels || tipeLabels;
     const set = new Set<string>();
-    tipeOptions.forEach((o) => {
+    const result: { key: Tipe; label: string }[] = [];
+    list.forEach((o) => {
       set.add(o.key);
+      result.push({ key: o.key as Tipe, label: o.label });
     });
     productList.forEach((p) => {
-      if (p.tipe) set.add(p.tipe);
+      if (p.tipe && !set.has(p.tipe)) {
+        set.add(p.tipe);
+        result.push({
+          key: p.tipe as Tipe,
+          label:
+            labels[p.tipe] ||
+            p.tipe.charAt(0).toUpperCase() + p.tipe.slice(1),
+        });
+      }
     });
-    return Array.from(set).map((key) => ({
-      key: key as Tipe,
-      label: tipeLabels[key] || key.charAt(0).toUpperCase() + key.slice(1),
-    }));
-  }, [productList]);
+    return result;
+  }, [productList, filterOptions]);
 
   const dynamicCompatibleOptions = useMemo(() => {
+    const list =
+      filterOptions?.compatible && filterOptions.compatible.length > 0
+        ? filterOptions.compatible
+        : compatibleOptions;
+    const labels = filterOptions?.compatibleLabels || compatibleLabels;
     const set = new Set<string>();
-    compatibleOptions.forEach((o) => {
+    const result: { key: Compatible; label: string }[] = [];
+    list.forEach((o) => {
       set.add(o.key);
+      result.push({ key: o.key as Compatible, label: o.label });
     });
     productList.forEach((p) => {
       p.compatible?.forEach((c) => {
-        set.add(c);
+        if (!set.has(c)) {
+          set.add(c);
+          result.push({
+            key: c as Compatible,
+            label: labels[c] || c,
+          });
+        }
       });
     });
-    return Array.from(set).map((key) => ({
-      key: key as Compatible,
-      label: compatibleLabels[key] || key,
-    }));
-  }, [productList]);
+    return result;
+  }, [productList, filterOptions]);
 
   const dynamicMedanOptions = useMemo(() => {
+    const list =
+      filterOptions?.medan && filterOptions.medan.length > 0
+        ? filterOptions.medan
+        : medanOptions;
+    const labels = filterOptions?.medanLabels || medanLabels;
+    const icons = filterOptions?.medanIcons || medanIcons;
     const set = new Set<string>();
-    medanOptions.forEach((o) => {
+    const result: { key: Medan; label: string; icon?: IconName }[] = [];
+    list.forEach((o) => {
       set.add(o.key);
+      result.push({
+        key: o.key as Medan,
+        label: o.label,
+        icon:
+          (o as { icon?: IconName }).icon ||
+          icons[o.key] ||
+          medanIcons[o.key as Medan] ||
+          "road",
+      });
     });
     productList.forEach((p) => {
       p.medan?.forEach((m) => {
-        set.add(m);
+        if (!set.has(m)) {
+          set.add(m);
+          result.push({
+            key: m as Medan,
+            label: labels[m] || m,
+            icon: icons[m] || medanIcons[m as Medan] || "road",
+          });
+        }
       });
     });
-    return Array.from(set).map((key) => ({
-      key: key as Medan,
-      label: medanLabels[key] || key,
-    }));
-  }, [productList]);
+    return result;
+  }, [productList, filterOptions]);
 
   const dynamicFiturOptions = useMemo(() => {
+    const list =
+      filterOptions?.fitur && filterOptions.fitur.length > 0
+        ? filterOptions.fitur
+        : fiturOptions;
+    const labels = filterOptions?.fiturLabels || fiturLabels;
     const set = new Set<string>();
-    fiturOptions.forEach((o) => {
+    const result: { key: Fitur; label: string }[] = [];
+    list.forEach((o) => {
       set.add(o.key);
+      result.push({ key: o.key as Fitur, label: o.label });
     });
     productList.forEach((p) => {
       p.fitur?.forEach((f) => {
-        set.add(f);
+        if (!set.has(f)) {
+          set.add(f);
+          result.push({
+            key: f as Fitur,
+            label: labels[f] || f,
+          });
+        }
       });
     });
-    return Array.from(set).map((key) => ({
-      key: key as Fitur,
-      label: fiturLabels[key] || key,
-    }));
-  }, [productList]);
+    return result;
+  }, [productList, filterOptions]);
 
   const sizeOptions = useMemo(
     () =>
@@ -304,7 +372,7 @@ export function CatalogBrowser({
           <CheckRow
             key={o.key}
             label={o.label}
-            icon={medanIcons[o.key as Medan]}
+            icon={o.icon || filterOptions?.medanIcons?.[o.key] || medanIcons[o.key as Medan]}
             count={count((p) => p.medan, o.key)}
             checked={medan.includes(o.key)}
             onChange={() => toggle(setMedan, o.key)}
@@ -470,7 +538,7 @@ export function CatalogBrowser({
                     className="fade-up h-full"
                     style={{ ["--d" as string]: `${i * 45}ms` }}
                   >
-                    <ProductCard product={p} />
+                    <ProductCard product={p} labels={filterOptions} />
                   </div>
                 ))}
               </div>

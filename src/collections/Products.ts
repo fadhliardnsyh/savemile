@@ -1,10 +1,23 @@
 import type { CollectionConfig } from 'payload';
 import { revalidateCollection } from '../hooks/revalidate';
 
-const revalidateProduct = revalidateCollection((doc) => [
-  '/solusi/ban',
-  `/solusi/ban/${doc.id}`,
-]);
+const revalidateProduct = revalidateCollection((doc: any) => {
+  const computedSlug = doc?.name
+    ? doc.name.toLowerCase().replace(/\s+/g, '-')
+    : String(doc?.id || '');
+
+  const paths = ['/solusi/ban'];
+
+  if (computedSlug) {
+    paths.push(`/solusi/ban/${computedSlug}`);
+  }
+
+  if (doc?.id && String(doc.id) !== computedSlug) {
+    paths.push(`/solusi/ban/${doc.id}`);
+  }
+
+  return paths;
+});
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -14,6 +27,8 @@ export const Products: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
+    group: 'Katalog Ban',
+    defaultColumns: ['name', 'brand', 'tipe', 'updatedAt'],
   },
   fields: [
     {
@@ -33,46 +48,27 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'tipe',
-      type: 'select',
-      options: [
-        { label: 'Radial', value: 'radial' },
-        { label: 'Bias', value: 'bias' },
-      ],
+      type: 'relationship',
+      relationTo: 'tire-types',
       required: true,
     },
     {
       name: 'compatible',
-      type: 'select',
+      type: 'relationship',
+      relationTo: 'vehicle-types',
       hasMany: true,
-      options: [
-        { label: 'Bus', value: 'bus' },
-        { label: 'Truk Berat', value: 'trukBerat' },
-        { label: 'Truk Ringan', value: 'trukRingan' },
-      ],
     },
     {
       name: 'medan',
-      type: 'select',
+      type: 'relationship',
+      relationTo: 'terrain-types',
       hasMany: true,
-      options: [
-        { label: 'Perjalanan Panjang', value: 'perjalananPanjang' },
-        { label: 'Jalan Perkotaan', value: 'jalanPerkotaan' },
-        { label: 'Standar', value: 'standar' },
-        { label: 'Off Road', value: 'offRoad' },
-      ],
     },
     {
       name: 'fitur',
-      type: 'select',
+      type: 'relationship',
+      relationTo: 'feature-types',
       hasMany: true,
-      options: [
-        { label: 'Anti Aus', value: 'antiAus' },
-        { label: 'Handling', value: 'handling' },
-        { label: 'Fuel Efficiency', value: 'fuelEfficiency' },
-        { label: 'Anti Tear', value: 'antiTear' },
-        { label: 'Beban Berat', value: 'bebanBerat' },
-        { label: 'Jarak Tempuh Tinggi', value: 'jarakTempuh' },
-      ],
     },
     {
       name: 'sizes',

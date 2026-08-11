@@ -13,7 +13,17 @@ import {
   infoStrip,
   infoStripDefaults,
   products,
+  tipeOptions,
+  compatibleOptions,
+  medanOptions,
+  fiturOptions,
+  medanIcons,
+  tipeLabels,
+  compatibleLabels,
+  medanLabels,
+  fiturLabels,
 } from "./catalog";
+import type { IconName } from "@/components/ui/Icon";
 import {
   about,
   career,
@@ -395,9 +405,79 @@ export async function getHomePageServer() {
 export async function getCatalogPageServer() {
   try {
     const payload = await getPayload({ config: configPromise });
-    const catalogPage = await payload
-      .findGlobal({ slug: "catalog-page", depth: 2 })
-      .catch(() => null);
+    const [catalogPage, tireDocs, vehicleDocs, terrainDocs, featureDocs] =
+      await Promise.all([
+        payload.findGlobal({ slug: "catalog-page", depth: 2 }).catch(() => null),
+        payload
+          .find({ collection: "tire-types" as any, limit: 100, sort: "order" })
+          .catch(() => ({ docs: [] })),
+        payload
+          .find({ collection: "vehicle-types" as any, limit: 100, sort: "order" })
+          .catch(() => ({ docs: [] })),
+        payload
+          .find({ collection: "terrain-types" as any, limit: 100, sort: "order" })
+          .catch(() => ({ docs: [] })),
+        payload
+          .find({ collection: "feature-types" as any, limit: 100, sort: "order" })
+          .catch(() => ({ docs: [] })),
+      ]);
+
+    const dynamicTipeOptions =
+      tireDocs?.docs?.length > 0
+        ? tireDocs.docs.map((doc: any) => ({
+            key: doc.slug || String(doc.id),
+            label: doc.name || doc.slug,
+          }))
+        : tipeOptions;
+
+    const dynamicCompatibleOptions =
+      vehicleDocs?.docs?.length > 0
+        ? vehicleDocs.docs.map((doc: any) => ({
+            key: doc.slug || String(doc.id),
+            label: doc.name || doc.slug,
+          }))
+        : compatibleOptions;
+
+    const dynamicMedanOptions =
+      terrainDocs?.docs?.length > 0
+        ? terrainDocs.docs.map((doc: any) => ({
+            key: doc.slug || String(doc.id),
+            label: doc.name || doc.slug,
+            icon: (doc.icon || medanIcons[doc.slug as Medan] || "road") as IconName,
+          }))
+        : medanOptions.map((o) => ({
+            key: o.key,
+            label: o.label,
+            icon: (medanIcons[o.key as Medan] || "road") as IconName,
+          }));
+
+    const dynamicFiturOptions =
+      featureDocs?.docs?.length > 0
+        ? featureDocs.docs.map((doc: any) => ({
+            key: doc.slug || String(doc.id),
+            label: doc.name || doc.slug,
+          }))
+        : fiturOptions;
+
+    const tipeLabelsMap: Record<string, string> = Object.fromEntries(
+      dynamicTipeOptions.map((o) => [o.key, o.label]),
+    );
+    const compatibleLabelsMap: Record<string, string> = Object.fromEntries(
+      dynamicCompatibleOptions.map((o) => [o.key, o.label]),
+    );
+    const medanLabelsMap: Record<string, string> = Object.fromEntries(
+      dynamicMedanOptions.map((o) => [o.key, o.label]),
+    );
+    const medanIconsMap: Record<string, IconName> = Object.fromEntries(
+      dynamicMedanOptions.map((o) => [
+        o.key,
+        (o.icon || medanIcons[o.key as Medan] || "road") as IconName,
+      ]),
+    );
+    const fiturLabelsMap: Record<string, string> = Object.fromEntries(
+      dynamicFiturOptions.map((o) => [o.key, o.label]),
+    );
+
     if (catalogPage) {
       const mediaInfo = extractMediaInfo(catalogPage.heroMedia);
       let heroImage: string | undefined;
@@ -451,6 +531,15 @@ export async function getCatalogPageServer() {
           infoStripItems && infoStripItems.length > 0
             ? infoStripItems
             : infoStrip,
+        tipeOptions: dynamicTipeOptions,
+        compatibleOptions: dynamicCompatibleOptions,
+        medanOptions: dynamicMedanOptions,
+        fiturOptions: dynamicFiturOptions,
+        tipeLabels: tipeLabelsMap,
+        compatibleLabels: compatibleLabelsMap,
+        medanLabels: medanLabelsMap,
+        medanIcons: medanIconsMap,
+        fiturLabels: fiturLabelsMap,
       };
     }
   } catch {
@@ -470,6 +559,19 @@ export async function getCatalogPageServer() {
     infoStripTitle: infoStripDefaults.title,
     infoStripTitleHighlight: infoStripDefaults.highlight,
     infoStripItems: infoStrip,
+    tipeOptions,
+    compatibleOptions,
+    medanOptions: medanOptions.map((o) => ({
+      key: o.key,
+      label: o.label,
+      icon: (medanIcons[o.key as Medan] || "road") as IconName,
+    })),
+    fiturOptions,
+    tipeLabels,
+    compatibleLabels,
+    medanLabels,
+    medanIcons,
+    fiturLabels,
   };
 }
 
@@ -1343,15 +1445,56 @@ export async function getCatalogProductsServer(): Promise<Product[]> {
           imageUrl = staticMatch.image;
         }
 
+        const tipeObj =
+          typeof doc.tipe === "object" && doc.tipe !== null
+            ? (doc.tipe as { slug?: string; name?: string })
+            : null;
+        const tipeSlug =
+          tipeObj?.slug ||
+          (typeof doc.tipe === "string" ? doc.tipe : "radial");
+
+        const compatibleList: Compatible[] = Array.isArray(doc.compatible)
+          ? doc.compatible
+              .map((c: unknown) => {
+                if (typeof c === "object" && c !== null) {
+                  return (c as { slug?: string; name?: string }).slug || (c as { name?: string }).name;
+                }
+                return typeof c === "string" ? c : undefined;
+              })
+              .filter((c): c is Compatible => Boolean(c))
+          : [];
+
+        const medanList: Medan[] = Array.isArray(doc.medan)
+          ? doc.medan
+              .map((m: unknown) => {
+                if (typeof m === "object" && m !== null) {
+                  return (m as { slug?: string; name?: string }).slug || (m as { name?: string }).name;
+                }
+                return typeof m === "string" ? m : undefined;
+              })
+              .filter((m): m is Medan => Boolean(m))
+          : [];
+
+        const fiturList: Fitur[] = Array.isArray(doc.fitur)
+          ? doc.fitur
+              .map((f: unknown) => {
+                if (typeof f === "object" && f !== null) {
+                  return (f as { slug?: string; name?: string }).slug || (f as { name?: string }).name;
+                }
+                return typeof f === "string" ? f : undefined;
+              })
+              .filter((f): f is Fitur => Boolean(f))
+          : [];
+
         return {
           id: prodId,
           brand: brandSlug as Brand,
           brandChip: doc.brandChip || brandName,
           name: doc.name || "",
-          tipe: doc.tipe as Tipe,
-          compatible: (doc.compatible || []) as Compatible[],
-          medan: (doc.medan || []) as Medan[],
-          fitur: (doc.fitur || []) as Fitur[],
+          tipe: tipeSlug as Tipe,
+          compatible: (compatibleList.length > 0 ? compatibleList : (doc.compatible || [])) as Compatible[],
+          medan: (medanList.length > 0 ? medanList : (doc.medan || [])) as Medan[],
+          fitur: (fiturList.length > 0 ? fiturList : (doc.fitur || [])) as Fitur[],
           sizes: (doc.sizes || []).map((s: { size?: string } | string) =>
             typeof s === "object" && s !== null ? s.size || "" : String(s),
           ),

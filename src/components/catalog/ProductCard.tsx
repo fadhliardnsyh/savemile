@@ -12,7 +12,27 @@ import {
 } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  labels,
+}: {
+  product: Product;
+  labels?: {
+    tipeLabels?: Record<string, string>;
+    compatibleLabels?: Record<string, string>;
+    medanLabels?: Record<string, string>;
+    medanIcons?: Record<string, IconName>;
+    fiturLabels?: Record<string, string>;
+  };
+}) {
+  const tLabels = labels?.tipeLabels || tipeLabels;
+  const cLabels = labels?.compatibleLabels || compatibleLabels;
+  const mLabels = labels?.medanLabels || medanLabels;
+  const mIcons = labels?.medanIcons || medanIcons;
+  const fLabels = labels?.fiturLabels || fiturLabels;
+
+  const tipeText = tLabels[product.tipe] || product.tipe;
+
   return (
     <Link
       href={`/solusi/ban/${product.id}`}
@@ -51,7 +71,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.brandChip}
         </span>
         <span className="absolute right-3 top-3 rounded-full bg-orange/10 px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-wider text-orange ring-1 ring-inset ring-orange/20">
-          {tipeLabels[product.tipe] || product.tipe}
+          {tipeText}
         </span>
       </div>
 
@@ -61,28 +81,28 @@ export function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         <div className="mt-0.5 text-xs font-medium text-muted">
-          Ban {tipeLabels[product.tipe] || product.tipe} {product.brandChip}
+          Ban {tipeText} {product.brandChip}
         </div>
 
         {product.compatible.length > 0 && (
           <ChipRow
             title="Cocok untuk"
-            items={product.compatible.map((c) => compatibleLabels[c] || c)}
+            items={product.compatible.map((c) => cLabels[c] || c)}
           />
         )}
         {product.medan.length > 0 && (
           <ChipRow
             title="Medan"
             items={product.medan.map((m) => ({
-              label: medanLabels[m] || m,
-              icon: medanIcons[m as Medan],
+              label: mLabels[m] || m,
+              icon: (mIcons[m] || medanIcons[m as Medan] || "road") as IconName,
             }))}
           />
         )}
         {product.fitur.length > 0 && (
           <ChipRow
             title="Fitur"
-            items={product.fitur.map((f) => fiturLabels[f] || f)}
+            items={product.fitur.map((f) => fLabels[f] || f)}
           />
         )}
 
