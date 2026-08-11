@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CatalogHero } from "@/components/catalog/CatalogHero";
 import { InfoStrip } from "@/components/catalog/InfoStrip";
 import { CatalogBrowser } from "@/components/catalog/CatalogBrowser";
 
