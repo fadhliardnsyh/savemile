@@ -5,7 +5,9 @@ import { tms } from "@/lib/content";
 
 function renderHighlighted(title: string, highlight?: string[]) {
   if (!highlight || highlight.length === 0) return title;
-  const escaped = highlight.map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const escaped = highlight.map((h) =>
+    h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  );
   const parts = title.split(new RegExp(`(${escaped.join("|")})`, "gi"));
   let offset = 0;
   return parts.map((part) => {
@@ -55,9 +57,7 @@ export function HowItWorks({ how }: HowItWorksProps = {}) {
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-4 text-lg text-muted text-pretty">
-              {description}
-            </p>
+            <p className="mt-4 text-lg text-muted text-pretty">{description}</p>
           </Reveal>
         </div>
 
@@ -79,7 +79,7 @@ export function HowItWorks({ how }: HowItWorksProps = {}) {
                 <span className="relative z-10 grid h-24 w-24 place-items-center rounded-full bg-card text-orange ring-2 ring-orange/30">
                   <Icon name={step.icon} className="h-12 w-12" />
                 </span>
-                <h3 className="mt-5 font-display text-base font-bold text-ink text-balance sm:text-lg">
+                <h3 className="mt-5 text-sm font-bold text-ink text-balance">
                   {step.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted text-pretty">
