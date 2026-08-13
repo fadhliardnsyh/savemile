@@ -36,6 +36,7 @@ export function Button({
   className,
   children,
   external,
+  ...rest
 }: {
   href?: string;
   onClick?: (e: React.MouseEvent) => void;
@@ -45,6 +46,7 @@ export function Button({
   className?: string;
   children: React.ReactNode;
   external?: boolean;
+  [key: string]: unknown;
 }) {
   if (href) {
     return (
@@ -53,6 +55,7 @@ export function Button({
         onClick={onClick}
         className={cn(base, variants[variant], sizes[size], className)}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        {...rest}
       >
         {children}
       </Link>
@@ -64,6 +67,7 @@ export function Button({
       type={type}
       onClick={onClick}
       className={cn(base, variants[variant], sizes[size], className)}
+      {...rest}
     >
       {children}
     </button>

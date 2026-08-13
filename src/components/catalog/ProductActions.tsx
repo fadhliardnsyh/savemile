@@ -66,7 +66,13 @@ export function ProductActions({
 
       {/* CTA */}
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Button href={waHref} variant="wa" size="lg" external>
+        <Button
+          href={waHref}
+          variant="wa"
+          size="lg"
+          external
+          data-wa-location="Product Detail CTA"
+        >
           <Icon name="whatsapp" className="h-5 w-5" />
           Konsultasi &amp; Pesan
         </Button>

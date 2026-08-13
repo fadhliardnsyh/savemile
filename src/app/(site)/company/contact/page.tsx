@@ -96,6 +96,11 @@ export default async function ContactPage() {
                         variant={o.icon === "whatsapp" ? "wa" : "primary"}
                         size="lg"
                         external={o.external}
+                        data-wa-location={
+                          o.icon === "whatsapp"
+                            ? `Contact Page - ${o.title}`
+                            : undefined
+                        }
                       >
                         <Icon
                           name={

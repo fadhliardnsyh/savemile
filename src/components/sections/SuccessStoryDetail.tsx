@@ -230,6 +230,7 @@ export function SuccessStoryDetail({
                   href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-wa-location="Success Story Detail Sidebar"
                   className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-orange px-5 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-xs transition-all hover:bg-orange/90 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   <Icon name="whatsapp" className="h-4 w-4" />
