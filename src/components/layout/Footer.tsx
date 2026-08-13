@@ -63,6 +63,7 @@ export function Footer({ siteData }: FooterProps) {
             href={currentSite.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
+            data-wa-location="Footer WhatsApp"
             className="inline-flex items-center gap-2 text-sm font-medium text-white/85 transition-colors hover:text-white"
           >
             <Icon name="whatsapp" className="h-4 w-4" />

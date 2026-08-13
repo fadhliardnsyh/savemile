@@ -18,6 +18,7 @@ import { TerrainTypes } from "./src/collections/TerrainTypes";
 import { TireTypes } from "./src/collections/TireTypes";
 import { Users } from "./src/collections/Users";
 import { VehicleTypes } from "./src/collections/VehicleTypes";
+import { WhatsAppClicks } from "./src/collections/WhatsAppClicks";
 
 import { AboutPage } from "./src/globals/AboutPage";
 import { CareerPage } from "./src/globals/CareerPage";
@@ -34,6 +35,11 @@ const dirname = path.dirname(filename);
 export default buildConfig({
   admin: {
     user: Users.slug,
+    components: {
+      beforeDashboard: [
+        "./src/components/admin/AnalyticsDashboard#AnalyticsDashboard",
+      ],
+    },
   },
   collections: [
     Users,
@@ -47,6 +53,7 @@ export default buildConfig({
     Clients,
     SuccessStories,
     Jobs,
+    WhatsAppClicks,
   ],
   globals: [
     SiteConfig,
@@ -91,15 +98,11 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL,
-      ssl:
-        (process.env.DATABASE_URI || process.env.DATABASE_URL)?.includes(
-          "supabase",
-        ) ||
-        (process.env.DATABASE_URI || process.env.DATABASE_URL)?.includes(
-          "postgres",
-        )
-          ? { rejectUnauthorized: false }
-          : false,
+      ssl: (process.env.DATABASE_URI || process.env.DATABASE_URL)?.includes(
+        "supabase",
+      )
+        ? { rejectUnauthorized: false }
+        : false,
     },
   }),
   typescript: {

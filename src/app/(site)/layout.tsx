@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
+import { WhatsAppTracker } from "@/components/analytics/WhatsAppTracker";
 import "../globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -53,6 +54,7 @@ export default function RootLayout({
     >
       <body className="relative min-h-full flex flex-col overflow-x-hidden">
         <SmoothScroll />
+        <WhatsAppTracker />
         {children}
         <FloatingWhatsApp />
       </body>

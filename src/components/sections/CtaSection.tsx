@@ -61,7 +61,13 @@ export function CtaSection({
                   {action.label}
                 </Button>
               ) : (
-                <Button href={waHref} variant="wa" size="lg" external>
+                <Button
+                  href={waHref}
+                  variant="wa"
+                  size="lg"
+                  external
+                  data-wa-location="CTA Section"
+                >
                   <Icon name="whatsapp" className="h-5 w-5" />
                   {content.whatsappLabel}
                 </Button>
